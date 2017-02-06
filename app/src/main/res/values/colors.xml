@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <!-- Switch Color -->
+    <color name="disable_foreground_grey">#42221f1f</color>
+    <color name="disable_thumb_grey">#1c000000</color>
+    <color name="enable_thumb_orange">#ffff8800</color>
+
+    <color name="TextViewText">#ff000000</color>
+    <color name="ButtonBackground">#ffff8800</color>
+    <color name="ButtonText">#ff000000</color>
+    <color name="ToolbarBackground">#ff33b5e5</color>
+    <color name="dateTime">#55000000</color>
+    <color name="commentnum">#55000000</color>
+</resources>
