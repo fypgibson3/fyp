@@ -1,12 +1,14 @@
 <resources>
-    <string name="app_name">USTSocialApp</string>
+    <string name="app_name">UST Social App</string>
     <string name="action_settings">Settings</string>
 
-    <string name="title_activity_sign_in">SignIn</string>
-    <string name="title_activity_sign_up">SignUp</string>
-    <string name="title_activity_profile_setting_basic">ProfileSettingBasic</string>
-    <string name="title_activity_profile_setting_more">ProfileSettingMore</string>
-    <string name="title_activity_ustsocial_app_main">USTSocialAppMain</string>
+    <string name="title_activity_sign_in">Sign In</string>
+    <string name="title_activity_sign_up">Sign Up</string>
+    <string name="title_activity_profile_setting_basic">Profile Setup</string>
+    <string name="title_activity_profile_setting_more">Profile Setup</string>
+    <string name="title_activity_ustsocial_app_main">UST Social App</string>
+    <string name="title_activity_add_new_story">Create a New Story</string>
+    <string name="title_activity_add_new_vote">Create a new Vote</string>
 
     <!-- Button Text -->
     <string name="action_sign_in">Sign In</string>
@@ -14,6 +16,12 @@
     <string name="action_sign_up">Sign Up</string>
     <string name="action_next">Next</string>
     <string name="action_done">Done</string>
+    <string name="action_comment">Comment</string>
+    <string name="action_attitude">Attitude</string>
+    <string name="action_submit">Submit</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_addMoreOptions">Add more options</string>
+    <string name="action_addStory">Add Story</string>
 
     <!-- Input Hint Text -->
     <string name="hint_username">Username</string>
@@ -24,6 +32,11 @@
     <string name="hint_itsc">ITSC</string>
     <string name="hint_display_name">Display Name</string>
     <string name="hint_personal_description">Hi...</string>
+    <string name="hint_title">Title of your post</string>
+    <string name="hint_hashtags">Hashtags</string>
+    <string name="hint_content">Content</string>
+    <string name="hint_question">Question</string>
+    <string name="hint_option">Option</string>
 
     <!-- Input Text Title -->
     <string name="text_display_name">Display Name</string>
@@ -36,6 +49,14 @@
     <string name="text_year_of_study">Year Of Study</string>
     <string name="text_profile_picture">Profile Picture</string>
     <string name="text_personal_description">Personal Description</string>
+    <string name="text_title">Title</string>
+    <string name="text_hashtags">Hashtags</string>
+    <string name="text_content">Content</string>
+    <string name="text_question">Question</string>
+    <string name="text_option">Option</string>
+    <string name="text_option_1">Option 1</string>
+    <string name="text_option_2">Option 2</string>
+
 
     <!-- Option Text -->
     <string name="option_gender_male">Male</string>
@@ -46,9 +67,12 @@
     <string name="option_student_category_international">International</string>
     <string name="option_student_category_default">X</string>
 
+    <!-- Tab Text -->
+    <string name="menu_post">Create a Post</string>
+    <string name="menu_vote">Create a Vote</string>
 
     <!-- Page Description Text -->
-    <string name="login_des">Username/Password is incorrect!</string>
+    <string name="login_des">Please input the Username/Password!</string>
     <string name="login_forgot">Forgot Password?</string>
     <string name="profileSettingBasic_des">Please fill in all of the information below. You may choose to SHOW or HIDE each of the information in your profile page. You can also change your choices in the Profile page later.</string>
 
@@ -334,7 +358,7 @@
         <item>Individualized Interdisciplinary Major</item>
         <item>Industrial Engineering and Engineering Management</item>
         <item>Information Systems</item>
-        <item>Logistics Managment and Engineering</item>
+        <item>Logistics Management and Engineering</item>
         <item>Management</item>
         <item>Marketing</item>
         <item>Mathematics</item>
@@ -358,24 +382,6 @@
         <item>6 or more</item>
     </string-array>
 
-    <string name="ust_story_new_text_title">Title</string>
-    <string name="ust_story_new_hint_title">Title</string>
-    <string name="ust_story_new_text_hashtags">Hashtags</string>
-    <string name="ust_story_new_hint_hashtags">Hashtags (optional)</string>
-    <string name="ust_story_new_text_content">Content</string>
-    <string name="ust_story_new_hint_content">Content</string>
-    <string name="ust_story_new_text_question">Question</string>
-    <string name="ust_story_new_hint_question">Question</string>
-    <string name="ust_story_new_text_option"></string>
-    <string name="ust_story_new_hint_option"></string>
-    <string name="ust_story_new_button_addoption">More Option</string>
-    <string name="ust_story_new_button_submit">Submit</string>
-    <string name="ust_story_new_button_cancel">Cancel</string>
-    <string name="map_locationdes">You are now in</string>
-    <string name="map_location">abc</string>
-    <string name="ust_story_text_dateTime">DateTime</string>
-    <string name="ust_story_text_title">Title</string>
-    <string name="ust_story_text_content">Content</string>
-    <string name="ust_story_text_commentnum">Comment number</string>
+
 
 </resources>

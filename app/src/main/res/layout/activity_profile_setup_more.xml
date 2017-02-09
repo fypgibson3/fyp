@@ -18,7 +18,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@android:color/holo_blue_light"
             app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:title="Profile Setting"/>
+            app:title="@string/title_activity_profile_setting_more"/>
 
     </android.support.design.widget.AppBarLayout>
 
