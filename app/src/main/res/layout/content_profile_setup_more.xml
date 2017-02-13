@@ -67,14 +67,15 @@
                     android:layout_width="69dp"
                     android:layout_height="64dp"
                     android:clickable="true"
-                    app:fabSize="mini"
-                    app:srcCompat="@android:drawable/ic_menu_add"
+                    app:fabSize="normal"
+                    app:srcCompat="@android:drawable/ic_input_add"
                     android:id="@+id/fb_profileSettingMore_add_picture"
                     app:layout_anchor="@+id/image_profileSettingMore_profile_picture"
                     app:layout_anchorGravity="bottom|right"
                     android:layout_gravity="bottom|center_horizontal"
                     app:backgroundTint="?android:attr/textColorTertiary"
-                    app:elevation="7dp" />
+                    app:elevation="7dp"
+                    android:tint="@android:color/white" />
 
             </android.support.design.widget.CoordinatorLayout>
 

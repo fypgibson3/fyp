@@ -47,7 +47,7 @@
                 android:textSize="@dimen/textView_description_size" />
 
             <TextView
-                android:text="Username (must be unique)"
+                android:text="@string/text_username_unique"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/text_username"
@@ -74,7 +74,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <TextView
-                android:text="Password"
+                android:text="@string/text_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/text_password"
@@ -128,7 +128,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <TextView
-                android:text="Email"
+                android:text="@string/text_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/text_email"
@@ -155,7 +155,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <TextView
-                android:text="Full  Name"
+                android:text="@string/text_full_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/text_full_name"
@@ -182,7 +182,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <TextView
-                android:text="ITSC"
+                android:text="@string/text_itsc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/text_itsc"
@@ -209,7 +209,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <CheckBox
-                android:text="I have read and agreed with the terms of services and regulations."
+                android:text="@string/text_agreement"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/checkBox_signUp_agree"

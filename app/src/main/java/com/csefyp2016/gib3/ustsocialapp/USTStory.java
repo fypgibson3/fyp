@@ -19,7 +19,7 @@ public class USTStory extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_ust_story, container, false);
 
-        addStory = (FloatingActionButton) view.findViewById(R.id.fb_ustStory_add_story);
+        addStory = (FloatingActionButton) view.findViewById(R.id.fab_ustStory_add_story);
         addStory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -9,10 +9,4 @@
     <color name="disable_thumb_grey">#1c000000</color>
     <color name="enable_thumb_orange">#ffff8800</color>
 
-    <color name="TextViewText">#ff000000</color>
-    <color name="ButtonBackground">#ffff8800</color>
-    <color name="ButtonText">#ff000000</color>
-    <color name="ToolbarBackground">#ff33b5e5</color>
-    <color name="dateTime">#55000000</color>
-    <color name="commentnum">#55000000</color>
 </resources>

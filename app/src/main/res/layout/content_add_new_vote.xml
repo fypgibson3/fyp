@@ -23,7 +23,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/debug_addNewUstStory"
+                android:id="@+id/debug_addNewVote"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
@@ -31,7 +31,7 @@
                 android:text=""/>
 
             <TextView
-                android:id="@+id/view_addNewUstStory_warning"
+                android:id="@+id/view_addNewVote_warning"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -42,7 +42,7 @@
                 android:text=""/>
 
             <TextView
-                android:id="@+id/view_addNewUstStory_title"
+                android:id="@+id/view_addNewVote_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -59,7 +59,7 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/i_addNewUstStory_title"
+                    android:id="@+id/i_addNewVote_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_title"
@@ -73,7 +73,7 @@
                 android:layout_height="20dp" />
 
             <TextView
-                android:id="@+id/view_addNewUstStory_hashtags"
+                android:id="@+id/view_addNewVote_hashtags"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
@@ -89,7 +89,7 @@
                 android:layout_height="wrap_content">
 
                 <MultiAutoCompleteTextView
-                    android:id="@+id/i_addNewUstStory_hashtags"
+                    android:id="@+id/i_addNewVote_hashtags"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_hashtags"
@@ -102,7 +102,7 @@
                 android:layout_height="20dp" />
 
             <TextView
-                android:id="@+id/textView_ustStoryNew_question"
+                android:id="@+id/view_addNewVote_question"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/background_dark"
@@ -115,7 +115,7 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/input_ustStoryNew_question"
+                    android:id="@+id/i_addNewVote_question"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_question"
@@ -129,7 +129,7 @@
                 android:layout_height="10dp" />
 
             <TextView
-                android:id="@+id/textView_ustStoryNew_option"
+                android:id="@+id/view_addNewVote_option"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/background_dark"
@@ -203,16 +203,76 @@
 
             <Space
                 android:layout_width="match_parent"
+                android:layout_height="10dp" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <android.support.design.widget.FloatingActionButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    app:fabSize="mini"
+                    app:srcCompat="@android:drawable/ic_input_add"
+                    android:id="@+id/fab_addNewVote_more_options"
+                    android:layout_weight="0.2"
+                    app:backgroundTint="@android:color/holo_orange_dark"
+                    android:tint="@android:color/white" />
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.05" />
+
+                <TextView
+                    android:text="@string/text_options_more"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/view_addNewVote_more_options"
+                    android:layout_weight="0.75"
+                    android:textSize="@dimen/textView_description_size"
+                    android:textColor="@android:color/background_dark"
+                    android:layout_gravity="center_vertical" />
+            </LinearLayout>
+
+            <Space
+                android:layout_width="match_parent"
                 android:layout_height="20dp" />
 
-            <Button
-                android:id="@+id/button_ustStoryNew_addoption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/holo_orange_dark"
-                android:textSize="@dimen/button_text_size"
-                android:textStyle="bold"
-                android:text="@string/action_addMoreOptions"/>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_width="match_parent">
+
+                <Button
+                    android:id="@+id/b_addNewVote_submit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/holo_orange_dark"
+                    android:textSize="@dimen/button_text_size"
+                    android:textStyle="bold"
+                    android:text="@string/action_submit"
+                    android:layout_weight="0.45" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.1" />
+
+                <Button
+                    android:id="@+id/b_addNewVote_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/holo_orange_dark"
+                    android:textSize="@dimen/button_text_size"
+                    android:textStyle="bold"
+                    android:text="@string/action_cancel"
+                    android:layout_weight="0.45" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

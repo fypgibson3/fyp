@@ -1,6 +1,8 @@
 package com.csefyp2016.gib3.ustsocialapp;
 
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
+import android.support.v4.widget.PopupWindowCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -64,7 +66,12 @@ public class USTSocialAppMain extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.menu_ustSocialAppMain_settings) {
+            startActivity(new Intent(USTSocialAppMain.this, Settings.class));
+            return true;
+        }
+        else if (id == R.id.menu_ustSocialAppMain_logout) {
+            startActivity(new Intent(USTSocialAppMain.this, SignIn.class));
             return true;
         }
 
@@ -113,7 +120,7 @@ public class USTSocialAppMain extends AppCompatActivity {
                 case 0:
                     return "UST Story";
                 case 1:
-                    return "USTMap";
+                    return "UST Map";
                 case 2:
                     return "Chatroom";
                 case 3:

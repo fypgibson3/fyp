@@ -75,20 +75,16 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <TextView
+            <Button
                 android:text="@string/login_forgot"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/view_signIn_forgot_password"
-                android:gravity="right"
+                android:id="@+id/b_signIn_forgot_password"
+                android:background="@android:color/transparent"
+                android:textSize="12sp"
                 android:textColor="@android:color/holo_blue_light"
-                android:inputType="none"
-                android:clickable="true"
-                android:textStyle="bold" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="20dp" />
+                android:textStyle="bold"
+                android:layout_gravity="right" />
 
             <Button
                 android:id="@+id/b_signIn_sign_in"

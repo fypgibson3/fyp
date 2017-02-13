@@ -1,6 +1,7 @@
 package com.csefyp2016.gib3.ustsocialapp;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -26,6 +27,8 @@ import java.io.InputStream;
 public class ProfileSettingMore extends AppCompatActivity {
     private static final int IMAGE_REQUEST_CODE = 5462;
     private static final int GALLERY_PERMISSION_REQUEST_CODE = 1205;
+    private static final int CROP_IMAGE = 6433;
+    private Uri imageUri;
     private ImageView profilePictureShow;
     private Bitmap profilePicture;
     private String personalDes;
@@ -127,8 +130,13 @@ public class ProfileSettingMore extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == IMAGE_REQUEST_CODE) {
-                Uri imageUri = data.getData();
+                imageUri = data.getData();
                 InputStream inputStream;
+
+                cropImage();
+
+                /************************************************* Code for Picking Image Only *************************************************/
+                /*
                 try {
                     inputStream = getContentResolver().openInputStream(imageUri);
                     profilePicture = BitmapFactory.decodeStream(inputStream);
@@ -137,7 +145,49 @@ public class ProfileSettingMore extends AppCompatActivity {
                     e.printStackTrace();
                     Toast.makeText(this, "Unable to open profilePicture", Toast.LENGTH_LONG).show();
                 }
+                */
+                /************************************************* Code for Picking Image Only *************************************************/
             }
+            else if (requestCode == CROP_IMAGE) {
+                //get the returned data
+                Bundle extras = data.getExtras();
+                //get the cropped bitmap
+                profilePicture = extras.getParcelable("data");
+                profilePictureShow.setImageBitmap(profilePicture);
+            }
+        }
+    }
+
+    // **************************************************************
+    // Function: cropImage
+    // Description: To crop image to 200x200 px
+    // Parameter: /
+    // Return: /
+    // **************************************************************
+    private void cropImage() {
+        try {
+            //call the standard crop action intent (the user device may not support it)
+            Intent cropIntent = new Intent("com.android.camera.action.CROP");
+            //indicate image type and Uri
+            cropIntent.setDataAndType(imageUri, "image/*");
+            //set crop properties
+            cropIntent.putExtra("crop", "true");
+            //indicate aspect of desired crop
+            cropIntent.putExtra("aspectX", 1);
+            cropIntent.putExtra("aspectY", 1);
+            //indicate output X and Y
+            cropIntent.putExtra("outputX", 220);
+            cropIntent.putExtra("outputY", 220);
+            //retrieve data on return
+            cropIntent.putExtra("return-data", true);
+            //start the activity - we handle returning in onActivityResult
+            startActivityForResult(cropIntent, CROP_IMAGE);
+        }
+        catch(ActivityNotFoundException anfe){
+            //display an error message
+            String errorMessage = "Whoops - your device doesn't support the crop action!";
+            Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
+            toast.show();
         }
     }
 

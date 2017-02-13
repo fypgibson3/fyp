@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.csefyp2016.gib3.ustsocialapp">
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -36,7 +36,66 @@
         <activity
             android:name=".USTSocialAppMain"
             android:label="@string/title_activity_ustsocial_app_main"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AddNewPost"
+            android:label="@string/title_activity_add_new_story"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AddNewVote"
+            android:label="@string/title_activity_add_new_vote"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CreateIndividualChat"
+            android:label="@string/title_activity_create_individual_chat"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CreateGroupChat"
+            android:label="@string/title_activity_create_group_chat"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".InstantChatRoom"
+            android:label="@string/title_activity_instant_chat_room"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Chat"
+            android:label="@string/title_activity_chat"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".MyBlog"
+            android:label="@string/title_activity_my_blog"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CreateNewBlog"
+            android:label="@string/title_activity_create_new_blog"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ViewProfile"
+            android:label="@string/title_activity_view_profile"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ViewBlog"
+            android:label="@string/title_activity_view_blog"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".MyFriendList"
+            android:label="@string/title_activity_my_friend_list"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".InstantAddFriend"
+            android:label="@string/title_activity_instant_add_friend"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ForgotPassword"
+            android:label="@string/title_activity_forgot_password"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ConfirmResetPassword"
+            android:label="@string/title_activity_confirm_reset_password"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Settings"
+            android:label="@string/title_activity_settings"></activity>
     </application>
 
 </manifest>

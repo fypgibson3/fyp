@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">UST Social App</string>
-    <string name="action_settings">Settings</string>
+    <string name="menu_ustSocialAppp_settings">Settings</string>
+    <string name="menu_ustSocialAppp_logout">Logout</string>
 
     <string name="title_activity_sign_in">Sign In</string>
     <string name="title_activity_sign_up">Sign Up</string>
@@ -8,7 +9,19 @@
     <string name="title_activity_profile_setting_more">Profile Setup</string>
     <string name="title_activity_ustsocial_app_main">UST Social App</string>
     <string name="title_activity_add_new_story">Create a New Story</string>
-    <string name="title_activity_add_new_vote">Create a new Vote</string>
+    <string name="title_activity_add_new_vote">Create a New Vote</string>
+    <string name="title_activity_create_individual_chat">Create Individual Chat</string>
+    <string name="title_activity_create_group_chat">Create Group Chat</string>
+    <string name="title_activity_instant_chat_room">Instant Chatroom</string>
+    <string name="title_activity_chat">Chat</string>
+    <string name="title_activity_my_blog">My Blog</string>
+    <string name="title_activity_create_new_blog">Create New Blog</string>
+    <string name="title_activity_view_profile">View Profile</string>
+    <string name="title_activity_view_blog">View Blog</string>
+    <string name="title_activity_my_friend_list">My Friend List</string>
+    <string name="title_activity_instant_add_friend">Instant Add Friend</string>
+    <string name="title_activity_forgot_password">Forgot Password</string>
+    <string name="title_activity_confirm_reset_password">Confirm Reset Password</string>
 
     <!-- Button Text -->
     <string name="action_sign_in">Sign In</string>
@@ -20,8 +33,13 @@
     <string name="action_attitude">Attitude</string>
     <string name="action_submit">Submit</string>
     <string name="action_cancel">Cancel</string>
-    <string name="action_addMoreOptions">Add more options</string>
     <string name="action_addStory">Add Story</string>
+    <string name="action_instant_chatroom">Instant Chatroom</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_friend_list">Friend List</string>
+    <string name="action_blog">Blog</string>
+    <string name="action_create">Create</string>
+    <string name="action_instant_add_fd">Instant Add Friend</string>
 
     <!-- Input Hint Text -->
     <string name="hint_username">Username</string>
@@ -37,8 +55,15 @@
     <string name="hint_content">Content</string>
     <string name="hint_question">Question</string>
     <string name="hint_option">Option</string>
+    <string name="hint_group_name">Group Name</string>
 
     <!-- Input Text Title -->
+    <string name="text_username_unique">Username (must be unique)</string>
+    <string name="text_password">Password</string>
+    <string name="text_email">Email</string>
+    <string name="text_full_name">Full Name</string>
+    <string name="text_itsc">ITSC</string>
+    <string name="text_agreement">I have read and agreed with the terms of services and regulations.</string>
     <string name="text_display_name">Display Name</string>
     <string name="text_gender">Gender</string>
     <string name="text_date_of_birth">Date Of Birth</string>
@@ -53,10 +78,14 @@
     <string name="text_hashtags">Hashtags</string>
     <string name="text_content">Content</string>
     <string name="text_question">Question</string>
-    <string name="text_option">Option</string>
+    <string name="text_option">Options</string>
     <string name="text_option_1">Option 1</string>
     <string name="text_option_2">Option 2</string>
-
+    <string name="text_options_more">Add more options</string>
+    <string name="text_group_name">Group Name</string>
+    <string name="text_add_post">Create New Blog</string>
+    <string name="text_confirm_reset">Your password has been reset by the system. Please check your email in order to get your new password.</string>
+    <string name="text_username">Username</string>
 
     <!-- Option Text -->
     <string name="option_gender_male">Male</string>
@@ -75,6 +104,11 @@
     <string name="login_des">Please input the Username/Password!</string>
     <string name="login_forgot">Forgot Password?</string>
     <string name="profileSettingBasic_des">Please fill in all of the information below. You may choose to SHOW or HIDE each of the information in your profile page. You can also change your choices in the Profile page later.</string>
+    <string name="map_des">You are now in</string>
+    <string name="map_location">Location</string>
+    <string name="createChat_des">Select group members</string>
+    <string name="instantChat_people">There are ? people</string>
+    <string name="chat_people">Chat Member</string>
 
     <!-- Switch Button -->
     <string name="switch_show">Show</string>
@@ -381,7 +415,78 @@
         <item>5</item>
         <item>6 or more</item>
     </string-array>
+    <string name="title_activity_settings">Settings</string>
 
+    <!-- Strings related to Settings -->
 
+    <!-- Example General settings -->
+    <string name="pref_header_general">General</string>
+
+    <string name="pref_title_social_recommendations">Enable social recommendations</string>
+    <string name="pref_description_social_recommendations">Recommendations for people to contact
+        based on your message history
+    </string>
+
+    <string name="pref_title_display_name">Display name</string>
+    <string name="pref_default_display_name">John Smith</string>
+
+    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
+    <string-array name="pref_example_list_titles">
+        <item>Always</item>
+        <item>When possible</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_example_list_values">
+        <item>1</item>
+        <item>0</item>
+        <item>-1</item>
+    </string-array>
+
+    <!-- Example settings for Data & Sync -->
+    <string name="pref_header_data_sync">Data &amp; sync</string>
+
+    <string name="pref_title_sync_frequency">Sync frequency</string>
+    <string-array name="pref_sync_frequency_titles">
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>3 hours</item>
+        <item>6 hours</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_sync_frequency_values">
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>180</item>
+        <item>360</item>
+        <item>-1</item>
+    </string-array>
+
+    <string-array name="list_preference_entries">
+        <item>Entry 1</item>
+        <item>Entry 2</item>
+        <item>Entry 3</item>
+    </string-array>
+
+    <string-array name="list_preference_entry_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="multi_select_list_preference_default_value" />
+
+    <string name="pref_title_system_sync_settings">System sync settings</string>
+
+    <!-- Example settings for Notifications -->
+    <string name="pref_header_notifications">Notifications</string>
+
+    <string name="pref_title_new_message_notifications">New message notifications</string>
+
+    <string name="pref_title_ringtone">Ringtone</string>
+    <string name="pref_ringtone_silent">Silent</string>
+
+    <string name="pref_title_vibrate">Vibrate</string>
 
 </resources>

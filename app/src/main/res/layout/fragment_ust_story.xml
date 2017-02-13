@@ -191,19 +191,19 @@
 
 
     <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fb_ustStory_add_story"
+            android:id="@+id/fab_ustStory_add_story"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:tint="@android:color/white"
             android:src="@android:drawable/ic_input_add"
             app:backgroundTint="@android:color/holo_orange_dark"
             app:fabSize="normal"
-            android:layout_gravity="bottom|end" />
+            android:layout_gravity="bottom|end"
+            app:rippleColor="@android:color/background_light" />
 
     </android.support.design.widget.CoordinatorLayout>
 
