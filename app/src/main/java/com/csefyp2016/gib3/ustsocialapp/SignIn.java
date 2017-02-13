@@ -43,6 +43,8 @@ public class SignIn extends AppCompatActivity {
         requestQueue = Volley.newRequestQueue(this);
 
         Button signInButton = (Button) findViewById(R.id.b_signIn_sign_in);
+        Button signUpButton = (Button) findViewById(R.id.b_signIn_sign_up);
+        final Button forgotPswdButton = (Button) findViewById(R.id.b_signIn_forgot_password);
 
         // "Sign In" button is clicked
         signInButton.setOnClickListener(new Button.OnClickListener() {
@@ -85,13 +87,19 @@ public class SignIn extends AppCompatActivity {
             }
         });
 
-        Button signUpButton = (Button) findViewById(R.id.b_signIn_sign_up);
-
         // "Register for a new account" button is clicked
         signUpButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onClickSignUpButton();
+            }
+        });
+
+        // "Forgot Password" button is clicked
+        forgotPswdButton.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(SignIn.this, ForgotPassword.class ));
             }
         });
     }
