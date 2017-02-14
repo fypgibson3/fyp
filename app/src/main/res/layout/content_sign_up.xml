@@ -221,17 +221,42 @@
                 android:contextClickable="false"
                 android:minHeight="65dp" />
 
-            <Button
-                android:id="@+id/b_signUp_sign_up"
-                style="?android:textAppearanceSmall"
+            <Space
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/action_sign_up"
-                android:textStyle="bold"
-                android:background="@android:color/holo_orange_dark"
-                android:textSize="@dimen/button_text_size" />
+                android:layout_height="20dp" />
 
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_width="match_parent">
+
+                <Button
+                    android:id="@+id/b_signUp_next"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/holo_orange_dark"
+                    android:textSize="@dimen/button_text_size"
+                    android:textStyle="bold"
+                    android:text="@string/action_next"
+                    android:layout_weight="0.45" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.1" />
+
+                <Button
+                    android:id="@+id/b_signUp_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/holo_orange_dark"
+                    android:textSize="@dimen/button_text_size"
+                    android:textStyle="bold"
+                    android:text="@string/action_cancel"
+                    android:layout_weight="0.45" />
+
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

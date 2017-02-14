@@ -112,14 +112,38 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp" />
 
-            <Button
-                android:text="@string/action_done"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/b_profileSettingMore_done"
-                android:textStyle="bold"
-                android:background="@android:color/holo_orange_dark"
-                android:textSize="@dimen/button_text_size" />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_width="match_parent">
+
+                <Button
+                    android:id="@+id/b_profileSettingMore_done"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/holo_orange_dark"
+                    android:textSize="@dimen/button_text_size"
+                    android:textStyle="bold"
+                    android:text="@string/action_done"
+                    android:layout_weight="0.45" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.1" />
+
+                <Button
+                    android:id="@+id/b_profileSettingMore_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/holo_orange_dark"
+                    android:textSize="@dimen/button_text_size"
+                    android:textStyle="bold"
+                    android:text="@string/action_cancel"
+                    android:layout_weight="0.45" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
