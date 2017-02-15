@@ -29,7 +29,7 @@ public class SignUp extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Button signUpButton = (Button) findViewById(R.id.b_signUp_sign_up);
+        Button signUpButton = (Button) findViewById(R.id.b_signUp_next);
         signUpButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
