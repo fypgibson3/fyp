@@ -44,7 +44,8 @@
                 android:textColor="@android:color/holo_red_dark"
                 android:gravity="center"
                 android:visibility="gone"
-                android:textSize="@dimen/textView_description_size" />
+                android:textSize="@dimen/textView_description_size"
+                android:textStyle="bold" />
 
             <TextView
                 android:text="@string/text_username_unique"
@@ -61,7 +62,8 @@
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:id="@+id/textLayout_signUp_username">
 
                 <AutoCompleteTextView
                     android:id="@+id/i_signUp_username"
@@ -142,7 +144,8 @@
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:id="@+id/textLayout_signUp_email">
 
                 <EditText
                     android:id="@+id/i_signUp_email"
@@ -169,7 +172,8 @@
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:id="@+id/textLayout_signUp_fullName">
 
                 <EditText
                     android:id="@+id/i_signUp_full_name"
@@ -196,7 +200,8 @@
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:id="@+id/textLayout_signUp_itsc">
 
                 <EditText
                     android:id="@+id/i_signUp_itsc"

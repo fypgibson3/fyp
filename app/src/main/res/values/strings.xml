@@ -41,6 +41,8 @@
     <string name="action_create">Create</string>
     <string name="action_instant_add_fd">Instant Add Friend</string>
     <string name="action_save">Save</string>
+    <string name="action_yes">Yes</string>
+    <string name="action_no">No</string>
 
     <!-- Input Hint Text -->
     <string name="hint_username">Username</string>
