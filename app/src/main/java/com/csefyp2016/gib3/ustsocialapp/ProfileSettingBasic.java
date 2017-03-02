@@ -27,11 +27,14 @@ import com.android.volley.toolbox.Volley;
 
 import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ProfileSettingBasic extends AppCompatActivity {
+    private String id;
+
     private Boolean genderShow;
     private Boolean dateOfBirthShow;
     private Boolean countryShow;
@@ -42,7 +45,7 @@ public class ProfileSettingBasic extends AppCompatActivity {
 
     private String displayName;
     private String gender;
-    private Date dateOfBirth;
+    private String dateOfBirth;
     private String country;
     private String studentCategory;
     private String faculty;
@@ -52,9 +55,6 @@ public class ProfileSettingBasic extends AppCompatActivity {
     private static final String URL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/checkDisplayNameUnique.php";
     private RequestQueue requestQueue;
     private StringRequest request;
-    private boolean uniqueName;
-
-    private String debugText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +62,12 @@ public class ProfileSettingBasic extends AppCompatActivity {
         setContentView(R.layout.activity_profile_setup_basic);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        Intent previousIntent = getIntent();
+        Bundle previousContent = previousIntent.getExtras();
+        if (previousContent != null) {
+            id = previousContent.getString("id");
+        }
 
         requestQueue = Volley.newRequestQueue(this);
 
@@ -128,7 +134,7 @@ public class ProfileSettingBasic extends AppCompatActivity {
     // Parameter: String
     // Return Type: Boolean
     // **************************************************************
-    private boolean checkDisplayNameUsed() {
+    private void checkDisplayNameUsed() {
         request = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
 
             @Override
@@ -136,6 +142,7 @@ public class ProfileSettingBasic extends AppCompatActivity {
             public void onResponse(String response) {
                 if (response.contains("Unique")) {
                     Intent intent = new Intent(getApplicationContext(), ProfileSettingMore.class);
+                    intent.putExtra("id", id);
                     intent.putExtra("displayName", displayName);
                     intent.putExtra("gender", gender);
                     intent.putExtra("dateOfBirth", dateOfBirth);
@@ -156,7 +163,7 @@ public class ProfileSettingBasic extends AppCompatActivity {
                 }
                 else {
                     TextView warning = (TextView) findViewById(R.id.view_profileSettingBasic_warning);
-                    warning.setText("Your display name \"" + displayName + "\" has already been used. Please try another one. " + debugText);
+                    warning.setText("Your display name \"" + displayName + "\" has already been used. Please try another one.");
                     warning.setVisibility(View.VISIBLE);
                 }
             }
@@ -176,8 +183,6 @@ public class ProfileSettingBasic extends AppCompatActivity {
         };
         // Put the request to the queue
         requestQueue.add(request);
-
-        return uniqueName;
     }
 
     private void getSwitchOption() {
@@ -260,30 +265,52 @@ public class ProfileSettingBasic extends AppCompatActivity {
             displayName = displayNameInput.getText().toString();
 
             if (genderGroup.getCheckedRadioButtonId() == maleGenderInput.getId())
-                gender = "M:";
+                gender = "M";
             else
                 gender = "F";
 
-            dateOfBirth = new Date(dateOfBirthInput.getYear()-1900, dateOfBirthInput.getMonth(), dateOfBirthInput.getDayOfMonth());
+            Date unformatedDate = new Date(dateOfBirthInput.getYear()-1900, dateOfBirthInput.getMonth(), dateOfBirthInput.getDayOfMonth());
+            SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
+            dateOfBirth = formatDate.format(unformatedDate);
 
             country = countryInput.getSelectedItem().toString();
 
             if (studentCategoryGroup.getCheckedRadioButtonId() == localStudentCategoryInput.getId())
-                studentCategory = "Local";
+                studentCategory = "local";
             else if (studentCategoryGroup.getCheckedRadioButtonId() == mainlandStudentCategoryInput.getId())
-                studentCategory = "Mainland";
+                studentCategory = "mainland";
             else
-                studentCategory = "International";
+                studentCategory = "international";
 
-            faculty = facultyInput.getSelectedItem().toString();
+            switch (facultyInput.getSelectedItem().toString()) {
+                case "School of Business and Management":
+                    faculty = "SBM";
+                    break;
+                case "School of Science":
+                    faculty = "SSCI";
+                    break;
+                case "School of Engineering":
+                    faculty = "SENG";
+                    break;
+                case "School of Humanities and Social Science":
+                    faculty = "SHSS";
+                    break;
+                case "Interdisciplinary Programs Office":
+                    faculty = "IPO";
+                    break;
+            }
+
 
             major = majorInput.getSelectedItem().toString();
 
-            yearOfStudy = yearOfStudyInput.getSelectedItem().toString();
+            if (yearOfStudyInput.getSelectedItem().toString().contains("6"))
+                yearOfStudy = "6";
+            else
+                yearOfStudy = yearOfStudyInput.getSelectedItem().toString();
 
             //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
             TextView debug = (TextView) findViewById(R.id.debug_profileSettingBasic);
-            debug.setText(displayName + "/n" + gender + "/n" + dateOfBirth + "/n" + country + "/n" + studentCategory + "/n" + faculty + "/n" + major + "/n" + yearOfStudy + "\n" +
+            debug.setText(id + "\n" + displayName + "/n" + gender + "/n" + dateOfBirth + "/n" + country + "/n" + studentCategory + "/n" + faculty + "/n" + major + "/n" + yearOfStudy + "\n" +
                     genderShow + "/" + dateOfBirthShow + "/" + countryShow + "/" + studentCategoryShow + "/" + facultyShow + "/" + majorShow + "/" + yearOfStudyShow);
             debug.setVisibility(View.VISIBLE);
             //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //

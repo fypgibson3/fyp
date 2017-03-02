@@ -17,9 +17,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -109,11 +106,17 @@ public class SignIn extends AppCompatActivity {
             // Response to request result
             public void onResponse(String response) {
                 if (response.contains("Success")) {
-                    startActivity(new Intent(SignIn.this, USTSocialAppMain.class));
+                    String[] split = response.split("-");
+                    Intent intentOK = new Intent(getApplicationContext(), USTSocialAppMain.class);
+                    intentOK.putExtra("id", split[split.length -1]);
+                    startActivity(intentOK);
                     SignIn.this.finish();
                 }
                 else if (response.contains("Register")) {
-                    startActivity(new Intent(SignIn.this, ProfileSettingBasic.class));
+                    String[] split = response.split("-");
+                    Intent intentRegister = new Intent(getApplicationContext(), ProfileSettingBasic.class);
+                    intentRegister.putExtra("id", split[split.length -1]);
+                    startActivity(intentRegister);
                     SignIn.this.finish();
                 }
                 else {

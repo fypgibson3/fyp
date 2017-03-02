@@ -126,7 +126,11 @@ public class SignUp extends AppCompatActivity {
             // Response to request result
             public void onResponse(String response) {
                 if (response.contains("Success")) {
-                    startActivity(new Intent(SignUp.this, ProfileSettingBasic.class));
+                    String[] split = response.split("-");
+
+                    Intent intentOK = new Intent(getApplicationContext(), ProfileSettingBasic.class);
+                    intentOK.putExtra("id", split[split.length-1]);
+                    startActivity(intentOK);
                 }
                 else {
                     String errorText = "";
@@ -141,7 +145,7 @@ public class SignUp extends AppCompatActivity {
                                 "If you forgot your password, please click \"Forgot Password\" in the Sign In page to reset your password. " +
                                 "If not, please check your full name input.";
                     }
-                    else if (response.contains(itsc)) {
+                    else if (response.contains("itsc")) {
                         errorText = "According to the record, it seems you have already registered for the account. " +
                                 "If you forgot your password, please click \"Forgot Password\" in the Sign In page to reset your password. " +
                                 "If not, please check your ITSC input.";
