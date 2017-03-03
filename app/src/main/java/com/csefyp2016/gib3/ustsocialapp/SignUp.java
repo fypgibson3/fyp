@@ -201,9 +201,9 @@ public class SignUp extends AppCompatActivity {
         itsc = itscInput.getText().toString();
 
         //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
-        //TextView debug = (TextView) findViewById(R.id.debug_signUp);
-        //debug.setText(username + "/n" + password + "/n" + confirmPassword + "/n" + email + "/n" + fullName + "/n" + itsc);
-        //debug.setVisibility(View.VISIBLE);
+        TextView debug = (TextView) findViewById(R.id.debug_signUp);
+        debug.setText(username + "/n" + password + "/n" + confirmPassword + "/n" + email + "/n" + fullName + "/n" + itsc);
+        debug.setVisibility(View.VISIBLE);
         //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
 
         if (checkInput() == false) {

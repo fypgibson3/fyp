@@ -131,8 +131,8 @@ public class ProfileSettingBasic extends AppCompatActivity {
     // **************************************************************
     // Function: checkDisplayNameUsed
     // Description: To check if the Display Name is used from datebase
-    // Parameter: String
-    // Return Type: Boolean
+    // Parameter: /
+    // Return Type: /
     // **************************************************************
     private void checkDisplayNameUsed() {
         request = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
@@ -185,6 +185,12 @@ public class ProfileSettingBasic extends AppCompatActivity {
         requestQueue.add(request);
     }
 
+    //**************************************************************
+    // Function: getSwitchOption
+    // Description: To get the input of Switches
+    // Parameter: /
+    // Return Type: /
+    //**************************************************************
     private void getSwitchOption() {
         Switch genderSwitch = (Switch) findViewById(R.id.s_profileSettingBasic_gender);
         genderShow = genderSwitch.isChecked();
@@ -202,6 +208,12 @@ public class ProfileSettingBasic extends AppCompatActivity {
         yearOfStudyShow = yearOfStudySwitch.isChecked();
     }
 
+    //**************************************************************
+    // Function: checkAndGetInput
+    // Description: To check user inputs and store them
+    // Parameter: /
+    // Return Type: Boolean
+    //**************************************************************
     private boolean checkAndGetInput() {
         EditText displayNameInput = (EditText) findViewById(R.id.i_profileSettingBasic_display_name);
         RadioGroup genderGroup = (RadioGroup) findViewById(R.id.rgp_profileSettingBasic_gender);

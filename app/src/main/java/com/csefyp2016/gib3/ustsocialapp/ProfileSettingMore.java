@@ -134,7 +134,6 @@ public class ProfileSettingMore extends AppCompatActivity {
             public void onClick(View view) {
             if (checkInput()) {
                 profileInfoSetup();
-                //startActivity(new Intent(ProfileSettingMore.this, USTSocialAppMain.class));
             }
             }
         });
@@ -147,8 +146,6 @@ public class ProfileSettingMore extends AppCompatActivity {
             }
         });
     }
-
-
 
     // **************************************************************
     // Function: onRequestPermissionResult
@@ -283,6 +280,12 @@ public class ProfileSettingMore extends AppCompatActivity {
             return true;
     }
 
+    //**************************************************************
+    // Function: checkInput
+    // Description: To check user inputs when "Done" button is clicked
+    // Parameter: /
+    // Return Type: Boolean
+    //**************************************************************
     private boolean checkInput() {
         EditText personalDescriptionInput = (EditText) findViewById(R.id.i_profileSettingMore_personal_des);
 
@@ -311,6 +314,12 @@ public class ProfileSettingMore extends AppCompatActivity {
         }
     }
 
+    //**************************************************************
+    // Function: profileInfoSetup
+    // Description: To send http request for profile input to database
+    // Parameter: /
+    // Return Type: /
+    //**************************************************************
     private void profileInfoSetup() {
         request_profileInfo = new StringRequest(Request.Method.POST, URL_profileSetup, new Response.Listener<String>() {
 
@@ -358,6 +367,12 @@ public class ProfileSettingMore extends AppCompatActivity {
         requestQueue.add(request_profileInfo);
     }
 
+    //**************************************************************
+    // Function: profileSwitchSetup
+    // Description: To send http request for switch input to database
+    // Parameter: /
+    // Return Type: /
+    //**************************************************************
     private void profileSwitchSetup() {
         request_profileSwitch = new StringRequest(Request.Method.POST, URL_profileSwitch, new Response.Listener<String>() {
 
