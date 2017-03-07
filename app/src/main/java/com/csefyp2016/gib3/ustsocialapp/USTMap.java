@@ -7,9 +7,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.widget.TextView;
+import android.content.Context;
 
 
 public class USTMap extends Fragment {
+
+    private String SSID;
+
+    private TextView location;
     private Button instantChatroom;
 
     @Override
@@ -26,6 +34,11 @@ public class USTMap extends Fragment {
             }
         });
 
+        location = (TextView) view.findViewById(R.id.view_map_locaion_des);
+        WifiManager wifiMgr = (WifiManager) this.getContext().getSystemService(Context.WIFI_SERVICE);
+        WifiInfo wifiInfo = wifiMgr.getConnectionInfo();
+        SSID = wifiInfo.getSSID();
+        location.setText(SSID);
         return view;
     }
 }
