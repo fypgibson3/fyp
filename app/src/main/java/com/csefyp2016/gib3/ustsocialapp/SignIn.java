@@ -17,9 +17,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,39 +48,6 @@ public class SignIn extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 onClickSignInButton();
-
-                // New request for HTTP Post request
-                request = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
-
-                    @Override
-                    // Response to request result
-                    public void onResponse(String response) {
-                            if (response.contains("Success")) {
-                                startActivity(new Intent(SignIn.this, USTSocialAppMain.class));
-                            }
-                            else {
-                                TextView warning = (TextView) findViewById(R.id.view_signIn_login_fail);
-                                warning.setText(response);
-                                warning.setVisibility(View.VISIBLE);
-                            }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-
-                    }
-                }) {
-                    @Override
-                    // Post request parameters
-                    protected Map<String, String> getParams() throws AuthFailureError {
-                        HashMap<String, String> hashMap = new HashMap<String, String>();
-                        hashMap.put("username", username);
-                        hashMap.put("password", password);
-                        return hashMap;
-                    }
-                };
-                // Put the request to the queue
-                requestQueue.add(request);
             }
         });
 
@@ -92,6 +56,7 @@ public class SignIn extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 onClickSignUpButton();
+                SignIn.this.finish();
             }
         });
 
@@ -100,17 +65,18 @@ public class SignIn extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(SignIn.this, ForgotPassword.class ));
+                SignIn.this.finish();
             }
         });
     }
 
     // **************************************************************
-    // Function: onClickSignInButton
-    // Description: Action when "Sign In" button is clicked (Input checking)
+    // Function: checkInput
+    // Description: Input checking when "Sign In" button is clicked
     // Parameter: /
     // Return Type: /
     //***************************************************************
-    private void onClickSignInButton() {
+    private boolean checkInput() {
         EditText usernameInput = (EditText) findViewById(R.id.i_signIn_username);
         EditText passwordInput = (EditText) findViewById(R.id.i_signIn_password);
 
@@ -121,7 +87,72 @@ public class SignIn extends AppCompatActivity {
         else {
             username = usernameInput.getText().toString();
             password = passwordInput.getText().toString();
+            return true;
         }
+        return false;
+    }
+
+    //**************************************************************
+    // Function: httpPostRequest
+    // Description: To send HTTP post request to server
+    // Parameter: CheckBox
+    // Return Type: Boolean
+    //**************************************************************
+    private void httpPostRequest() {
+        // New request for HTTP Post request
+        request = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
+
+            @Override
+            // Response to request result
+            public void onResponse(String response) {
+                if (response.contains("Success")) {
+                    String[] split = response.split("-");
+                    Intent intentOK = new Intent(getApplicationContext(), USTSocialAppMain.class);
+                    intentOK.putExtra("id", split[split.length -1]);
+                    startActivity(intentOK);
+                    SignIn.this.finish();
+                }
+                else if (response.contains("Register")) {
+                    String[] split = response.split("-");
+                    Intent intentRegister = new Intent(getApplicationContext(), ProfileSettingBasic.class);
+                    intentRegister.putExtra("id", split[split.length -1]);
+                    startActivity(intentRegister);
+                    SignIn.this.finish();
+                }
+                else {
+                    TextView warning = (TextView) findViewById(R.id.view_signIn_login_fail);
+                    warning.setText(response);
+                    warning.setVisibility(View.VISIBLE);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            // Post request parameters
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String, String> hashMap = new HashMap<String, String>();
+                hashMap.put("username", username);
+                hashMap.put("password", password);
+                return hashMap;
+            }
+        };
+        // Put the request to the queue
+        requestQueue.add(request);
+    }
+
+    // **************************************************************
+    // Function: onClickSignInButton
+    // Description: HTTP request when "Sign In" button is clicked
+    // Parameter: /
+    // Return Type: /
+    //***************************************************************
+    private void onClickSignInButton() {
+        if (checkInput())
+            httpPostRequest();
     }
 
     // **************************************************************
@@ -131,7 +162,21 @@ public class SignIn extends AppCompatActivity {
     // Return Type: /
     //***************************************************************
     private void onClickSignUpButton() {
-        startActivity(new Intent(SignIn.this, SignUp.class));
+        Intent intent = new Intent(getApplicationContext(), SignUp.class);
+        startActivity(intent);
+        finish();
+    }
+
+    // **************************************************************
+    // Function: onClickForgotPasswordButton
+    // Description: Action when "Forgot Password" button is clicked (Direct to Forgot Password page)
+    // Parameter: /
+    // Return Type: /
+    //***************************************************************
+    private void onClickForgotPasswordButton() {
+        Intent intent = new Intent(getApplicationContext(), ForgotPassword.class);
+        startActivity(intent);
+        finish();
     }
 
 }
