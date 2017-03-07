@@ -33,18 +33,18 @@
                     android:scaleType="fitXY" />
 
                 <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/fab_profile_picture_edit"
                     android:layout_width="69dp"
                     android:layout_height="64dp"
-                    android:clickable="true"
-                    app:fabSize="normal"
-                    app:srcCompat="@android:drawable/ic_input_add"
-                    android:id="@+id/fb_profile_picture_edit"
-                    app:layout_anchor="@+id/image_profile_picture_edit"
-                    app:layout_anchorGravity="bottom|right"
                     android:layout_gravity="bottom|center_horizontal"
+                    android:clickable="true"
+                    android:tint="@android:color/white"
                     app:backgroundTint="?android:attr/textColorTertiary"
                     app:elevation="7dp"
-                    android:tint="@android:color/white" />
+                    app:fabSize="normal"
+                    app:layout_anchor="@+id/image_profile_picture_edit"
+                    app:layout_anchorGravity="bottom|right"
+                    app:srcCompat="@android:drawable/ic_input_add" />
 
             </android.support.design.widget.CoordinatorLayout>
 
@@ -52,18 +52,6 @@
                 android:layout_width="match_parent"
                 android:layout_weight="1"
                 android:layout_height="10dp" />
-
-            <TextView
-                android:text="@string/text_personal_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/view_profile_personal_des"
-                android:gravity="center_horizontal"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:textSize="@dimen/hint_text_size"
-                android:textColor="@android:color/background_dark"
-                android:textStyle="bold|italic" />
 
             <View
                 android:layout_width="match_parent"
@@ -88,27 +76,44 @@
 
                 <TableRow
                     android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <TextView
+                        android:id="@+id/view_profile_display_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:text="@string/text_display_name"
+                        android:textColor="@android:color/background_dark"
+                        android:textSize="@dimen/textView_title_size"
+                        android:textStyle="bold" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content" >
 
                     <TextView
-                        android:text="@string/text_display_name"
+                        android:id="@+id/view_profile_personal_des"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/view_profile_display_name"
-                        android:textSize="@dimen/textView_title_size"
-                        android:textColor="@android:color/background_dark"
+                        android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:gravity="center_horizontal"
-                        android:layout_gravity="center_vertical"
-                        android:textStyle="bold" />
-
+                        android:text="@string/text_personal_description"
+                        android:textColor="@android:color/background_dark"
+                        android:textSize="@dimen/hint_text_size"
+                        android:textStyle="bold|italic" />
                 </TableRow>
 
             </TableLayout>
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="10dp" />
+                android:layout_height="15dp" />
 
             <TableLayout
                 android:layout_width="match_parent"
