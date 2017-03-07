@@ -35,9 +35,9 @@ public class USTMap extends Fragment {
         });
 
         location = (TextView) view.findViewById(R.id.view_map_locaion_des);
-        WifiManager wifiMgr = (WifiManager) this.getContext().getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiMgr = (WifiManager) view.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         WifiInfo wifiInfo = wifiMgr.getConnectionInfo();
-        SSID = wifiInfo.getSSID();
+        SSID = wifiInfo.getBSSID();
         location.setText(SSID);
         return view;
     }
