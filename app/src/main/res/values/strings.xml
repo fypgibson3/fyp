@@ -8,7 +8,7 @@
     <string name="title_activity_profile_setting_basic">Profile Setup</string>
     <string name="title_activity_profile_setting_more">Profile Setup</string>
     <string name="title_activity_ustsocial_app_main">UST Social App</string>
-    <string name="title_activity_add_new_story">Create a New Story</string>
+    <string name="title_activity_add_new_story">Create a New Post</string>
     <string name="title_activity_add_new_vote">Create a New Vote</string>
     <string name="title_activity_create_individual_chat">Create Individual Chat</string>
     <string name="title_activity_create_group_chat">Create Group Chat</string>
@@ -54,7 +54,7 @@
     <string name="hint_display_name">Display Name</string>
     <string name="hint_personal_description">Hi...</string>
     <string name="hint_title">Title of your post</string>
-    <string name="hint_hashtags">Hashtags</string>
+    <string name="hint_hashtags">Hashtags (Optional)</string>
     <string name="hint_content">Content</string>
     <string name="hint_question">Question</string>
     <string name="hint_option">Option</string>
