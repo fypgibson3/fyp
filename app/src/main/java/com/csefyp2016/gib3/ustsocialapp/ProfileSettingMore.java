@@ -2,8 +2,11 @@ package com.csefyp2016.gib3.ustsocialapp;
 
 import android.Manifest;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -35,6 +38,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.HashMap;
@@ -74,6 +79,11 @@ public class ProfileSettingMore extends AppCompatActivity {
     private RequestQueue requestQueue;
     private StringRequest request_profileInfo;
     private StringRequest request_profileSwitch;
+
+    private static final String loginPreference = "LoginPreference";
+    private static final String profilePreference = "ProfilePreference";
+    private static final String imagePreference = "ImagePreference";
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -267,6 +277,26 @@ public class ProfileSettingMore extends AppCompatActivity {
         return stringImage;
     }
 
+    private String saveImageToInternalStorage(String id, Bitmap bitmap) {
+        ContextWrapper contextWrapper = new ContextWrapper(getApplicationContext());
+        File imageDirectory = contextWrapper.getDir(imagePreference, Context.MODE_PRIVATE);
+        File imageFile = new File(imageDirectory, id+".jpg");
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream(imageFile);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fileOutputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return imageFile.getAbsolutePath();
+    }
+
     // **************************************************************
     // Function: checkFilledEditText
     // Description: To check if an EditText field has input
@@ -327,8 +357,33 @@ public class ProfileSettingMore extends AppCompatActivity {
             // Response to request result
             public void onResponse(String response) {
                 if (response.contains("Success")) {
+                    String[] split = response.split(":");
+
+                    sharedPreferences = getSharedPreferences(loginPreference, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editorInfo = sharedPreferences.edit();
+                    editorInfo.putString("ID", id);
+                    boolean remember = sharedPreferences.getBoolean("REMEMBER", false);
+                    if (remember) {
+                        editorInfo.putString("USERNAME", split[1]);
+                        editorInfo.putString("PASSWORD", split[2]);
+                    }
+                    editorInfo.commit();
+
+                    sharedPreferences = getSharedPreferences(profilePreference, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editorProfile = sharedPreferences.edit();
+                    editorProfile.putString("DISPLAYNAME", displayName);
+                    editorProfile.putString("GENDER", gender);
+                    editorProfile.putString("BIRTHDATE", dateOfBirth);
+                    editorProfile.putString("COUNTRY", country);
+                    editorProfile.putString("STUDENTCATEGORY", studentCategory);
+                    editorProfile.putString("FACULTY", faculty);
+                    editorProfile.putString("MAJOR", major);
+                    editorProfile.putString("YEAROFSTUDY", yearOfStudy);
+                    editorProfile.putString("PERSONALDES", personalDes);
+                    editorProfile.putString("PROFILEPIC", saveImageToInternalStorage(id, profilePicture));
+                    editorProfile.commit();
+
                     profileSwitchSetup();
-                    System.out.println("Setup profile finished.");
                 }
                 else {
                     TextView warning = (TextView) findViewById(R.id.view_profileSettingMore_warning);
@@ -380,8 +435,18 @@ public class ProfileSettingMore extends AppCompatActivity {
             // Response to request result
             public void onResponse(String response) {
                 if (response.contains("Success")) {
+                    sharedPreferences = getSharedPreferences(profilePreference, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editorProfile = sharedPreferences.edit();
+                    editorProfile.putBoolean("GENDER_SHOW", genderShow);
+                    editorProfile.putBoolean("BIRTHDATE_SHOW", dateOfBirthShow);
+                    editorProfile.putBoolean("COUNTRY_SHOW", countryShow);
+                    editorProfile.putBoolean("STUDENTCATEGORY_SHOW", studentCategoryShow);
+                    editorProfile.putBoolean("FACULTY_SHOW", facultyShow);
+                    editorProfile.putBoolean("MAJOR_SHOW", majorShow);
+                    editorProfile.putBoolean("YEAROFSTUDY_SHOW", yearOfStudyShow);
+                    editorProfile.commit();
+
                     Intent intent = new Intent(getApplicationContext(), USTSocialAppMain.class);
-                    intent.putExtra("id", id);
                     startActivity(intent);
                     finish();
                 }

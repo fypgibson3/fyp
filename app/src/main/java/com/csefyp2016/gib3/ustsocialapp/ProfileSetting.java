@@ -1,6 +1,16 @@
 package com.csefyp2016.gib3.ustsocialapp;
 
+import android.Manifest;
+import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -8,10 +18,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import static android.app.Activity.RESULT_OK;
 
 
 public class ProfileSetting extends Fragment {
@@ -20,22 +42,68 @@ public class ProfileSetting extends Fragment {
     private Button editButton;
     private FloatingActionButton editProfilePicButton;
 
-    private static final String URL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/createNewAccount.php";
+    private static final int IMAGE_REQUEST_CODE = 1087;
+    private static final int GALLERY_PERMISSION_REQUEST_CODE = 7735;
+    private static final int CROP_IMAGE = 2364;
+    private Uri imageUri;
+    private Bitmap profilePicture;
+
+
+    private static final String URL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/";
     private RequestQueue requestQueue;
     private StringRequest request;
+
+    private static final String loginPreference = "LoginPreference";
+    private static final String profilePreference = "ProfilePreference";
+    private static final String imagePreference = "ImagePreference";
+    private SharedPreferences sharedPreferences;
+
+    private TextView displayName;
+    private TextView gender;
+    private TextView dateOfBirth;
+    private TextView country;
+    private TextView studentCategory;
+    private TextView faculty;
+    private TextView major;
+    private TextView yearOfStudy;
+    private TextView personalDes;
+    private ImageView profilePictureShow;
+
+    private String id;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile_setting, container, false);
 
+        displayName = (TextView) view.findViewById(R.id.view_profile_display_name);
+        gender = (TextView) view.findViewById(R.id.view_profile_gender);
+        dateOfBirth = (TextView) view.findViewById(R.id.view_profile_date_of_birth);
+        country = (TextView) view.findViewById(R.id.view_profile_country);
+        studentCategory = (TextView) view.findViewById(R.id.view_profile_student_category);
+        faculty = (TextView) view.findViewById(R.id.view_profile_faculty);
+        major = (TextView) view.findViewById(R.id.view_profile_major);
+        yearOfStudy = (TextView) view.findViewById(R.id.view_profile_year_of_study);
+        personalDes = (TextView) view.findViewById(R.id.view_profile_personal_des);
+        profilePictureShow = (ImageView) view.findViewById(R.id.image_profile_picture_edit);
+
         requestQueue = Volley.newRequestQueue(view.getContext());
+
+        sharedPreferences = getContext().getSharedPreferences(loginPreference, Context.MODE_PRIVATE);
+        id = sharedPreferences.getString("ID", "");
+
+        setProfileInfo();
 
         editProfilePicButton = (FloatingActionButton) view.findViewById(R.id.fab_profile_picture_edit);
         editProfilePicButton.setOnClickListener(new FloatingActionButton.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                if (view.getContext().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+                    openGallery();
+                else {
+                    String[] permissionRequest = {Manifest.permission.READ_EXTERNAL_STORAGE};
+                    requestPermissions(permissionRequest, GALLERY_PERMISSION_REQUEST_CODE);
+                }
             }
         });
 
@@ -68,11 +136,135 @@ public class ProfileSetting extends Fragment {
         return view;
     }
 
-    private void setProfileInfo() {
-
+    private Bitmap loadProfilePicture(String imagePath) {
+        try {
+            File imageFile = new File(imagePath);
+            Bitmap image = BitmapFactory.decodeStream(new FileInputStream(imageFile));
+            return image;
+        } catch (FileNotFoundException ex) {
+            System.out.println("Image not found.");
+            return null;
+        }
     }
 
-       private void httpPostRequest() {
+    private String saveImageToInternalStorage(Bitmap bitmap) {
+        ContextWrapper contextWrapper = new ContextWrapper(getActivity().getApplicationContext());
+        File imageDirectory = contextWrapper.getDir(imagePreference, Context.MODE_PRIVATE);
+        File imageFile = new File(imageDirectory, id+".jpg");
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream(imageFile);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fileOutputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return imageFile.getName();
+    }
 
+    private void setProfileInfo() {
+        String imagePath = "";
+
+        sharedPreferences = getContext().getSharedPreferences(profilePreference, Context.MODE_PRIVATE);
+        if (sharedPreferences.getString("DISPLAYNAME", null) != null) {
+            displayName.setText(sharedPreferences.getString("DISPLAYNAME", ""));
+            gender.setText(sharedPreferences.getString("GENDER", ""));
+            dateOfBirth.setText(sharedPreferences.getString("BIRTHDATE", ""));
+            country.setText(sharedPreferences.getString("COUNTRY", ""));
+            studentCategory.setText(sharedPreferences.getString("STUDENTCATEGORY", ""));
+            faculty.setText(sharedPreferences.getString("FACULTY", ""));
+            major.setText(sharedPreferences.getString("MAJOR", ""));
+            yearOfStudy.setText(sharedPreferences.getString("YEAROFSTUDY", ""));
+            personalDes.setText(sharedPreferences.getString("PERSONALDES", ""));
+            imagePath = sharedPreferences.getString("PROFILEPIC", null);
+
+            if (imagePath != null) {
+                profilePictureShow.setImageBitmap(loadProfilePicture(imagePath));
+            }
+            //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+            else {
+                System.out.println("Fail to load profile picture from internal storage");
+            }
+            //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+        }
+    }
+
+    // **************************************************************
+    // Function: openGallery
+    // Description: To open the gallery which can select images
+    // Parameter: /
+    // Return: /
+    // **************************************************************
+    private void openGallery() {
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        File pictureDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        String pictureDirectoryPath = pictureDirectory.getPath();
+        Uri data = Uri.parse(pictureDirectoryPath);
+        photoPickerIntent.setDataAndType(data, "image/*");
+        getActivity().startActivityForResult(photoPickerIntent, IMAGE_REQUEST_CODE);
+    }
+
+    // **************************************************************
+    // Function: onActivityResult
+    // Description: To get result form the previously requested activity
+    // Parameter: int, int, Intent
+    // Return: /
+    // **************************************************************
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == IMAGE_REQUEST_CODE) {
+                imageUri = data.getData();
+                InputStream inputStream;
+                cropImage();
+            }
+            else if (requestCode == CROP_IMAGE) {
+                //get the returned data
+                Bundle extras = data.getExtras();
+                //get the cropped bitmap
+                profilePicture = extras.getParcelable("data");
+                sharedPreferences = getContext().getSharedPreferences(profilePreference, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("PROFILEPIC", saveImageToInternalStorage(profilePicture));
+                profilePictureShow.setImageBitmap(profilePicture);
+            }
+        }
+    }
+
+    // **************************************************************
+    // Function: cropImage
+    // Description: To crop image to 200x200 px
+    // Parameter: /
+    // Return: /
+    // **************************************************************
+    private void cropImage() {
+        try {
+            //call the standard crop action intent (the user device may not support it)
+            Intent cropIntent = new Intent("com.android.camera.action.CROP");
+            //indicate image type and Uri
+            cropIntent.setDataAndType(imageUri, "image/*");
+            //set crop properties
+            cropIntent.putExtra("crop", "true");
+            //indicate aspect of desired crop
+            cropIntent.putExtra("aspectX", 1);
+            cropIntent.putExtra("aspectY", 1);
+            //indicate output X and Y
+            cropIntent.putExtra("outputX", 220);
+            cropIntent.putExtra("outputY", 220);
+            //retrieve data on return
+            cropIntent.putExtra("return-data", true);
+            //start the activity - we handle returning in onActivityResult
+            startActivityForResult(cropIntent, CROP_IMAGE);
+        }
+        catch(ActivityNotFoundException anfe){
+            //display an error message
+            String errorMessage = "Whoops - your device doesn't support the crop action!";
+            Toast toast = Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT);
+            toast.show();
+        }
     }
 }
