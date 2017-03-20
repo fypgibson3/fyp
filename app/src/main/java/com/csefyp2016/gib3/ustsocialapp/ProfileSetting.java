@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
+import android.support.annotation.BoolRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -69,6 +70,14 @@ public class ProfileSetting extends Fragment {
     private TextView personalDes;
     private ImageView profilePictureShow;
 
+    private Boolean genderShow;
+    private Boolean dateOfBirthShow;
+    private Boolean countryShow;
+    private Boolean studentCategoryShow;
+    private Boolean facultyShow;
+    private Boolean majorShow;
+    private Boolean yearOfStudyShow;
+
     private String id;
 
     @Override
@@ -92,7 +101,8 @@ public class ProfileSetting extends Fragment {
         sharedPreferences = getContext().getSharedPreferences(loginPreference, Context.MODE_PRIVATE);
         id = sharedPreferences.getString("ID", "");
 
-        setProfileInfo();
+        getProfileInfo();
+        getProfileSwitch();
 
         editProfilePicButton = (FloatingActionButton) view.findViewById(R.id.fab_profile_picture_edit);
         editProfilePicButton.setOnClickListener(new FloatingActionButton.OnClickListener() {
@@ -111,7 +121,8 @@ public class ProfileSetting extends Fragment {
         editButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intentEdit = new Intent(getActivity(), EditProfile.class);
+                startActivity(intentEdit);
             }
         });
 
@@ -147,14 +158,14 @@ public class ProfileSetting extends Fragment {
         }
     }
 
-    private String saveImageToInternalStorage(Bitmap bitmap) {
-        ContextWrapper contextWrapper = new ContextWrapper(getActivity().getApplicationContext());
+    private String saveImageToInternalStorage(String id, Bitmap bitmap) {
+        ContextWrapper contextWrapper = new ContextWrapper(getContext());
         File imageDirectory = contextWrapper.getDir(imagePreference, Context.MODE_PRIVATE);
         File imageFile = new File(imageDirectory, id+".jpg");
         FileOutputStream fileOutputStream = null;
         try {
             fileOutputStream = new FileOutputStream(imageFile);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } finally {
@@ -164,10 +175,10 @@ public class ProfileSetting extends Fragment {
                 e.printStackTrace();
             }
         }
-        return imageFile.getName();
+        return imageFile.getAbsolutePath();
     }
 
-    private void setProfileInfo() {
+    private void getProfileInfo() {
         String imagePath = "";
 
         sharedPreferences = getContext().getSharedPreferences(profilePreference, Context.MODE_PRIVATE);
@@ -191,6 +202,21 @@ public class ProfileSetting extends Fragment {
                 System.out.println("Fail to load profile picture from internal storage");
             }
             //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+        }
+    }
+
+    private void getProfileSwitch() {
+        sharedPreferences = getContext().getSharedPreferences(profilePreference, Context.MODE_PRIVATE);
+        if (sharedPreferences.contains("GENDER_SHOW") && sharedPreferences.contains("BIRTHDATE_SHOW") && sharedPreferences.contains("COUNTRY_SHOW")
+                && sharedPreferences.contains("STUDENTCATEGORY_SHOW") && sharedPreferences.contains("FACULTY_SHOW") && sharedPreferences.contains("MAJOR_SHOW")
+                && sharedPreferences.contains("YEAROFSTUDY_SHOW")) {
+            genderShow = sharedPreferences.getBoolean("GENDER_SHOW", true);
+            dateOfBirthShow = sharedPreferences.getBoolean("BIRTHDATE_SHOW", true);
+            countryShow = sharedPreferences.getBoolean("COUNTRY_SHOW", true);
+            studentCategoryShow = sharedPreferences.getBoolean("STUDENTCATEGORY_SHOW", true);
+            facultyShow = sharedPreferences.getBoolean("FACULTY_SHOW", true);
+            majorShow = sharedPreferences.getBoolean("MAJOR_SHOW", true);
+            yearOfStudyShow = sharedPreferences.getBoolean("YEAROFSTUDY_SHOW", true);
         }
     }
 
@@ -227,10 +253,12 @@ public class ProfileSetting extends Fragment {
                 Bundle extras = data.getExtras();
                 //get the cropped bitmap
                 profilePicture = extras.getParcelable("data");
+                profilePictureShow.setImageBitmap(profilePicture);
+
                 sharedPreferences = getContext().getSharedPreferences(profilePreference, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("PROFILEPIC", saveImageToInternalStorage(profilePicture));
-                profilePictureShow.setImageBitmap(profilePicture);
+                editor.putString("PROFILEPIC", saveImageToInternalStorage(id, profilePicture));
+                editor.commit();
             }
         }
     }
