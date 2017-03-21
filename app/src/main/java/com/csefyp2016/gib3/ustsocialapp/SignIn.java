@@ -63,7 +63,7 @@ public class SignIn extends AppCompatActivity {
         username = sharedPreferences.getString("USERNAME", "");
         password = sharedPreferences.getString("PASSWORD", "");
 
-        if (username == "" || password == "") {
+        if (username.equals("") || password.equals("")) {
             Button signInButton = (Button) findViewById(R.id.b_signIn_sign_in);
             Button signUpButton = (Button) findViewById(R.id.b_signIn_sign_up);
             final Button forgotPswdButton = (Button) findViewById(R.id.b_signIn_forgot_password);
@@ -259,37 +259,37 @@ public class SignIn extends AppCompatActivity {
                         sharedPreferences = getSharedPreferences(profilePreference, Context.MODE_PRIVATE);
                         SharedPreferences.Editor profileEditor = sharedPreferences.edit();
 
-                        if (profileContent[0] == "0")
+                        if (profileContent[0].equals("0"))
                             profileEditor.putBoolean("GENDER_SHOW", false);
                         else
                             profileEditor.putBoolean("GENDER_SHOW", true);
 
-                        if (profileContent[1] == "0")
+                        if (profileContent[1].equals("0"))
                             profileEditor.putBoolean("BIRTHDATE_SHOW", false);
                         else
                             profileEditor.putBoolean("BIRTHDATE_SHOW", true);
 
-                        if (profileContent[2] == "0")
+                        if (profileContent[2].equals("0"))
                             profileEditor.putBoolean("COUNTRY_SHOW", false);
                         else
                             profileEditor.putBoolean("COUNTRY_SHOW", true);
 
-                        if (profileContent[3] == "0")
+                        if (profileContent[3].equals("0"))
                             profileEditor.putBoolean("STUDENTCATEGORY_SHOW", false);
                         else
                             profileEditor.putBoolean("STUDENTCATEGORY_SHOW", true);
 
-                        if (profileContent[4] == "0")
+                        if (profileContent[4].equals("0"))
                             profileEditor.putBoolean("FACULTY_SHOW", false);
                         else
                             profileEditor.putBoolean("FACULTY_SHOW", true);
 
-                        if (profileContent[5] == "0")
+                        if (profileContent[5].equals("0"))
                             profileEditor.putBoolean("MAJOR_SHOW", false);
                         else
                             profileEditor.putBoolean("MAJOR_SHOW", true);
 
-                        if (profileContent[6] == "0")
+                        if (profileContent[6].equals("0"))
                             profileEditor.putBoolean("YEAROFSTUDY_SHOW", false);
                         else
                             profileEditor.putBoolean("YEAROFSTUDY_SHOW", true);

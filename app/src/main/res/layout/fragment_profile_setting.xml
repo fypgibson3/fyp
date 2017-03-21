@@ -162,7 +162,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:id="@+id/view_profile_country"
-                        android:layout_weight="1.0"
+                        android:layout_weight="1"
                         android:textColor="@android:color/background_dark"
                         android:textSize="@dimen/hint_text_size"
                         android:gravity="center_horizontal"
@@ -180,7 +180,7 @@
                         android:id="@+id/view_profile_student_category"
                         android:gravity="center_horizontal"
                         android:layout_gravity="center_vertical"
-                        android:layout_weight="1.0"
+                        android:layout_weight="1"
                         android:textSize="@dimen/hint_text_size"
                         android:textColor="@android:color/background_dark" />
                 </TableRow>
@@ -196,7 +196,7 @@
                         android:id="@+id/view_profile_faculty"
                         android:gravity="center_horizontal"
                         android:layout_gravity="center_vertical"
-                        android:layout_weight="1.0"
+                        android:layout_weight="1"
                         android:textSize="@dimen/hint_text_size"
                         android:textColor="@android:color/background_dark" />
 
@@ -212,7 +212,7 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/view_profile_major"
                         android:gravity="center_horizontal"
-                        android:layout_weight="1.0"
+                        android:layout_weight="1"
                         android:layout_gravity="center_vertical"
                         android:textSize="@dimen/hint_text_size"
                         android:textColor="@android:color/background_dark" />
@@ -229,7 +229,7 @@
                         android:id="@+id/view_profile_year_of_study"
                         android:gravity="center_horizontal"
                         android:layout_gravity="center_vertical"
-                        android:layout_weight="1.0"
+                        android:layout_weight="1"
                         android:textColor="@android:color/background_dark"
                         android:textSize="@dimen/hint_text_size" />
                 </TableRow>

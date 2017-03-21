@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +44,7 @@ public class ProfileSetting extends Fragment {
     private Button editButton;
     private FloatingActionButton editProfilePicButton;
 
+    private static final int EDIT_PROFILE_FINISH_CODE = 4414;
     private static final int IMAGE_REQUEST_CODE = 1087;
     private static final int GALLERY_PERMISSION_REQUEST_CODE = 7735;
     private static final int CROP_IMAGE = 2364;
@@ -122,7 +124,7 @@ public class ProfileSetting extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intentEdit = new Intent(getActivity(), EditProfile.class);
-                startActivity(intentEdit);
+                startActivityForResult(intentEdit, EDIT_PROFILE_FINISH_CODE);
             }
         });
 
@@ -184,13 +186,40 @@ public class ProfileSetting extends Fragment {
         sharedPreferences = getContext().getSharedPreferences(profilePreference, Context.MODE_PRIVATE);
         if (sharedPreferences.getString("DISPLAYNAME", null) != null) {
             displayName.setText(sharedPreferences.getString("DISPLAYNAME", ""));
-            gender.setText(sharedPreferences.getString("GENDER", ""));
+
+            if (sharedPreferences.getString("GENDER", null).equals("M"))
+                gender.setText("Male");
+            else if (sharedPreferences.getString("GENDER", null).equals("F"))
+                gender.setText("Female");
+
             dateOfBirth.setText(sharedPreferences.getString("BIRTHDATE", ""));
             country.setText(sharedPreferences.getString("COUNTRY", ""));
-            studentCategory.setText(sharedPreferences.getString("STUDENTCATEGORY", ""));
-            faculty.setText(sharedPreferences.getString("FACULTY", ""));
+
+            if (sharedPreferences.getString("STUDENTCATEGORY", null).equals("local"))
+                studentCategory.setText("Local Student");
+            else if (sharedPreferences.getString("STUDENTCATEGORY", null).equals("mainland"))
+                studentCategory.setText("Mainland Student");
+            else if (sharedPreferences.getString("STUDENTCATEGORY", null).equals("international"))
+                studentCategory.setText("International Student");
+
+            if (sharedPreferences.getString("FACULTY", null).equals("SBM"))
+                faculty.setText("School of Business and Management");
+            else if (sharedPreferences.getString("FACULTY", null).equals("SSCI"))
+                faculty.setText("School of Science");
+            else if (sharedPreferences.getString("FACULTY", null).equals("SENG"))
+                faculty.setText("School of Engineering");
+            else if (sharedPreferences.getString("FACULTY", null).equals("SHSS"))
+                faculty.setText("School of Humanities and Social Science");
+            else if (sharedPreferences.getString("FACULTY", null).equals("IPO"))
+                faculty.setText("Interdisciplinary Programs Office");
+
             major.setText(sharedPreferences.getString("MAJOR", ""));
-            yearOfStudy.setText(sharedPreferences.getString("YEAROFSTUDY", ""));
+
+            if (sharedPreferences.getString("YEAROFSTUDY", null).equals("6"))
+                yearOfStudy.setText("Year 6 or more");
+            else
+                yearOfStudy.setText("Year " + sharedPreferences.getString("YEAROFSTUDY", ""));
+
             personalDes.setText(sharedPreferences.getString("PERSONALDES", ""));
             imagePath = sharedPreferences.getString("PROFILEPIC", null);
 
@@ -259,6 +288,11 @@ public class ProfileSetting extends Fragment {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("PROFILEPIC", saveImageToInternalStorage(id, profilePicture));
                 editor.commit();
+            }
+            else if (requestCode == EDIT_PROFILE_FINISH_CODE) {
+                System.out.println("Return from EditProfile.");
+                getProfileInfo();
+                getProfileSwitch();
             }
         }
     }
