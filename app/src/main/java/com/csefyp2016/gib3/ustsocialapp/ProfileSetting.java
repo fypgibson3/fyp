@@ -15,6 +15,7 @@ import android.support.annotation.BoolRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,16 +25,23 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -52,7 +60,7 @@ public class ProfileSetting extends Fragment {
     private Bitmap profilePicture;
 
 
-    private static final String URL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/";
+    private static final String updateProfilePicURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/profilePicUpdate.php";
     private RequestQueue requestQueue;
     private StringRequest request;
 
@@ -115,6 +123,7 @@ public class ProfileSetting extends Fragment {
                 else {
                     String[] permissionRequest = {Manifest.permission.READ_EXTERNAL_STORAGE};
                     requestPermissions(permissionRequest, GALLERY_PERMISSION_REQUEST_CODE);
+                    openGallery();
                 }
             }
         });
@@ -158,6 +167,21 @@ public class ProfileSetting extends Fragment {
             System.out.println("Image not found.");
             return null;
         }
+    }
+
+    // **************************************************************
+    // Function: getStringImage
+    // Description: To prepare the profile picture for server upload
+    // Parameter: Bitmap
+    // Return Type: String
+    //***************************************************************
+    private String getStringImage(Bitmap bitmap) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+        byte[] imageByte = outputStream.toByteArray();
+        String stringImage = Base64.encodeToString(imageByte, Base64.DEFAULT);
+
+        return stringImage;
     }
 
     private String saveImageToInternalStorage(String id, Bitmap bitmap) {
@@ -261,40 +285,7 @@ public class ProfileSetting extends Fragment {
         String pictureDirectoryPath = pictureDirectory.getPath();
         Uri data = Uri.parse(pictureDirectoryPath);
         photoPickerIntent.setDataAndType(data, "image/*");
-        getActivity().startActivityForResult(photoPickerIntent, IMAGE_REQUEST_CODE);
-    }
-
-    // **************************************************************
-    // Function: onActivityResult
-    // Description: To get result form the previously requested activity
-    // Parameter: int, int, Intent
-    // Return: /
-    // **************************************************************
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            if (requestCode == IMAGE_REQUEST_CODE) {
-                imageUri = data.getData();
-                InputStream inputStream;
-                cropImage();
-            }
-            else if (requestCode == CROP_IMAGE) {
-                //get the returned data
-                Bundle extras = data.getExtras();
-                //get the cropped bitmap
-                profilePicture = extras.getParcelable("data");
-                profilePictureShow.setImageBitmap(profilePicture);
-
-                sharedPreferences = getContext().getSharedPreferences(profilePreference, Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("PROFILEPIC", saveImageToInternalStorage(id, profilePicture));
-                editor.commit();
-            }
-            else if (requestCode == EDIT_PROFILE_FINISH_CODE) {
-                System.out.println("Return from EditProfile.");
-                getProfileInfo();
-                getProfileSwitch();
-            }
-        }
+        startActivityForResult(photoPickerIntent, IMAGE_REQUEST_CODE);
     }
 
     // **************************************************************
@@ -328,5 +319,76 @@ public class ProfileSetting extends Fragment {
             Toast toast = Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT);
             toast.show();
         }
+    }
+
+    // **************************************************************
+    // Function: onActivityResult
+    // Description: To get result form the previously requested activity
+    // Parameter: int, int, Intent
+    // Return: /
+    // **************************************************************
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == IMAGE_REQUEST_CODE) {
+                imageUri = data.getData();
+                cropImage();
+            }
+            else if (requestCode == CROP_IMAGE) {
+                //get the returned data
+                Bundle extras = data.getExtras();
+                //get the cropped bitmap
+                profilePicture = extras.getParcelable("data");
+                profilePictureShow.setImageBitmap(profilePicture);
+
+                sharedPreferences = getContext().getSharedPreferences(profilePreference, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("PROFILEPIC", saveImageToInternalStorage(id, profilePicture));
+                editor.commit();
+
+                updateProfilePicHttpPost();
+            }
+            else if (requestCode == EDIT_PROFILE_FINISH_CODE) {
+                getProfileInfo();
+                getProfileSwitch();
+            }
+        }
+    }
+
+    private void updateProfilePicHttpPost() {
+        request = new StringRequest(Request.Method.POST, updateProfilePicURL, new Response.Listener<String>() {
+
+            @Override
+            // Response to request result
+            public void onResponse(String response) {
+                if (response.contains("Success")) {
+                    sharedPreferences = getContext().getSharedPreferences(profilePreference, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editorProfile = sharedPreferences.edit();
+                    editorProfile.putString("PROFILEPIC", saveImageToInternalStorage(id, profilePicture));
+                    editorProfile.commit();
+                }
+                else {
+                    Toast toast = Toast.makeText(getContext(), response, Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            // Post request parameters
+            protected Map<String, String> getParams() throws AuthFailureError {
+                String image = getStringImage(profilePicture);
+
+                HashMap<String, String> hashMap = new HashMap<String, String>();
+                hashMap.put("id", id);
+                hashMap.put("profilePic", image);
+                return hashMap;
+            }
+        };
+        // Put the request to the queue
+        requestQueue.add(request);
     }
 }

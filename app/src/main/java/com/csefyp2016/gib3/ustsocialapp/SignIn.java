@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SignIn extends AppCompatActivity {
+    private String id;
     private String username;
     private String password;
     private Boolean remember = false;
@@ -144,9 +145,6 @@ public class SignIn extends AppCompatActivity {
     }
 
     private void setSimpleProfileSharedPreference() {
-        sharedPreferences = getSharedPreferences(loginPreference, Context.MODE_PRIVATE);
-        final String id = sharedPreferences.getString("ID", "");
-
         request = new StringRequest(Request.Method.POST, profileURL, new Response.Listener<String>() {
 
             @Override
@@ -198,9 +196,6 @@ public class SignIn extends AppCompatActivity {
     }
 
     private void setPersonalDescriptionSharedPreference() {
-        sharedPreferences = getSharedPreferences(loginPreference, Context.MODE_PRIVATE);
-        final String id = sharedPreferences.getString("ID", "");
-
         request = new StringRequest(Request.Method.POST, profileURL, new Response.Listener<String>() {
 
             @Override
@@ -245,9 +240,6 @@ public class SignIn extends AppCompatActivity {
     }
 
     private void setSwitchSharedPreference() {
-        sharedPreferences = getSharedPreferences(loginPreference, Context.MODE_PRIVATE);
-        final String id = sharedPreferences.getString("ID", "");
-
         request = new StringRequest(Request.Method.POST, switchURL, new Response.Listener<String>() {
 
             @Override
@@ -326,9 +318,6 @@ public class SignIn extends AppCompatActivity {
     }
 
     private void setProfilePicSharedPreference() {
-        sharedPreferences = getSharedPreferences(loginPreference, Context.MODE_PRIVATE);
-        final String id = sharedPreferences.getString("ID", "");
-
         request = new StringRequest(Request.Method.POST, profilePicURL, new Response.Listener<String>() {
 
             @Override
@@ -383,7 +372,7 @@ public class SignIn extends AppCompatActivity {
             public void onResponse(String response) {
                 if (response.contains("Success")) {
                     String[] split = response.split("-");
-
+                    id = split[split.length-1];
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("ID", split[split.length-1]);
                     if (remember) {

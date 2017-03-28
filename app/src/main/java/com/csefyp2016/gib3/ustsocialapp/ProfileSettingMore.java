@@ -134,6 +134,7 @@ public class ProfileSettingMore extends AppCompatActivity {
                 else {
                     String[] permissionRequest = {Manifest.permission.READ_EXTERNAL_STORAGE};
                     requestPermissions(permissionRequest, GALLERY_PERMISSION_REQUEST_CODE);
+                    openGallery();
                 }
             }
         });
