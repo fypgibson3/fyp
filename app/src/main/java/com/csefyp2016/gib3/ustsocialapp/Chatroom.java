@@ -23,6 +23,8 @@ import com.android.volley.toolbox.Volley;
 import java.util.HashMap;
 import java.util.Map;
 
+import static android.app.Activity.RESULT_OK;
+
 
 public class Chatroom extends Fragment {
     private FloatingActionButton addChat;
@@ -30,6 +32,9 @@ public class Chatroom extends Fragment {
     private String id;
     private String fdIdList;
     private String fdDisplayNameList;
+
+    private static final int INDIVIDUAL_CHAT = 510384;
+    private static final int GROUP_CHAT = 670662;
 
     private static final String getFdIdListURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getFriendIdList.php";
     private static final String getFdDisplayNameListURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getFriendDisplayNameList.php";
@@ -66,7 +71,7 @@ public class Chatroom extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         if (which == 0) {
                             Intent intentIndividual = new Intent(getActivity(), CreateIndividualChat.class);
-                            startActivity(intentIndividual);
+                            startActivityForResult(intentIndividual, INDIVIDUAL_CHAT);
                         }
                         else {
                             Intent intentGroup = new Intent(getActivity(), CreateGroupChat.class);
@@ -79,6 +84,17 @@ public class Chatroom extends Fragment {
         });
 
         return view;
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == INDIVIDUAL_CHAT) {
+
+            }
+            else if (requestCode == GROUP_CHAT) {
+
+            }
+        }
     }
 
     private void getFriendIdList() {
