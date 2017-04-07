@@ -13,14 +13,19 @@
     tools:context="com.csefyp2016.gib3.ustsocialapp.CreateIndividualChat"
     tools:showIn="@layout/activity_create_individual_chat">
 
-    <ScrollView
+    <TextView
+        android:id="@+id/view_createIndividualChat_warning"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:text="You have not met any friends yet! \n'Add new friends to begin new chats!"
+        android:textColor="@android:color/background_dark"
+        android:textSize="@dimen/textView_description_size"
+        android:gravity="center"
+        android:visibility="gone"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/f_createIndividualChat_list" />
-    </ScrollView>
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></ListView>
+
 </RelativeLayout>

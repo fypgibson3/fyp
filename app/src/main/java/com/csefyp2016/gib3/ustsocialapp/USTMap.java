@@ -12,10 +12,15 @@ import android.net.wifi.WifiManager;
 import android.widget.TextView;
 import android.content.Context;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
 
 public class USTMap extends Fragment {
 
     private String SSID;
+    private int IP;
 
     private TextView location;
     private Button instantChatroom;

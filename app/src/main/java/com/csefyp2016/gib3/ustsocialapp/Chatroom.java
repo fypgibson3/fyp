@@ -1,7 +1,9 @@
 package com.csefyp2016.gib3.ustsocialapp;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -10,20 +12,56 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static android.app.Activity.RESULT_OK;
+
 
 public class Chatroom extends Fragment {
     private FloatingActionButton addChat;
+
+    private String id;
+    private String fdIdList;
+    private String fdDisplayNameList;
+
+    private static final int INDIVIDUAL_CHAT = 510384;
+    private static final int GROUP_CHAT = 670662;
+
+    private static final String getFdIdListURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getFriendIdList.php";
+    private static final String getFdDisplayNameListURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getFriendDisplayNameList.php";
+    private RequestQueue requestQueue;
+    private StringRequest request;
+
+    private static final String loginPreference = "LoginPreference";
+    private static final String friendListPreference = "FriendList";
+    private SharedPreferences sharedPreference;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chatroom, container, false);
 
+        sharedPreference = view.getContext().getSharedPreferences(loginPreference, Context.MODE_PRIVATE);
+        id = sharedPreference.getString("ID", null);
+
+        requestQueue = Volley.newRequestQueue(view.getContext());
+
         addChat = (FloatingActionButton) view.findViewById(R.id.fab_chatroom_add_chat);
         addChat.setOnClickListener(new FloatingActionButton.OnClickListener() {
 
             @Override
             public void onClick(View view) {
+                getFriendIdList();
+
                 CharSequence options[] = new CharSequence[] {"Create an Individual Chat", "Create a Group Chat"};
 
                 AlertDialog.Builder createChat = new AlertDialog.Builder(getActivity());
@@ -33,7 +71,7 @@ public class Chatroom extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         if (which == 0) {
                             Intent intentIndividual = new Intent(getActivity(), CreateIndividualChat.class);
-                            startActivity(intentIndividual);
+                            startActivityForResult(intentIndividual, INDIVIDUAL_CHAT);
                         }
                         else {
                             Intent intentGroup = new Intent(getActivity(), CreateGroupChat.class);
@@ -46,5 +84,105 @@ public class Chatroom extends Fragment {
         });
 
         return view;
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == INDIVIDUAL_CHAT) {
+
+            }
+            else if (requestCode == GROUP_CHAT) {
+
+            }
+        }
+    }
+
+    private void getFriendIdList() {
+        request = new StringRequest(Request.Method.POST, getFdIdListURL, new Response.Listener<String>() {
+
+            @Override
+            // Response to request result
+            public void onResponse(String response) {
+                if (response.contains("Success")) {
+
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                    System.out.println(response);
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+
+                    String fdList = response.split(":")[1];
+                    fdIdList = fdList;
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                    System.out.println(fdList);
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+
+                    sharedPreference = getContext().getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor fdIdListEditor = sharedPreference.edit();
+                    fdIdListEditor.putString("FDLIST_ID", fdList);
+                    fdIdListEditor.commit();
+
+                    getFriendDisplayNameList();
+                }
+                else {
+                    sharedPreference = getContext().getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreference.edit();
+                    editor.putString("FDLIST_ID", null);
+                    editor.putString("FDLIST_DISPLAYNAME", null);
+                    editor.commit();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            // Post request parameters
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String, String> hashMap = new HashMap<String, String>();
+                hashMap.put("id", id);
+                return hashMap;
+            }
+        };
+        // Put the request to the queue
+        requestQueue.add(request);
+    }
+
+    private void getFriendDisplayNameList() {
+        request = new StringRequest(Request.Method.POST, getFdDisplayNameListURL, new Response.Listener<String>() {
+
+            @Override
+            // Response to request result
+            public void onResponse(String response) {
+                if (response.contains("Success")) {
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                    System.out.println(response);
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+
+                    String fdList = response.split(":")[1];
+                    fdDisplayNameList = fdList;
+
+                    sharedPreference = getContext().getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor fdNameListEditor = sharedPreference.edit();
+                    fdNameListEditor.putString("FDLIST_DISPLAYNAME", fdList);
+                    fdNameListEditor.commit();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            // Post request parameters
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String, String> hashMap = new HashMap<String, String>();
+                hashMap.put("list", fdIdList);
+                return hashMap;
+            }
+        };
+        // Put the request to the queue
+        requestQueue.add(request);
     }
 }

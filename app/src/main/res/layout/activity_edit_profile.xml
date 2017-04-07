@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context="com.csefyp2016.gib3.ustsocialapp.CreateIndividualChat">
+    tools:context="com.csefyp2016.gib3.ustsocialapp.EditProfile">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -13,16 +12,15 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar_createIndividualChat"
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@android:color/holo_blue_light"
             app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:title="@string/title_activity_create_individual_chat"
-            app:titleTextColor="@android:color/white" />
+            app:title="@string/title_activity_edit_profile" />
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_create_individual_chat" />
+    <include layout="@layout/content_edit_profile" />
 
 </android.support.design.widget.CoordinatorLayout>
