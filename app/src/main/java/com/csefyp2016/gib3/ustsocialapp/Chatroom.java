@@ -25,7 +25,6 @@ import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
 
-
 public class Chatroom extends Fragment {
     private FloatingActionButton addChat;
 

@@ -11,7 +11,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
-import android.support.annotation.BoolRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -21,7 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Switch;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,12 +60,15 @@ public class ProfileSetting extends Fragment {
 
 
     private static final String updateProfilePicURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/profilePicUpdate.php";
+    private static final String getFdIdListURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getFriendIdList.php";
+    private static final String getFdDisplayNameListURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getFriendDisplayNameList.php";
     private RequestQueue requestQueue;
     private StringRequest request;
 
     private static final String loginPreference = "LoginPreference";
     private static final String profilePreference = "ProfilePreference";
     private static final String imagePreference = "ImagePreference";
+    private static final String friendListPreference = "FriendList";
     private SharedPreferences sharedPreferences;
 
     private TextView displayName;
@@ -89,6 +91,10 @@ public class ProfileSetting extends Fragment {
     private Boolean yearOfStudyShow;
 
     private String id;
+    private String fdIdList;
+    private String fdDisplayNameList;
+
+    private ListView listView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -113,6 +119,7 @@ public class ProfileSetting extends Fragment {
 
         getProfileInfo();
         getProfileSwitch();
+        getFriendIdList();
 
         editProfilePicButton = (FloatingActionButton) view.findViewById(R.id.fab_profile_picture_edit);
         editProfilePicButton.setOnClickListener(new FloatingActionButton.OnClickListener() {
@@ -339,11 +346,9 @@ public class ProfileSetting extends Fragment {
                 //get the cropped bitmap
                 profilePicture = extras.getParcelable("data");
                 profilePictureShow.setImageBitmap(profilePicture);
-
-                sharedPreferences = getContext().getSharedPreferences(profilePreference, Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("PROFILEPIC", saveImageToInternalStorage(id, profilePicture));
-                editor.commit();
+                //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                System.out.println("CROP IMAGE finished.");
+                //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
 
                 updateProfilePicHttpPost();
             }
@@ -381,10 +386,104 @@ public class ProfileSetting extends Fragment {
             // Post request parameters
             protected Map<String, String> getParams() throws AuthFailureError {
                 String image = getStringImage(profilePicture);
-
+                //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                System.out.println(image);
+                //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
                 HashMap<String, String> hashMap = new HashMap<String, String>();
                 hashMap.put("id", id);
                 hashMap.put("profilePic", image);
+                return hashMap;
+            }
+        };
+        // Put the request to the queue
+        requestQueue.add(request);
+    }
+
+    private void getFriendIdList() {
+        request = new StringRequest(Request.Method.POST, getFdIdListURL, new Response.Listener<String>() {
+
+            @Override
+            // Response to request result
+            public void onResponse(String response) {
+                if (response.contains("Success")) {
+
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                    System.out.println(response);
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+
+                    String fdList = response.split(":")[1];
+                    fdIdList = fdList;
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                    System.out.println(fdList);
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+
+                    sharedPreferences = getContext().getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor fdIdListEditor = sharedPreferences.edit();
+                    fdIdListEditor.putString("FDLIST_ID", fdList);
+                    fdIdListEditor.commit();
+
+                    getFriendDisplayNameList();
+                }
+                else {
+                    sharedPreferences = getContext().getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("FDLIST_ID", null);
+                    editor.putString("FDLIST_DISPLAYNAME", null);
+                    editor.commit();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            // Post request parameters
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String, String> hashMap = new HashMap<String, String>();
+                hashMap.put("id", id);
+                return hashMap;
+            }
+        };
+        // Put the request to the queue
+        requestQueue.add(request);
+    }
+
+    private void getFriendDisplayNameList() {
+        request = new StringRequest(Request.Method.POST, getFdDisplayNameListURL, new Response.Listener<String>() {
+
+            @Override
+            // Response to request result
+            public void onResponse(String response) {
+                if (response.contains("Success")) {
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                    System.out.println(response);
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+
+                    String fdList = response.split(":")[1];
+                    fdDisplayNameList = fdList;
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                    System.out.println(fdList);
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+
+                    sharedPreferences = getContext().getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor fdNameListEditor = sharedPreferences.edit();
+                    fdNameListEditor.putString("FDLIST_DISPLAYNAME", fdList);
+                    fdNameListEditor.commit();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            // Post request parameters
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String, String> hashMap = new HashMap<String, String>();
+                hashMap.put("list", fdIdList);
                 return hashMap;
             }
         };
