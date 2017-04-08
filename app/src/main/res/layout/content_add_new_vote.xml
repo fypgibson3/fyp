@@ -136,7 +136,7 @@
                 android:textColor="@android:color/background_dark"
                 android:textSize="@dimen/textView_title_size"
                 android:textStyle="bold"
-                android:text="@string/text_option"/>
+                android:text="@string/text_options"/>
 
             <TextView
                 android:id="@+id/view_addNewVote_numOfVote"

@@ -84,9 +84,10 @@
     <string name="text_hashtags">Hashtags</string>
     <string name="text_content">Content</string>
     <string name="text_question">Question</string>
-    <string name="text_option">Options</string>
+    <string name="text_options">Options</string>
     <string name="text_option_1">Option 1</string>
     <string name="text_option_2">Option 2</string>
+    <string name="text_option">Option </string>
     <string name="text_options_more">Add more options</string>
     <string name="text_group_name">Group Name</string>
     <string name="text_add_post">Create New Blog</string>

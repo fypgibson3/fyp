@@ -43,7 +43,6 @@ public class USTMap extends Fragment {
         WifiManager wifiMgr = (WifiManager) view.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         WifiInfo wifiInfo = wifiMgr.getConnectionInfo();
         SSID = wifiInfo.getBSSID();
-        location.setText(SSID);
         return view;
     }
 }
