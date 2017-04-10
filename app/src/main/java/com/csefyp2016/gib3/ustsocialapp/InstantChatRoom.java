@@ -19,6 +19,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,6 +41,7 @@ public class InstantChatRoom extends AppCompatActivity {
     private RecyclerView mMessagesView;
     private EditText mInputMessageView;
     private String mUsername = "user name";
+    private Boolean isConnected = true;
 
     private SharedPreferences sharedPreferences;
 
@@ -79,6 +81,8 @@ public class InstantChatRoom extends AppCompatActivity {
 
         MyApplication app = (MyApplication) getApplication();
         mSocket = app.getSocket();
+        mSocket.on(Socket.EVENT_CONNECT, onConnect);
+        mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
         mSocket.on("new message", onNewMessage);
         mSocket.connect();
     }
@@ -89,8 +93,43 @@ public class InstantChatRoom extends AppCompatActivity {
 
         mSocket.disconnect();
 
+        mSocket.off(Socket.EVENT_CONNECT, onConnect);
+        mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
         mSocket.off("new message", onNewMessage);
     }
+
+    private Emitter.Listener onConnect = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (!isConnected) {
+                        if (null != mUsername)
+                            mSocket.emit("add user", mUsername);
+//                        Toast.makeText(this,
+//                                R.string.connect, Toast.LENGTH_LONG).show();
+                        isConnected = true;
+                    }
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener onDisconnect = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.i(TAG, "diconnected");
+                    isConnected = false;
+//                    Toast.makeText(this,
+//                            R.string.disconnect, Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    };
 
     private Emitter.Listener onNewMessage = new Emitter.Listener() {
         @Override
