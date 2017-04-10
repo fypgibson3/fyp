@@ -24,6 +24,7 @@ public class USTMap extends Fragment {
 
     private TextView location;
     private Button instantChatroom;
+    private Button instantChatroom2;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,6 +36,16 @@ public class USTMap extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), InstantChatRoom.class);
+                intent.putExtra("region", "region_a");
+                startActivity(intent);
+            }
+        });
+        instantChatroom2 = (Button) view.findViewById(R.id.b_map_instant_chatroom2);
+        instantChatroom2.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), InstantChatRoom.class);
+                intent.putExtra("region", "region_b");
                 startActivity(intent);
             }
         });

@@ -1,6 +1,7 @@
 package com.csefyp2016.gib3.ustsocialapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -41,7 +42,7 @@ public class InstantChatRoom extends AppCompatActivity {
     private RecyclerView mMessagesView;
     private EditText mInputMessageView;
     private String mUsername = "user name";
-    private Boolean isConnected = true;
+    private String mRegion = "region_a";
 
     private SharedPreferences sharedPreferences;
 
@@ -76,6 +77,12 @@ public class InstantChatRoom extends AppCompatActivity {
             }
         });
 
+        Bundle extras = getIntent().getExtras();
+        if (extras == null) {
+            return;
+        }
+        mRegion = extras.getString("region");
+
         sharedPreferences = getSharedPreferences(profilePreference, Context.MODE_PRIVATE);
         mUsername = sharedPreferences.getString("DISPLAYNAME", null);
 
@@ -84,6 +91,8 @@ public class InstantChatRoom extends AppCompatActivity {
         mSocket.on(Socket.EVENT_CONNECT, onConnect);
         mSocket.on(Socket.EVENT_DISCONNECT, onDisconnect);
         mSocket.on("new message", onNewMessage);
+        mSocket.on("user joined", onUserJoined);
+        mSocket.on("user left", onUserLeft);
         mSocket.connect();
     }
 
@@ -96,6 +105,8 @@ public class InstantChatRoom extends AppCompatActivity {
         mSocket.off(Socket.EVENT_CONNECT, onConnect);
         mSocket.off(Socket.EVENT_DISCONNECT, onDisconnect);
         mSocket.off("new message", onNewMessage);
+        mSocket.off("user joined", onUserJoined);
+        mSocket.off("user left", onUserLeft);
     }
 
     private Emitter.Listener onConnect = new Emitter.Listener() {
@@ -104,13 +115,10 @@ public class InstantChatRoom extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (!isConnected) {
-                        if (null != mUsername)
-                            mSocket.emit("add user", mUsername);
+                    if (null != mUsername)
+                        mSocket.emit("add user", mRegion, mUsername);
 //                        Toast.makeText(this,
 //                                R.string.connect, Toast.LENGTH_LONG).show();
-                        isConnected = true;
-                    }
                 }
             });
         }
@@ -123,7 +131,6 @@ public class InstantChatRoom extends AppCompatActivity {
                 @Override
                 public void run() {
                     Log.i(TAG, "diconnected");
-                    isConnected = false;
 //                    Toast.makeText(this,
 //                            R.string.disconnect, Toast.LENGTH_LONG).show();
                 }
@@ -154,6 +161,54 @@ public class InstantChatRoom extends AppCompatActivity {
         }
     };
 
+    private Emitter.Listener onUserJoined = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject data = (JSONObject) args[0];
+                    String username;
+                    int numUsers;
+                    try {
+                        username = data.getString("username");
+                        numUsers = data.getInt("numUsers");
+                    } catch (JSONException e) {
+                        Log.e(TAG, e.getMessage());
+                        return;
+                    }
+
+                    addLog(getResources().getString(R.string.message_user_joined, username));
+                    addParticipantsLog(numUsers);
+                }
+            });
+        }
+    };
+
+    private Emitter.Listener onUserLeft = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject data = (JSONObject) args[0];
+                    String username;
+                    int numUsers;
+                    try {
+                        username = data.getString("username");
+                        numUsers = data.getInt("numUsers");
+                    } catch (JSONException e) {
+                        Log.e(TAG, e.getMessage());
+                        return;
+                    }
+
+                    addLog(getResources().getString(R.string.message_user_left, username));
+                    addParticipantsLog(numUsers);
+                }
+            });
+        }
+    };
+
     private void attemptSend() {
         if (null == mUsername) return;
         if (!mSocket.connected()) return;
@@ -176,6 +231,17 @@ public class InstantChatRoom extends AppCompatActivity {
                 .username(username).message(message).build());
         mAdapter.notifyItemInserted(mMessages.size() - 1);
         scrollToBottom();
+    }
+
+    private void addLog(String message) {
+        mMessages.add(new Message.Builder(Message.TYPE_LOG)
+                .message(message).build());
+        mAdapter.notifyItemInserted(mMessages.size() - 1);
+        scrollToBottom();
+    }
+
+    private void addParticipantsLog(int numUsers) {
+        addLog(getResources().getQuantityString(R.plurals.message_participants, numUsers, numUsers));
     }
 
     private void scrollToBottom() {

@@ -35,7 +35,8 @@
     <string name="action_submit">Submit</string>
     <string name="action_cancel">Cancel</string>
     <string name="action_addStory">Add Story</string>
-    <string name="action_instant_chatroom">Instant Chatroom</string>
+    <string name="action_instant_chatroom">Instant ChatroomA</string>
+    <string name="action_instant_chatroom2">Instant ChatroomB</string>
     <string name="action_edit">Edit</string>
     <string name="action_friend_list">Friend List</string>
     <string name="action_blog">Blog</string>
@@ -495,5 +496,12 @@
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
+
+    <plurals name="message_participants">
+        <item quantity="one">there\'s %d participant</item>
+        <item quantity="other">there are %d participants</item>
+    </plurals>
+    <string name="message_user_joined">%s joined</string>
+    <string name="message_user_left">%s left</string>
 
 </resources>

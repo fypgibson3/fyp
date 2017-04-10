@@ -25,9 +25,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         case Message.TYPE_MESSAGE:
             layout = R.layout.item_message;
             break;
-//        case Message.TYPE_LOG:
-//            layout = R.layout.item_log;
-//            break;
+        case Message.TYPE_LOG:
+            layout = R.layout.item_log;
+            break;
 //        case Message.TYPE_ACTION:
 //            layout = R.layout.item_action;
 //            break;

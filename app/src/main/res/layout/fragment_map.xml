@@ -115,6 +115,14 @@
             android:background="@android:color/holo_orange_dark"
             android:textStyle="bold"
             android:textSize="@dimen/button_text_size" />
+        <Button
+            android:text="@string/action_instant_chatroom2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/b_map_instant_chatroom2"
+            android:background="@android:color/holo_orange_dark"
+            android:textStyle="bold"
+            android:textSize="@dimen/button_text_size" />
 
     </LinearLayout>
 
