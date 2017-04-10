@@ -62,6 +62,9 @@
             android:label="@string/title_activity_instant_chat_room"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".IndividualChat"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".Chat"
             android:label="@string/title_activity_chat"
             android:theme="@style/AppTheme.NoActionBar" />

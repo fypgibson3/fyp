@@ -51,6 +51,7 @@ public class Chatroom extends Fragment {
     private SharedPreferences sharedPreference;
 
     private ListView listView;
+    private TextView warning;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,6 +59,7 @@ public class Chatroom extends Fragment {
         View view = inflater.inflate(R.layout.fragment_chatroom, container, false);
 
         listView = (ListView) view.findViewById(android.R.id.list);
+        warning = (TextView) view.findViewById(R.id.view_myFriendList_warning);
 
         sharedPreference = view.getContext().getSharedPreferences(loginPreference, Context.MODE_PRIVATE);
         id = sharedPreference.getString("ID", null);
@@ -66,17 +68,8 @@ public class Chatroom extends Fragment {
 
         getFriendIdList();
 
-        sharedPreference = view.getContext().getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
-        String idList = sharedPreference.getString("FDLIST_ID", null);
-        String nameList = sharedPreference.getString("FDLIST_DISPLAYNAME", null);
-        if (idList != null) {
+        getFdListFromPreference();
 
-            getFdListFromPreference();
-
-        } else {
-            TextView warning = (TextView) view.findViewById(R.id.view_myFriendList_warning);
-            warning.setVisibility(View.VISIBLE);
-        }
 
 //        addChat = (FloatingActionButton) view.findViewById(R.id.fab_chatroom_add_chat);
 //        addChat.setOnClickListener(new FloatingActionButton.OnClickListener() {
@@ -120,19 +113,34 @@ public class Chatroom extends Fragment {
     }
 
     private void getFdListFromPreference() {
-        mfdIdList = sharedPreference.getString("FDLIST_ID", null).split(",");
-        mfdDisplayNameList = sharedPreference.getString("FDLIST_DISPLAYNAME", null).split(",");
+        sharedPreference = getContext().getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
+        String idList = sharedPreference.getString("FDLIST_ID", null);
+        if (idList != null) {
 
-        ArrayAdapter<String> adaptor = new ArrayAdapter<>(getActivity(), R.layout.friend_list_layout, mfdDisplayNameList);
+            mfdIdList = idList.split(",");
+            mfdDisplayNameList = sharedPreference.getString("FDLIST_DISPLAYNAME", null).split(",");
 
-        listView.setAdapter(adaptor);
+            ArrayAdapter<String> adaptor = new ArrayAdapter<>(getActivity(), R.layout.friend_list_layout, mfdDisplayNameList);
 
-        listView.setOnItemClickListener(new ListView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            listView.setAdapter(adaptor);
 
-            }
-        });
+            listView.setOnItemClickListener(new ListView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    Intent intent = new Intent(getActivity(), IndividualChat.class);
+                    intent.putExtra("the_friend_id", mfdIdList[i]);
+                    intent.putExtra("the_friend_name", mfdDisplayNameList[i]);
+                    startActivity(intent);
+                }
+            });
+
+            warning.setVisibility(View.GONE);
+
+        } else {
+
+            warning.setVisibility(View.VISIBLE);
+        }
+
     }
 
     private void getFriendIdList() {
