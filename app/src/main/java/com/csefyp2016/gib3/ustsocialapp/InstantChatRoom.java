@@ -50,7 +50,21 @@ public class InstantChatRoom extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_instant_chat_room);
+
+
+        Bundle extras = getIntent().getExtras();
+        if (extras == null) {
+            return;
+        }
+        mRegion = extras.getString("region");
+
+        sharedPreferences = getSharedPreferences(profilePreference, Context.MODE_PRIVATE);
+        mUsername = sharedPreferences.getString("DISPLAYNAME", null);
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(getResources().getString(R.string.title_activity_instant_chat_room));
+        toolbar.setSubtitle(mRegion);
         setSupportActionBar(toolbar);
         mAdapter = new MessageAdapter(this, mMessages);
         mMessagesView = (RecyclerView) findViewById(R.id.messages);
@@ -77,14 +91,6 @@ public class InstantChatRoom extends AppCompatActivity {
             }
         });
 
-        Bundle extras = getIntent().getExtras();
-        if (extras == null) {
-            return;
-        }
-        mRegion = extras.getString("region");
-
-        sharedPreferences = getSharedPreferences(profilePreference, Context.MODE_PRIVATE);
-        mUsername = sharedPreferences.getString("DISPLAYNAME", null);
 
         MyApplication app = (MyApplication) getApplication();
         mSocket = app.getSocket();
