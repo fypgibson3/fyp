@@ -63,7 +63,8 @@ public class MyFriendList extends AppCompatActivity {
             listView.setOnItemClickListener(new ListView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
+                    String selectedId = fdIdList[i];
+                    startNewIntent(selectedId);
                 }
             });
         }
@@ -80,6 +81,12 @@ public class MyFriendList extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void startNewIntent(String id) {
+        Intent viewProfile = new Intent(this, ViewProfile.class);
+        viewProfile.putExtra("friendId", id);
+        startActivity(viewProfile);
     }
 
 }
