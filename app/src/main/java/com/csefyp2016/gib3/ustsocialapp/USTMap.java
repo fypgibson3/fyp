@@ -29,6 +29,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -59,6 +60,8 @@ public class USTMap extends Fragment {
     private String ssid;
     private String pastssid;
     private String mapName;
+    private Integer smallMapX;
+    private Integer smallMapY;
     private String mapLocation;
     private Integer userID;
     private Integer[] peopleID;
@@ -83,6 +86,7 @@ public class USTMap extends Fragment {
     private Button instantChatroom;
     private SurfaceView surfaceView;
     private ImageView imageView;
+    private ImageView smallUser;
 
 
     @Override
@@ -113,6 +117,7 @@ public class USTMap extends Fragment {
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(screenWidth, screenHeight - 900);
         surfaceView.setLayoutParams(params);
         imageView = (ImageView) view.findViewById(R.id.image_map_location);
+        smallUser = (ImageView) view.findViewById(R.id.image_small_user);
 
         WifiManager wifiMgr = (WifiManager) view.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         final WifiInfo wifiInfo = wifiMgr.getConnectionInfo();
@@ -155,9 +160,12 @@ public class USTMap extends Fragment {
 
             @Override
             public void onResponse(String response) {
-                mapName = response.substring(0, response.indexOf("-"));
-                mapLocation = response.substring(response.indexOf("-") + 1, response.length());
-                //location.setText(mapName + "++" + mapLocation);
+                String[] mapphp = response.split("~");
+                mapName = mapphp[0];
+                smallMapX = Integer.parseInt(mapphp[1]);
+                smallMapY = Integer.parseInt(mapphp[2]);
+                mapLocation = mapphp[3];
+                location.setText(mapLocation);
                 getLocationPeople();
                 setMap();
                 updateUserLocation();
@@ -187,7 +195,9 @@ public class USTMap extends Fragment {
                 String[] people = response.split(",");
                 peopleID = new Integer[people.length];
                 for(Integer i = 0; i< people.length; i++){
-                    peopleID[i] = Integer.parseInt(people[i]);
+                    if(people[i] != "") {
+                        peopleID[i] = Integer.parseInt(people[i]);
+                    }
                 }
                 setPeople();
             }
@@ -268,12 +278,23 @@ public class USTMap extends Fragment {
                 imageView.setImageResource(R.drawable.a2);
                 break;
         }
-        imageView.setScaleX(10);
-        imageView.setScaleY(10);
-        imageView.setX(100);
+        imageView.setScaleX(15);
+        imageView.setScaleY(15);
+        imageView.setX(smallMapX);
+        imageView.setY(smallMapY);
+        setSmallUser();
     }
 
     private void setPeople() {
 
+    }
+
+    private void setSmallUser() {
+        smallUser.setImageResource(R.drawable.location);
+        ViewGroup.MarginLayoutParams smallUserPlace = new ViewGroup.MarginLayoutParams(60, 60);
+        smallUserPlace.setMargins(imageView.getWidth()/2+60, imageView.getHeight()/2-60, 0, 0);
+        FrameLayout.LayoutParams smallUserSize = new FrameLayout.LayoutParams(smallUserPlace);
+        smallUser.setLayoutParams(smallUserSize);
+        smallUser.requestLayout();
     }
 }
