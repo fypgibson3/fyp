@@ -10,8 +10,9 @@
     tools:context="com.csefyp2016.gib3.ustsocialapp.USTMap">
 
     <LinearLayout
+        android:id="@+id/linearLayout_map"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true">
@@ -96,9 +97,9 @@
                 <ImageView
                     app:srcCompat="@android:color/darker_gray"
                     android:id="@+id/image_map_location"
-                    android:layout_height="100dp"
+                    android:layout_height="130dp"
                     android:layout_gravity="center_vertical|center_horizontal"
-                    android:layout_width="150dp" />
+                    android:layout_width="match_parent" />
 
             </LinearLayout>
         </LinearLayout>

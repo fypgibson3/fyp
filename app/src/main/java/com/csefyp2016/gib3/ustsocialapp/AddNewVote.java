@@ -101,12 +101,14 @@ public class AddNewVote extends AppCompatActivity {
         optionText.setText(R.string.text_option+voteNumOfOptions);
         optionText.setTextSize(R.dimen.option_text_size);
         optionText.setTextColor(Color.BLACK);
+        optionText.setVisibility(View.VISIBLE);
         //optionText.setId(Integer.parseInt("view_addNewVote_option"));
         EditText optionField = new EditText(getApplicationContext());
         //optionField.setId(Integer.parseInt("i_addNewVote_option"+voteNumOfOptions.toString()));
         optionField.setHint(R.string.hint_option);
         optionField.setTextSize(R.dimen.option_text_size);
         optionField.setInputType(1);
+        optionField.setVisibility(View.VISIBLE);
         TextInputLayout optionInput = new TextInputLayout(getApplicationContext());
         optionInput.addView(optionField);
         TableRow newOption = new TableRow(getApplicationContext());
