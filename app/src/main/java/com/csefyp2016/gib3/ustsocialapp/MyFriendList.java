@@ -82,5 +82,4 @@ public class MyFriendList extends AppCompatActivity {
         viewProfile.putExtra("friendId", id);
         startActivity(viewProfile);
     }
-
 }
