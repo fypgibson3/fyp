@@ -266,6 +266,10 @@ public class ViewProfile extends AppCompatActivity {
                     profilePicture = BitmapFactory.decodeByteArray(imageByte, 0, imageByte.length);
                     profilePictureShow.setImageBitmap(profilePicture);
 
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                    System.out.println("Profile picture downloaded.");
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+
                     getFriendSwitch();
                 }
                 else {

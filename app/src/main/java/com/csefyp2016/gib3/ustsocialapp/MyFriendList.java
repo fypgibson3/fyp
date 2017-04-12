@@ -13,15 +13,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.StringRequest;
-
 public class MyFriendList extends AppCompatActivity {
-    private static final String getFdIdListURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getFriendIdList.php";
-    private static final String getFdDisplayNameListURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getFriendDisplayNameList.php";
-    private RequestQueue requestQueue;
-    private StringRequest request;
-
     private String id;
     private String[] fdIdList;
     private String[] fdDisplayNameList;
