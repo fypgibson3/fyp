@@ -13,6 +13,7 @@
     <string name="title_activity_create_individual_chat">Create Individual Chat</string>
     <string name="title_activity_create_group_chat">Create Group Chat</string>
     <string name="title_activity_instant_chat_room">Instant Chatroom</string>
+    <string name="title_activity_individual_chat_room">Individual Chatroom</string>
     <string name="title_activity_chat">Chat</string>
     <string name="title_activity_my_blog">My Blog</string>
     <string name="title_activity_create_new_blog">Create New Blog</string>
@@ -35,7 +36,8 @@
     <string name="action_submit">Submit</string>
     <string name="action_cancel">Cancel</string>
     <string name="action_addStory">Add Story</string>
-    <string name="action_instant_chatroom">Instant Chatroom</string>
+    <string name="action_instant_chatroom">Instant ChatroomA</string>
+    <string name="action_instant_chatroom2">Instant ChatroomB</string>
     <string name="action_edit">Edit</string>
     <string name="action_friend_list">Friend List</string>
     <string name="action_blog">Blog</string>
@@ -113,6 +115,7 @@
     <string name="profileSettingBasic_des">Please fill in all of the information below. You may choose to SHOW or HIDE each of the information in your profile page. You can also change your choices in the Profile page later.</string>
     <string name="map_des">You are now in</string>
     <string name="map_location">Location</string>
+    <string name="chat_person">Friend</string>
     <string name="createChat_des">Select group members</string>
     <string name="instantChat_people">There are ? people</string>
     <string name="chat_people">Chat Member</string>
@@ -495,5 +498,14 @@
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
+
+    <plurals name="message_participants">
+        <item quantity="one">there\'s %d participant</item>
+        <item quantity="other">there are %d participants</item>
+    </plurals>
+    <string name="message_user_joined">%s joined</string>
+    <string name="message_user_left">%s left</string>
+    <string name="prompt_message">Message</string>
+
 
 </resources>

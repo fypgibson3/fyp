@@ -11,6 +11,10 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -25,13 +29,14 @@ import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
 
-
 public class Chatroom extends Fragment {
     private FloatingActionButton addChat;
 
     private String id;
     private String fdIdList;
     private String fdDisplayNameList;
+    private String[] mfdIdList;
+    private String[] mfdDisplayNameList;
 
     private static final int INDIVIDUAL_CHAT = 510384;
     private static final int GROUP_CHAT = 670662;
@@ -45,43 +50,54 @@ public class Chatroom extends Fragment {
     private static final String friendListPreference = "FriendList";
     private SharedPreferences sharedPreference;
 
+    private ListView listView;
+    private TextView warning;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chatroom, container, false);
+
+        listView = (ListView) view.findViewById(android.R.id.list);
+        warning = (TextView) view.findViewById(R.id.view_myFriendList_warning);
 
         sharedPreference = view.getContext().getSharedPreferences(loginPreference, Context.MODE_PRIVATE);
         id = sharedPreference.getString("ID", null);
 
         requestQueue = Volley.newRequestQueue(view.getContext());
 
-        addChat = (FloatingActionButton) view.findViewById(R.id.fab_chatroom_add_chat);
-        addChat.setOnClickListener(new FloatingActionButton.OnClickListener() {
+        getFriendIdList();
 
-            @Override
-            public void onClick(View view) {
-                getFriendIdList();
+        getFdListFromPreference();
 
-                CharSequence options[] = new CharSequence[] {"Create an Individual Chat", "Create a Group Chat"};
 
-                AlertDialog.Builder createChat = new AlertDialog.Builder(getActivity());
-                createChat.setTitle("Create New Chat");
-                createChat.setItems(options, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (which == 0) {
-                            Intent intentIndividual = new Intent(getActivity(), CreateIndividualChat.class);
-                            startActivityForResult(intentIndividual, INDIVIDUAL_CHAT);
-                        }
-                        else {
-                            Intent intentGroup = new Intent(getActivity(), CreateGroupChat.class);
-                            startActivity(intentGroup);
-                        }
-                    }
-                });
-                createChat.show();
-            }
-        });
+//        addChat = (FloatingActionButton) view.findViewById(R.id.fab_chatroom_add_chat);
+//        addChat.setOnClickListener(new FloatingActionButton.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View view) {
+//                getFriendIdList();
+//
+//                CharSequence options[] = new CharSequence[] {"Create an Individual Chat", "Create a Group Chat"};
+//
+//                AlertDialog.Builder createChat = new AlertDialog.Builder(getActivity());
+//                createChat.setTitle("Create New Chat");
+//                createChat.setItems(options, new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        if (which == 0) {
+//                            Intent intentIndividual = new Intent(getActivity(), CreateIndividualChat.class);
+//                            startActivityForResult(intentIndividual, INDIVIDUAL_CHAT);
+//                        }
+//                        else {
+//                            Intent intentGroup = new Intent(getActivity(), CreateGroupChat.class);
+//                            startActivity(intentGroup);
+//                        }
+//                    }
+//                });
+//                createChat.show();
+//            }
+//        });
 
         return view;
     }
@@ -90,11 +106,41 @@ public class Chatroom extends Fragment {
         if (resultCode == RESULT_OK) {
             if (requestCode == INDIVIDUAL_CHAT) {
 
-            }
-            else if (requestCode == GROUP_CHAT) {
+            } else if (requestCode == GROUP_CHAT) {
 
             }
         }
+    }
+
+    private void getFdListFromPreference() {
+        sharedPreference = getContext().getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
+        String idList = sharedPreference.getString("FDLIST_ID", null);
+        if (idList != null) {
+
+            mfdIdList = idList.split(",");
+            mfdDisplayNameList = sharedPreference.getString("FDLIST_DISPLAYNAME", null).split(",");
+
+            ArrayAdapter<String> adaptor = new ArrayAdapter<>(getActivity(), R.layout.friend_list_layout, mfdDisplayNameList);
+
+            listView.setAdapter(adaptor);
+
+            listView.setOnItemClickListener(new ListView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    Intent intent = new Intent(getActivity(), IndividualChat.class);
+                    intent.putExtra("the_friend_id", mfdIdList[i]);
+                    intent.putExtra("the_friend_name", mfdDisplayNameList[i]);
+                    startActivity(intent);
+                }
+            });
+
+            warning.setVisibility(View.GONE);
+
+        } else {
+
+            warning.setVisibility(View.VISIBLE);
+        }
+
     }
 
     private void getFriendIdList() {
@@ -115,16 +161,15 @@ public class Chatroom extends Fragment {
                     System.out.println(fdList);
                     //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
 
-                    sharedPreference = getContext().getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
-                    SharedPreferences.Editor fdIdListEditor = sharedPreference.edit();
+                    SharedPreferences sharedPreferences = getContext().getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor fdIdListEditor = sharedPreferences.edit();
                     fdIdListEditor.putString("FDLIST_ID", fdList);
                     fdIdListEditor.commit();
 
                     getFriendDisplayNameList();
-                }
-                else {
-                    sharedPreference = getContext().getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPreference.edit();
+                } else {
+                    SharedPreferences sharedPreferences = getContext().getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("FDLIST_ID", null);
                     editor.putString("FDLIST_DISPLAYNAME", null);
                     editor.commit();
@@ -161,11 +206,18 @@ public class Chatroom extends Fragment {
 
                     String fdList = response.split(":")[1];
                     fdDisplayNameList = fdList;
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                    System.out.println(fdList);
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
 
-                    sharedPreference = getContext().getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
-                    SharedPreferences.Editor fdNameListEditor = sharedPreference.edit();
+                    SharedPreferences sharedPreferences = getContext().getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor fdNameListEditor = sharedPreferences.edit();
                     fdNameListEditor.putString("FDLIST_DISPLAYNAME", fdList);
                     fdNameListEditor.commit();
+
+
+                    // update friend list ui using the latest info
+                    getFdListFromPreference();
                 }
             }
         }, new Response.ErrorListener() {

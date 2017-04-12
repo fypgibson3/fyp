@@ -1,18 +1,13 @@
 package com.csefyp2016.gib3.ustsocialapp;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -20,29 +15,32 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
-public class InstantChatRoom extends AppCompatActivity {
+public class IndividualChat extends AppCompatActivity {
 
     private final static String TAG = "InstantChatRoom";
     private static final String profilePreference = "ProfilePreference";
+    private static final String loginPreference = "LoginPreference";
 
     private Socket mSocket;
     private List<Message> mMessages = new ArrayList<Message>();
     private RecyclerView.Adapter mAdapter;
     private RecyclerView mMessagesView;
     private EditText mInputMessageView;
+    private String id;
     private String mUsername = "user name";
-    private String mRegion = "region_a";
+    private String mTheFriendId;
+    private String mTheFriendName;
 
     private SharedPreferences sharedPreferences;
 
@@ -51,20 +49,23 @@ public class InstantChatRoom extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_instant_chat_room);
 
-
         Bundle extras = getIntent().getExtras();
         if (extras == null) {
             return;
         }
-        mRegion = extras.getString("region");
+        mTheFriendId = extras.getString("the_friend_id");
+        mTheFriendName = extras.getString("the_friend_name");
+
+        sharedPreferences = getSharedPreferences(loginPreference, Context.MODE_PRIVATE);
+        id = sharedPreferences.getString("ID", null);
 
         sharedPreferences = getSharedPreferences(profilePreference, Context.MODE_PRIVATE);
         mUsername = sharedPreferences.getString("DISPLAYNAME", null);
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(getResources().getString(R.string.title_activity_instant_chat_room));
-        toolbar.setSubtitle(mRegion);
+        toolbar.setTitle(getResources().getString(R.string.title_activity_individual_chat_room));
+        toolbar.setSubtitle(mTheFriendName);
         setSupportActionBar(toolbar);
         mAdapter = new MessageAdapter(this, mMessages);
         mMessagesView = (RecyclerView) findViewById(R.id.messages);
@@ -121,8 +122,9 @@ public class InstantChatRoom extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (null != mUsername)
-                        mSocket.emit("add user", mRegion, mUsername);
+                    if (null != mUsername) {
+                        mSocket.emit("add user", getTheIndividualRoomName(id, mTheFriendId), mUsername);
+                    }
 //                        Toast.makeText(this,
 //                                R.string.connect, Toast.LENGTH_LONG).show();
                 }
@@ -252,6 +254,14 @@ public class InstantChatRoom extends AppCompatActivity {
 
     private void scrollToBottom() {
         mMessagesView.scrollToPosition(mAdapter.getItemCount() - 1);
+    }
+
+    private String getTheIndividualRoomName(String name, String name2) {
+        List<String> nameList = new ArrayList<>();
+        nameList.add(name);
+        nameList.add(name2);
+        Collections.sort(nameList);
+        return nameList.get(0) + "+" + nameList.get(1);
     }
 
 }
