@@ -212,7 +212,7 @@ public class ViewProfile extends AppCompatActivity {
                         personalDes = profileContent[1];
 
                         //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
-                        System.out.println(personalDes);
+                        System.out.println("Personal Description: " + personalDes);
                         //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
 
                         personalDesView.setText(personalDes);

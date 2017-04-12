@@ -47,10 +47,12 @@ public class MyFriendList extends AppCompatActivity {
         sharedPreference = getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
         String idList = sharedPreference.getString("FDLIST_ID", null);
         String nameList = sharedPreference.getString("FDLIST_DISPLAYNAME", null);
+
         //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
         System.out.println("Id List: " + idList);
         System.out.println("Name List: " + nameList);
         //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+
         if (sharedPreference.getString("FDLIST_ID", null) != null) {
             fdIdList = sharedPreference.getString("FDLIST_ID", null).split(",");
             fdDisplayNameList = sharedPreference.getString("FDLIST_DISPLAYNAME", null).split(",");
