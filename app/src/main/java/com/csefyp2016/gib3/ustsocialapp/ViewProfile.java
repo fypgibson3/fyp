@@ -269,7 +269,6 @@ public class ViewProfile extends AppCompatActivity {
                     //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
                     System.out.println("Profile picture downloaded.");
                     //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
-
                     getFriendSwitch();
                 }
                 else {
