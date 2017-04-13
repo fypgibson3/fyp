@@ -85,6 +85,7 @@ public class USTMap extends Fragment {
 
     private RequestQueue requestQueue;
     private StringRequest request;
+    private WifiInfo wifiInfo;
 
     private static final String loginPreference = "LoginPreference";
     private SharedPreferences sharedPreferences;
@@ -133,11 +134,11 @@ public class USTMap extends Fragment {
         bigUser = (ImageView) view.findViewById(R.id.image_big_user);
 
         WifiManager wifiMgr = (WifiManager) view.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        final WifiInfo wifiInfo = wifiMgr.getConnectionInfo();
+        wifiInfo = wifiMgr.getConnectionInfo();
 
         getSelfID();
-        ssid = "84:B8:02:F7:10:D";
-        getMapLocation();
+        //ssid = "84:B8:02:F7:10:D";
+        //getMapLocation();
         return view;
     }
 
@@ -161,10 +162,10 @@ public class USTMap extends Fragment {
             ssidTimer.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {System.out.println("timer");
-                    //ssid = wifiInfo.getBSSID();
+                    ssid = wifiInfo.getBSSID();
                     if(!ssid.equals(pastssid)){
                         pastssid = ssid;
-                        //getMapLocation();
+                        getMapLocation();
                     }
                     else{
                         updateUserLocation();
