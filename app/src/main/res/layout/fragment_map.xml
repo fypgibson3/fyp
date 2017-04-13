@@ -10,8 +10,9 @@
     tools:context="com.csefyp2016.gib3.ustsocialapp.USTMap">
 
     <LinearLayout
+        android:id="@+id/linearLayout_map"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true">
@@ -66,6 +67,24 @@
                     android:layout_height="5dp" />
 
                 <TextView
+                    android:id="@+id/textView_map_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:textColor="@android:color/background_dark"
+                    android:textSize="@dimen/textView_title_size"
+                    android:textStyle="bold"
+                    android:textAlignment="center"
+                    android:text="@string/map_name"/>
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp" />
+
+                <TextView
                     android:id="@+id/textView_map_location"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -86,7 +105,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.05" />
 
-            <LinearLayout
+            <FrameLayout
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_weight="0.5"
@@ -96,11 +115,18 @@
                 <ImageView
                     app:srcCompat="@android:color/darker_gray"
                     android:id="@+id/image_map_location"
-                    android:layout_height="100dp"
+                    android:layout_height="130dp"
                     android:layout_gravity="center_vertical|center_horizontal"
-                    android:layout_width="150dp" />
+                    android:layout_width="130dp" />
 
-            </LinearLayout>
+                <ImageView
+                    android:id="@+id/image_small_user"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_marginLeft="60dp"
+                    android:layout_marginTop="60dp"/>
+
+            </FrameLayout>
         </LinearLayout>
 
         <Space
@@ -112,14 +138,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/b_map_instant_chatroom"
-            android:background="@android:color/holo_orange_dark"
-            android:textStyle="bold"
-            android:textSize="@dimen/button_text_size" />
-        <Button
-            android:text="@string/action_instant_chatroom2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/b_map_instant_chatroom2"
             android:background="@android:color/holo_orange_dark"
             android:textStyle="bold"
             android:textSize="@dimen/button_text_size" />

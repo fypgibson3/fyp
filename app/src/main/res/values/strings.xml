@@ -36,7 +36,7 @@
     <string name="action_submit">Submit</string>
     <string name="action_cancel">Cancel</string>
     <string name="action_addStory">Add Story</string>
-    <string name="action_instant_chatroom">Instant ChatroomA</string>
+    <string name="action_instant_chatroom">Instant Chatroom</string>
     <string name="action_instant_chatroom2">Instant ChatroomB</string>
     <string name="action_edit">Edit</string>
     <string name="action_friend_list">Friend List</string>
@@ -114,6 +114,7 @@
     <string name="login_forgot">Forgot Password?</string>
     <string name="profileSettingBasic_des">Please fill in all of the information below. You may choose to SHOW or HIDE each of the information in your profile page. You can also change your choices in the Profile page later.</string>
     <string name="map_des">You are now in</string>
+    <string name="map_name">Academic Building</string>
     <string name="map_location">Location</string>
     <string name="chat_person">Friend</string>
     <string name="createChat_des">Select group members</string>
