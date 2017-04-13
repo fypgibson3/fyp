@@ -186,8 +186,8 @@ public class IndividualChat extends AppCompatActivity {
                         return;
                     }
 
-                    addLog(getResources().getString(R.string.message_user_joined, username));
-                    addParticipantsLog(numUsers);
+                    //addLog(getResources().getString(R.string.message_user_joined, username));
+                    //addParticipantsLog(numUsers);
                 }
             });
         }
@@ -210,8 +210,8 @@ public class IndividualChat extends AppCompatActivity {
                         return;
                     }
 
-                    addLog(getResources().getString(R.string.message_user_left, username));
-                    addParticipantsLog(numUsers);
+                    //addLog(getResources().getString(R.string.message_user_left, username));
+                    //addParticipantsLog(numUsers);
                 }
             });
         }

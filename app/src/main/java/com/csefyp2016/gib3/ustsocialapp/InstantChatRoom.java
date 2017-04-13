@@ -22,6 +22,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -176,13 +177,25 @@ public class InstantChatRoom extends AppCompatActivity {
                     JSONObject data = (JSONObject) args[0];
                     String username;
                     int numUsers;
+                    JSONArray previousMessages;
                     try {
                         username = data.getString("username");
                         numUsers = data.getInt("numUsers");
+                        if (data.has("previousMessages")) {
+                            previousMessages = data.getJSONArray("previousMessages");
+                            for (int i = 0; i < previousMessages.length(); i++) {
+                                JSONObject entry = previousMessages.getJSONObject(i);
+                                System.out.println(entry.length());
+                                String user = entry.getString("user");
+                                String message = entry.getString("message");
+                                addMessage(user, message);
+                            }
+                        }
                     } catch (JSONException e) {
                         Log.e(TAG, e.getMessage());
                         return;
                     }
+
 
                     addLog(getResources().getString(R.string.message_user_joined, username));
                     addParticipantsLog(numUsers);
