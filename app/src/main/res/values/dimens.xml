@@ -11,6 +11,7 @@
     <dimen name="option_text_size">18sp</dimen>
     <dimen name="button_text_size">18sp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
+    <dimen name="bigMap_title">22sp</dimen>
 
     <!-- UST Story -->
     <dimen name="ustStory_title_size">28sp</dimen>

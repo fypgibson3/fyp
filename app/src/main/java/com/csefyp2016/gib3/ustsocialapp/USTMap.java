@@ -13,6 +13,8 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.graphics.drawable.shapes.RectShape;
+import android.media.Image;
+import android.provider.ContactsContract;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,6 +32,7 @@ import android.widget.Button;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -53,6 +56,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static android.view.Gravity.CENTER;
+import static android.view.Gravity.CENTER_HORIZONTAL;
+import static android.view.Gravity.CENTER_VERTICAL;
 
 
 public class USTMap extends Fragment {
@@ -65,6 +70,9 @@ public class USTMap extends Fragment {
     private String mapLocation;
     private Integer userID;
     private Integer[] peopleID;
+    private Integer[] pastpeopleID;
+    private int[] peopleX;
+    private int[] peopleY;
     private Timer ssidTimer;
     private Boolean enableTimer = false;
     private Integer screenWidth;
@@ -81,12 +89,14 @@ public class USTMap extends Fragment {
     private static final String loginPreference = "LoginPreference";
     private SharedPreferences sharedPreferences;
 
-    private LinearLayout mapLayout;
+    private FrameLayout bigMapLayout;
     private TextView location;
     private Button instantChatroom;
-    private SurfaceView surfaceView;
-    private ImageView imageView;
+    private ImageView bigMap;
+    private TextView bigMapTitle;
+    private ImageView smallMap;
     private ImageView smallUser;
+    private ImageView bigUser;
 
 
     @Override
@@ -108,16 +118,19 @@ public class USTMap extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), InstantChatRoom.class);
-                intent.putExtra("region", "region_a");
+                intent.putExtra("region", mapLocation);
                 startActivity(intent);
             }
         });
 
-        surfaceView = (SurfaceView) view.findViewById(R.id.surfaceView_map);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(screenWidth, screenHeight - 900);
-        surfaceView.setLayoutParams(params);
-        imageView = (ImageView) view.findViewById(R.id.image_map_location);
+        bigMapLayout = (FrameLayout) view.findViewById(R.id.frame_map);
+        bigMap = (ImageView) view.findViewById(R.id.image_big_map);
+        FrameLayout.LayoutParams bigMapSize = new FrameLayout.LayoutParams(screenWidth, screenHeight - 920);
+        bigMap.setLayoutParams(bigMapSize);
+        bigMapTitle = (TextView) view.findViewById(R.id.textView_big_map_title);
+        smallMap = (ImageView) view.findViewById(R.id.image_map_location);
         smallUser = (ImageView) view.findViewById(R.id.image_small_user);
+        bigUser = (ImageView) view.findViewById(R.id.image_big_user);
 
         WifiManager wifiMgr = (WifiManager) view.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         final WifiInfo wifiInfo = wifiMgr.getConnectionInfo();
@@ -126,6 +139,16 @@ public class USTMap extends Fragment {
         ssid = "84:B8:02:F7:10:D";
         getMapLocation();
         return view;
+    }
+
+    @Override
+    public void onPause() {System.out.println("pause");
+        super.onPause();
+        if(enableTimer == true) {
+            ssidTimer.cancel();
+            deleteUserLocation();
+            enableTimer = false;
+        }
     }
 
     @Override
@@ -142,6 +165,10 @@ public class USTMap extends Fragment {
                     if(!ssid.equals(pastssid)){
                         pastssid = ssid;
                         //getMapLocation();
+                    }
+                    else{
+                        updateUserLocation();
+                        getLocationPeople();
                     }
                 }
             }, 0, 1000);
@@ -166,9 +193,9 @@ public class USTMap extends Fragment {
                 smallMapY = Integer.parseInt(mapphp[2]);
                 mapLocation = mapphp[3];
                 location.setText(mapLocation);
+                updateUserLocation();
                 getLocationPeople();
                 setMap();
-                updateUserLocation();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -194,12 +221,14 @@ public class USTMap extends Fragment {
                 //location.setText(response);
                 String[] people = response.split(",");
                 peopleID = new Integer[people.length];
-                for(Integer i = 0; i< people.length; i++){
+                for(Integer i = 0; i < people.length; i++){
                     if(people[i] != "") {
                         peopleID[i] = Integer.parseInt(people[i]);
                     }
                 }
-                setPeople();
+                if(!checkSamePeople()) {
+                    setPeople();
+                }
             }
         }, new Response.ErrorListener() {
             @Override
@@ -275,26 +304,101 @@ public class USTMap extends Fragment {
     private void setMap() {
         switch (mapName) {
             case "A2":
-                imageView.setImageResource(R.drawable.a2);
+                smallMap.setImageResource(R.drawable.a2);
+                smallMap.setScaleX(15);
+                smallMap.setScaleY(15);
                 break;
         }
-        imageView.setScaleX(15);
-        imageView.setScaleY(15);
-        imageView.setX(smallMapX);
-        imageView.setY(smallMapY);
-        setSmallUser();
+        smallMap.setX(smallMapX);
+        smallMap.setY(smallMapY);
+        bigMap.setBackgroundColor(getResources().getColor(R.color.bigMap_background));
+        bigMapTitle.setText(mapLocation);
+        FrameLayout.LayoutParams bigMapTitlePlace = new FrameLayout.LayoutParams(screenWidth, 100, CENTER_HORIZONTAL);
+        bigMapTitle.setLayoutParams(bigMapTitlePlace);
+        setUser();
     }
 
-    private void setPeople() {
-
+    private void setPeople() {System.out.println("set");
+        if(pastpeopleID != null) {
+            for (int i = 0; i < pastpeopleID.length; i++) {
+                if (pastpeopleID[i] != userID && pastpeopleID[i] != null) {
+                    ImageView pastPeopleButton = (ImageView) getView().findViewById(100000 + pastpeopleID[i].intValue());
+                    bigMapLayout.removeView(pastPeopleButton);
+                }
+            }
+        }
+        pastpeopleID = new Integer[peopleID.length];
+        peopleX = new int[peopleID.length];
+        peopleY = new int[peopleID.length];
+        for(int i = 0; i < peopleID.length; i++){System.out.print(peopleID[i]);
+            if(peopleID[i] != userID) {
+                ImageView peopleButton = new ImageView(getView().getContext());
+                peopleButton.setImageResource(R.drawable.people);
+                FrameLayout.LayoutParams peopleButtonSize = new FrameLayout.LayoutParams(150, 150);
+                Double peopleWidth = ((bigMap.getWidth() - 200) * Math.random()) + 20;
+                Double peopleHeight = ((bigMap.getHeight() - 200) * Math.random()) + 20;
+                while (!checkOverlap(peopleWidth.intValue(), peopleHeight.intValue())) {
+                    peopleWidth = ((bigMap.getWidth() - 200) * Math.random()) + 20;
+                    peopleHeight = ((bigMap.getHeight() - 200) * Math.random()) + 20;
+                    peopleX[i] = peopleWidth.intValue();
+                    peopleY[i] = peopleHeight.intValue();
+                }
+                peopleButtonSize.setMargins(peopleWidth.intValue(), peopleHeight.intValue(), 0, 0);
+                peopleButton.setLayoutParams(peopleButtonSize);
+                peopleButton.requestLayout();
+                peopleButton.setId(100000 + peopleID[i].intValue());
+                final String friendId = peopleID[i].toString();
+                peopleButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getActivity(), ViewProfile.class);
+                        intent.putExtra("friendId", friendId);
+                        startActivity(intent);
+                    }
+                });
+                bigMapLayout.addView(peopleButton);
+                bigMapLayout.requestLayout();
+            }
+            pastpeopleID[i] = peopleID[i];
+        }
     }
 
-    private void setSmallUser() {
+    private boolean checkOverlap(int x, int y){
+        for(int i = 0; i < peopleX.length; i++){
+            if((x >= bigUser.getX() && x <= (bigUser.getX()+bigUser.getWidth())) || (y >= bigUser.getY() && y <= (bigUser.getY()+bigUser.getHeight())) || (x >= peopleX[i] && x <= (peopleX[i] + 150)) || (y >= peopleY[i] && y <= (peopleY[i] + 150))){
+                return true;
+            }
+        }
+        return false;
+
+    }
+    private void setUser() {
         smallUser.setImageResource(R.drawable.location);
         ViewGroup.MarginLayoutParams smallUserPlace = new ViewGroup.MarginLayoutParams(60, 60);
-        smallUserPlace.setMargins(imageView.getWidth()/2+60, imageView.getHeight()/2-60, 0, 0);
+        smallUserPlace.setMargins(smallMap.getWidth()/2 + 60, smallMap.getHeight()/2 - 60, 0, 0);
         FrameLayout.LayoutParams smallUserSize = new FrameLayout.LayoutParams(smallUserPlace);
         smallUser.setLayoutParams(smallUserSize);
         smallUser.requestLayout();
+        bigUser.setImageResource(R.drawable.user);
+        FrameLayout.LayoutParams bigUserSize = new FrameLayout.LayoutParams(150, 150, CENTER);
+        bigUser.setLayoutParams(bigUserSize);
+        bigUser.requestLayout();
+    }
+
+    private boolean checkSamePeople() {
+        if (peopleID != null && pastpeopleID != null) {
+            if(peopleID.length == pastpeopleID.length) {
+                for (int i = 0; i < Math.max(peopleID.length, pastpeopleID.length); i++) {
+                    if (peopleID[i] != pastpeopleID[i]) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+        return false;
     }
 }

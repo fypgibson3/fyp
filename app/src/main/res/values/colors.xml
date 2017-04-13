@@ -8,5 +8,8 @@
     <color name="disable_foreground_grey">#42221f1f</color>
     <color name="disable_thumb_grey">#1c000000</color>
     <color name="enable_thumb_orange">#ffff8800</color>
+    <color name="bigMap_background">#ffffb3</color>
+    <color name="bigMap_title">#003366</color>
+    <color name="bigMap_border">#000000</color>
 
 </resources>
