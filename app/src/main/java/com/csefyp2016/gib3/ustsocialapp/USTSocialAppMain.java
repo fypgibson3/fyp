@@ -1,6 +1,8 @@
 package com.csefyp2016.gib3.ustsocialapp;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.design.widget.TabLayout;
 import android.support.v4.widget.PopupWindowCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +17,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class USTSocialAppMain extends AppCompatActivity {
+    private static final String loginPreference = "LoginPreference";
+    private static final String profilePreference = "ProfilePreference";
+    private static final String imagePreference = "ImagePreference";
+    private static final String friendListPreference = "FriendList";
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -71,11 +77,26 @@ public class USTSocialAppMain extends AppCompatActivity {
             return true;
         }
         else if (id == R.id.menu_ustSocialAppMain_logout) {
+            SharedPreferences sharedPreferences = getSharedPreferences(loginPreference, Context.MODE_PRIVATE);
+            sharedPreferences.edit().clear().commit();
+            sharedPreferences = getSharedPreferences(profilePreference, Context.MODE_PRIVATE);
+            sharedPreferences.edit().clear().commit();
+            sharedPreferences = getSharedPreferences(imagePreference, Context.MODE_PRIVATE);
+            sharedPreferences.edit().clear().commit();
+            sharedPreferences = getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
+            sharedPreferences.edit().clear().commit();
+
             startActivity(new Intent(USTSocialAppMain.this, SignIn.class));
+            this.finish();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private boolean getRemember() {
+        SharedPreferences sharedPreferences = getSharedPreferences(loginPreference, Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean("REMEMBER", false);
     }
 
     /**
