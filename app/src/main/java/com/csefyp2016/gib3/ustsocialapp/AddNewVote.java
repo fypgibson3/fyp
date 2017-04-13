@@ -99,7 +99,6 @@ public class AddNewVote extends AppCompatActivity {
 
         TableRow newRow = (TableRow) LayoutInflater.from(this).inflate(R.layout.add_vote_new_option_row, null);
         ((TextView) newRow.findViewById(R.id.view_addNewVote_newOption)).setText("Option " + voteNumOfOptions);
-        (newRow.findViewById(R.id.view_addNewVote_newOption)).setId(View.generateViewId());
         table.addView(newRow);
 
         table.requestLayout();
