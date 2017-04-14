@@ -53,7 +53,7 @@ public class IndividualChat extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_instant_chat_room);
+        setContentView(R.layout.activity_chat);
 
         Bundle extras = getIntent().getExtras();
         if (extras == null) {
@@ -74,11 +74,11 @@ public class IndividualChat extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         mAdapter = new MessageAdapter(this, mMessages);
-        mMessagesView = (RecyclerView) findViewById(R.id.messages);
+        mMessagesView = (RecyclerView) findViewById(R.id.messages_chat);
         mMessagesView.setLayoutManager(new LinearLayoutManager(this));
         mMessagesView.setAdapter(mAdapter);
 
-        mInputMessageView = (EditText) findViewById(R.id.message_input);
+        mInputMessageView = (EditText) findViewById(R.id.message_chat_input);
         mInputMessageView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int id, KeyEvent event) {
@@ -90,7 +90,7 @@ public class IndividualChat extends AppCompatActivity {
             }
         });
 
-        dbHandler = new DBHandler(this, id + "00" + mTheFriendId);
+        dbHandler = new DBHandler(this, getTheIndividualTableName(id, mTheFriendId));
         List<Message> previousMessage = dbHandler.getMessage();
         if (previousMessage != null) {
             Message message = previousMessage.get(0);
@@ -110,7 +110,7 @@ public class IndividualChat extends AppCompatActivity {
             }
         });
 
-        ImageButton sendButton = (ImageButton) findViewById(R.id.send_button);
+        ImageButton sendButton = (ImageButton) findViewById(R.id.b_chat_send);
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -314,5 +314,15 @@ public class IndividualChat extends AppCompatActivity {
         Collections.sort(nameList);
         return nameList.get(0) + "+" + nameList.get(1);
     }
+
+    private String getTheIndividualTableName(String name, String name2) {
+        List<String> nameList = new ArrayList<>();
+        nameList.add(name);
+        nameList.add(name2);
+        Collections.sort(nameList);
+        return nameList.get(0) + "00" + nameList.get(1);
+    }
+
+
 
 }

@@ -49,21 +49,35 @@ public class DBHandler extends SQLiteOpenHelper{
         onCreate(sqLiteDatabase);
     }
 
-    public boolean checkTableExisted(String tableName) {
+    public boolean checkTableExisted() {
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'chatLog_" + tableName;
+        String query = "SELECT tbl_name FROM sqlite_master WHERE tbl_name = '" + TABLE_NAME + "'";
         Cursor cursor = db.rawQuery(query, null);
         if (cursor != null) {
+            if (cursor.getCount() > 0) {
+                cursor.close();
+                return true;
+            }
             cursor.close();
-            return true;
         }
-        else {
-            cursor.close();
-            return false;
-        }
+        return false;
+    }
+
+    public void createNewLogTable() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String create = "CREATE TABLE " + TABLE_NAME + " (" +
+                KEY_MESSAGE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                KEY_SENDTIME + " DATETIME DEFAULT CURRENT_TIMESTAMP, " +
+                KEY_USER + " VARCHAR(30) NOT NULL, " +
+                KEY_MESSAGE + " VARCHAR(255) NOT NULL" +
+                ")";
+        db.execSQL(create);
     }
 
     public void addMessage(String user, String message) {
+        if (!checkTableExisted()) {
+            createNewLogTable();
+        }
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues newEntry = new ContentValues();
         newEntry.putNull(KEY_SENDTIME);
@@ -73,52 +87,62 @@ public class DBHandler extends SQLiteOpenHelper{
     }
 
     public List<Message> getMessage() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT " + KEY_MESSAGE_ID + ", " + KEY_USER + ", " + KEY_MESSAGE + " FROM ( " +
-                            "SELECT * FROM " + TABLE_NAME + " ORDER BY " + KEY_MESSAGE_ID + " DESC LIMIT 10 " +
-                        ") ORDER BY " + KEY_MESSAGE_ID + " ASC";
-        Cursor cursor = db.rawQuery(query, null);
-        if (cursor != null && cursor.getCount() != 0) {
-            List<Message> messageList = new ArrayList<>();
-            cursor.moveToFirst();
-            Message counter = new Message.Builder(0).username("start").message(String.valueOf(cursor.getInt(0))).build();
-            //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
-            System.out.println("Update index up to: " + cursor.getInt(0));
-            //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
-            messageList.add(counter);
-            do {
-                Message message = new Message.Builder(0).username(cursor.getString(1)).message(cursor.getString(2)).build();
-                messageList.add(message);
-            } while (cursor.moveToNext());
+        if (checkTableExisted()) {
+            SQLiteDatabase db = this.getWritableDatabase();
+            String query = "SELECT " + KEY_MESSAGE_ID + ", " + KEY_USER + ", " + KEY_MESSAGE + " FROM ( " +
+                    "SELECT * FROM " + TABLE_NAME + " ORDER BY " + KEY_MESSAGE_ID + " DESC LIMIT 10 " +
+                    ") ORDER BY " + KEY_MESSAGE_ID + " ASC";
+            Cursor cursor = db.rawQuery(query, null);
+            if (cursor != null && cursor.getCount() != 0) {
+                List<Message> messageList = new ArrayList<>();
+                cursor.moveToFirst();
+                Message counter = new Message.Builder(0).username("start").message(String.valueOf(cursor.getInt(0))).build();
+                //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                System.out.println("Update index up to: " + cursor.getInt(0));
+                //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                messageList.add(counter);
+                do {
+                    Message message = new Message.Builder(0).username(cursor.getString(1)).message(cursor.getString(2)).build();
+                    messageList.add(message);
+                } while (cursor.moveToNext());
+                cursor.close();
+                return messageList;
+            }
             cursor.close();
-            return messageList;
+            return null;
         }
-        cursor.close();
-        return null;
+        else {
+            return null;
+        }
     }
 
     public List<Message> getMessage(String start) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT " + KEY_MESSAGE_ID + ", " + KEY_USER + ", " + KEY_MESSAGE + " FROM ( " +
-                "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_MESSAGE_ID + " < " + start + " ORDER BY " + KEY_MESSAGE_ID + " DESC LIMIT 10 " +
-                ") ORDER BY " + KEY_MESSAGE_ID + " ASC";
-        Cursor cursor = db.rawQuery(query, null);
-        if (cursor != null && cursor.getCount() != 0) {
-            List<Message> messageList = new ArrayList<>();
-            cursor.moveToFirst();
-            Message counter = new Message.Builder(0).username("start").message(String.valueOf(cursor.getInt(0))).build();
-            //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
-            System.out.println("Update index up to: " + cursor.getInt(0));
-            //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
-            messageList.add(counter);
-            do {
-                Message message = new Message.Builder(0).username(cursor.getString(1)).message(cursor.getString(2)).build();
-                messageList.add(message);
-            } while (cursor.moveToNext());
+        if (checkTableExisted()) {
+            SQLiteDatabase db = this.getWritableDatabase();
+            String query = "SELECT " + KEY_MESSAGE_ID + ", " + KEY_USER + ", " + KEY_MESSAGE + " FROM ( " +
+                    "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_MESSAGE_ID + " < " + start + " ORDER BY " + KEY_MESSAGE_ID + " DESC LIMIT 10 " +
+                    ") ORDER BY " + KEY_MESSAGE_ID + " ASC";
+            Cursor cursor = db.rawQuery(query, null);
+            if (cursor != null && cursor.getCount() != 0) {
+                List<Message> messageList = new ArrayList<>();
+                cursor.moveToFirst();
+                Message counter = new Message.Builder(0).username("start").message(String.valueOf(cursor.getInt(0))).build();
+                //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                System.out.println("Update index up to: " + cursor.getInt(0));
+                //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                messageList.add(counter);
+                do {
+                    Message message = new Message.Builder(0).username(cursor.getString(1)).message(cursor.getString(2)).build();
+                    messageList.add(message);
+                } while (cursor.moveToNext());
+                cursor.close();
+                return messageList;
+            }
             cursor.close();
-            return messageList;
+            return null;
         }
-        cursor.close();
-        return null;
+        else {
+            return null;
+        }
     }
 }

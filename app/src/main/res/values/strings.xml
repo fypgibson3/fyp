@@ -46,6 +46,7 @@
     <string name="action_save">Save</string>
     <string name="action_yes">Yes</string>
     <string name="action_no">No</string>
+    <string name="action_add_friend">Add Friend</string>
 
     <!-- Input Hint Text -->
     <string name="hint_username">Username</string>
