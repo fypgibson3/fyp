@@ -23,6 +23,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -446,16 +448,18 @@ public class USTMap extends Fragment {
         }
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getView().getContext());
         alertDialogBuilder.setTitle("Service not available");
-        alertDialogBuilder.setMessage("Please connect to HKUST Wifi in order to continues using this service.");
+        alertDialogBuilder.setMessage("Please connect to HKUST Wifi in order to use this service.");
         alertDialogBuilder.setCancelable(false);
         alertDialogBuilder.setPositiveButton("Setting",new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog,int id) {
                 startActivity(new Intent(android.provider.Settings.ACTION_WIFI_SETTINGS));
             }
         });
-        alertDialogBuilder.setNegativeButton("Exit",new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setNegativeButton("Back",new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog,int id) {
-                getActivity().finish();
+                ViewPager viewPager = USTSocialAppMain.mViewPager;
+                int returnFragment = viewPager.getCurrentItem() - 1;
+                viewPager.setCurrentItem(returnFragment);
             }
         });
         AlertDialog alertDialog = alertDialogBuilder.create();
