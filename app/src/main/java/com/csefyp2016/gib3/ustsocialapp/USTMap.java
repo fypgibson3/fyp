@@ -1,5 +1,7 @@
 package com.csefyp2016.gib3.ustsocialapp;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
@@ -15,6 +17,7 @@ import android.graphics.drawable.shapes.OvalShape;
 import android.graphics.drawable.shapes.RectShape;
 import android.media.Image;
 import android.provider.ContactsContract;
+import android.support.annotation.BoolRes;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -77,6 +80,8 @@ public class USTMap extends Fragment {
     private Boolean enableTimer = false;
     private Integer screenWidth;
     private Integer screenHeight;
+    private Boolean correctSSID = false;
+    private Boolean haveLocation = false;
 
     private static final String getMapLocationURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getMapLocation.php";
     private static final String getLocationPeopleURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getLocationPeople.php";
@@ -137,7 +142,7 @@ public class USTMap extends Fragment {
         wifiInfo = wifiMgr.getConnectionInfo();
 
         getSelfID();
-        //ssid = "84:B8:02:F7:10:D";
+        ssid = "84:B8:02:F7:10:";
         //getMapLocation();
         return view;
     }
@@ -147,7 +152,9 @@ public class USTMap extends Fragment {
         super.onPause();
         if(enableTimer == true) {
             ssidTimer.cancel();
-            deleteUserLocation();
+            if(haveLocation) {
+                deleteUserLocation();
+            }
             enableTimer = false;
         }
     }
@@ -162,14 +169,16 @@ public class USTMap extends Fragment {
             ssidTimer.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {System.out.println("timer");
-                    ssid = wifiInfo.getBSSID();
+                    //ssid = wifiInfo.getBSSID();
                     if(!ssid.equals(pastssid)){
                         pastssid = ssid;
                         getMapLocation();
                     }
                     else{
-                        updateUserLocation();
-                        getLocationPeople();
+                        if(correctSSID) {
+                            updateUserLocation();
+                            getLocationPeople();
+                        }
                     }
                 }
             }, 0, 1000);
@@ -187,16 +196,23 @@ public class USTMap extends Fragment {
         request = new StringRequest(Request.Method.POST, getMapLocationURL, new Response.Listener<String>() {
 
             @Override
-            public void onResponse(String response) {
-                String[] mapphp = response.split("~");
-                mapName = mapphp[0];
-                smallMapX = Integer.parseInt(mapphp[1]);
-                smallMapY = Integer.parseInt(mapphp[2]);
-                mapLocation = mapphp[3];
-                location.setText(mapLocation);
-                updateUserLocation();
-                getLocationPeople();
-                setMap();
+            public void onResponse(String response) {System.out.println(response);
+                if(response.length() != 0) {
+                    correctSSID = true;
+                    String[] mapphp = response.split("~");
+                    mapName = mapphp[0];
+                    smallMapX = Integer.parseInt(mapphp[1]);
+                    smallMapY = Integer.parseInt(mapphp[2]);
+                    mapLocation = mapphp[3];
+                    location.setText(mapLocation);
+                    updateUserLocation();
+                    getLocationPeople();
+                    setMap();
+                }
+                else{System.out.println("fail");
+                    correctSSID = false;
+                    showWarning();
+                }
             }
         }, new Response.ErrorListener() {
             @Override
@@ -258,6 +274,7 @@ public class USTMap extends Fragment {
 
             @Override
             public void onResponse(String response) {
+                haveLocation = true;
                 //location.setText(response);
             }
         }, new Response.ErrorListener() {
@@ -283,6 +300,7 @@ public class USTMap extends Fragment {
 
             @Override
             public void onResponse(String response) {
+                haveLocation = false;
                 //location.setText(response);
             }
         }, new Response.ErrorListener() {
@@ -401,5 +419,35 @@ public class USTMap extends Fragment {
             }
         }
         return false;
+    }
+
+    private void showWarning() {System.out.println("warning");
+        if(enableTimer == true) {
+            ssidTimer.cancel();
+            if(haveLocation){
+                deleteUserLocation();
+            }
+            enableTimer = false;
+        }
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getView().getContext());
+        alertDialogBuilder.setTitle("Service not available");
+        alertDialogBuilder.setMessage("Please connect to HKUST Wifi in order to continues using this service.");
+        alertDialogBuilder.setCancelable(false);
+        alertDialogBuilder.setPositiveButton("Setting",new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog,int id) {
+                startActivity(new Intent(android.provider.Settings.ACTION_WIFI_SETTINGS));
+            }
+        });
+        alertDialogBuilder.setNegativeButton("Exit",new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog,int id) {
+                getActivity().finish();
+            }
+        });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
     }
 }
