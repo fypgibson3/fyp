@@ -44,6 +44,9 @@ public class IndividualChat extends AppCompatActivity {
 
     private SharedPreferences sharedPreferences;
 
+    private DBHandler dbHandler;
+    private String lastLogIndex;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +95,17 @@ public class IndividualChat extends AppCompatActivity {
             }
         });
 
+
+        dbHandler = new DBHandler(this, id + "00" + mTheFriendId);
+        List<Message> previousMessage = dbHandler.getMessage();
+        if (previousMessage != null) {
+            Message message = previousMessage.get(0);
+            lastLogIndex = message.getMessage();
+            for (int i = 1; i < previousMessage.size(); i++) {
+                message = previousMessage.get(i);
+                addMessage(message.getUsername(), message.getMessage());
+            }
+        }
 
         MyApplication app = (MyApplication) getApplication();
         mSocket = app.getSocket();
@@ -164,6 +178,7 @@ public class IndividualChat extends AppCompatActivity {
                     }
 
                     addMessage(username, message);
+                    dbHandler.addMessage(username, message);
                 }
             });
         }
@@ -229,6 +244,7 @@ public class IndividualChat extends AppCompatActivity {
 
         mInputMessageView.setText("");
         addMessage(mUsername, message);
+        dbHandler.addMessage(mUsername, message);
 
         // perform the sending message attempt.
         mSocket.emit("new message", message);
