@@ -54,9 +54,6 @@ public class SignIn extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_in);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_sign_in);
-        setSupportActionBar(toolbar);
 
         requestQueue = Volley.newRequestQueue(this);
 
@@ -65,6 +62,10 @@ public class SignIn extends AppCompatActivity {
         password = sharedPreferences.getString("PASSWORD", "");
 
         if (username.equals("") || password.equals("")) {
+            setContentView(R.layout.activity_sign_in);
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_sign_in);
+            setSupportActionBar(toolbar);
+
             Button signInButton = (Button) findViewById(R.id.b_signIn_sign_in);
             Button signUpButton = (Button) findViewById(R.id.b_signIn_sign_up);
             final Button forgotPswdButton = (Button) findViewById(R.id.b_signIn_forgot_password);
