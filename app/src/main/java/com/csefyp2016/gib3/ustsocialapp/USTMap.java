@@ -142,7 +142,7 @@ public class USTMap extends Fragment {
         wifiInfo = wifiMgr.getConnectionInfo();
 
         getSelfID();
-        ssid = "84:B8:02:F7:10:";
+        //ssid = "84:B8:02:F7:10:";
         //getMapLocation();
         return view;
     }
@@ -169,7 +169,7 @@ public class USTMap extends Fragment {
             ssidTimer.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {System.out.println("timer");
-                    //ssid = wifiInfo.getBSSID();
+                    ssid = wifiInfo.getBSSID();
                     if(!ssid.equals(pastssid)){
                         pastssid = ssid;
                         getMapLocation();
