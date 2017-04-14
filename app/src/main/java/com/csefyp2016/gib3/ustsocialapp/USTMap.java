@@ -91,6 +91,7 @@ public class USTMap extends Fragment {
     private RequestQueue requestQueue;
     private StringRequest request;
     private WifiInfo wifiInfo;
+    private WifiManager wifiMgr;
 
     private static final String loginPreference = "LoginPreference";
     private SharedPreferences sharedPreferences;
@@ -138,7 +139,7 @@ public class USTMap extends Fragment {
         smallUser = (ImageView) view.findViewById(R.id.image_small_user);
         bigUser = (ImageView) view.findViewById(R.id.image_big_user);
 
-        WifiManager wifiMgr = (WifiManager) view.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        wifiMgr = (WifiManager) view.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         wifiInfo = wifiMgr.getConnectionInfo();
 
         getSelfID();
@@ -170,15 +171,27 @@ public class USTMap extends Fragment {
                 @Override
                 public void run() {System.out.println("timer");
                     ssid = wifiInfo.getBSSID();
-                    if(!ssid.equals(pastssid)){
-                        pastssid = ssid;
-                        getMapLocation();
-                    }
-                    else{
-                        if(correctSSID) {
-                            updateUserLocation();
-                            getLocationPeople();
+                    if(wifiMgr.isWifiEnabled()) {
+                        if (!ssid.equals(pastssid)) {
+                            pastssid = ssid;
+                            getMapLocation();
+                        } else {
+                            if (correctSSID) {
+                                updateUserLocation();
+                                getLocationPeople();
+                            }
                         }
+                    }
+                    else{System.out.println("no");
+                        if(enableTimer == true) {
+                            ssidTimer.cancel();
+                            if(haveLocation){
+                                deleteUserLocation();
+                            }
+                            enableTimer = false;
+                        }
+                        ssid = "no";
+                        getMapLocation();
                     }
                 }
             }, 0, 1000);
@@ -186,7 +199,9 @@ public class USTMap extends Fragment {
             System.out.println("end");
             if(enableTimer == true) {
                 ssidTimer.cancel();
-                deleteUserLocation();
+                if(haveLocation){
+                    deleteUserLocation();
+                }
                 enableTimer = false;
             }
         }
@@ -443,11 +458,7 @@ public class USTMap extends Fragment {
                 getActivity().finish();
             }
         });
-
-        // create alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();
-
-        // show it
         alertDialog.show();
     }
 }
