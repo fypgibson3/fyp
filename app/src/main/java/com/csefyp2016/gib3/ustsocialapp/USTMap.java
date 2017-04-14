@@ -66,7 +66,7 @@ import static android.view.Gravity.CENTER_VERTICAL;
 public class USTMap extends Fragment {
 
     private String ssid;
-    private String pastssid;
+    private String pastssid = "";
     private String mapName;
     private Integer smallMapX;
     private Integer smallMapY;
