@@ -193,7 +193,7 @@ public class USTMap extends Fragment {
                             enableTimer = false;
                         }
                         ssid = "no";
-                        getMapLocation();
+                        showWarning();
                     }
                 }
             }, 0, 1000);
