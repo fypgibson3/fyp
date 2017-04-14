@@ -34,7 +34,7 @@ public class IndividualChat extends AppCompatActivity {
     private static final String loginPreference = "LoginPreference";
 
     private Socket mSocket;
-    private List<Message> mMessages = new ArrayList<Message>();
+    private List<Message> mMessages = new ArrayList<>();
     private RecyclerView.Adapter mAdapter;
     private RecyclerView mMessagesView;
     private EditText mInputMessageView;
@@ -213,7 +213,6 @@ public class IndividualChat extends AppCompatActivity {
                         Log.e(TAG, e.getMessage());
                         return;
                     }
-
                     addMessage(username, message);
                     dbHandler.addMessage(username, message);
                 }
@@ -261,7 +260,6 @@ public class IndividualChat extends AppCompatActivity {
                         Log.e(TAG, e.getMessage());
                         return;
                     }
-
                     //addLog(getResources().getString(R.string.message_user_left, username));
                     //addParticipantsLog(numUsers);
                 }

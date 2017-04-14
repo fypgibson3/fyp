@@ -1,6 +1,5 @@
 package com.csefyp2016.gib3.ustsocialapp;
 
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
