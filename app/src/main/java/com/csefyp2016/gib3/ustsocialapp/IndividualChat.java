@@ -3,6 +3,7 @@ package com.csefyp2016.gib3.ustsocialapp;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -47,6 +48,8 @@ public class IndividualChat extends AppCompatActivity {
     private DBHandler dbHandler;
     private String lastLogIndex;
 
+    private SwipeRefreshLayout swipeRefreshLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,11 +68,11 @@ public class IndividualChat extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(profilePreference, Context.MODE_PRIVATE);
         mUsername = sharedPreferences.getString("DISPLAYNAME", null);
 
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(getResources().getString(R.string.title_activity_individual_chat_room));
         toolbar.setSubtitle(mTheFriendName);
         setSupportActionBar(toolbar);
+
         mAdapter = new MessageAdapter(this, mMessages);
         mMessagesView = (RecyclerView) findViewById(R.id.messages);
         mMessagesView.setLayoutManager(new LinearLayoutManager(this));
@@ -87,15 +90,6 @@ public class IndividualChat extends AppCompatActivity {
             }
         });
 
-        ImageButton sendButton = (ImageButton) findViewById(R.id.send_button);
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                attemptSend();
-            }
-        });
-
-
         dbHandler = new DBHandler(this, id + "00" + mTheFriendId);
         List<Message> previousMessage = dbHandler.getMessage();
         if (previousMessage != null) {
@@ -107,6 +101,23 @@ public class IndividualChat extends AppCompatActivity {
             }
         }
 
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(true);
+                swipeRefresh();
+            }
+        });
+
+        ImageButton sendButton = (ImageButton) findViewById(R.id.send_button);
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                attemptSend();
+            }
+        });
+
         MyApplication app = (MyApplication) getApplication();
         mSocket = app.getSocket();
         mSocket.on(Socket.EVENT_CONNECT, onConnect);
@@ -115,6 +126,32 @@ public class IndividualChat extends AppCompatActivity {
         mSocket.on("user joined", onUserJoined);
         mSocket.on("user left", onUserLeft);
         mSocket.connect();
+    }
+
+    private void swipeRefresh() {
+        if (lastLogIndex != "1") {
+            List<Message> messagesNew = new ArrayList<>();
+            List<Message> previousMessage = dbHandler.getMessage(lastLogIndex);
+            if (previousMessage != null) {
+                Message message = previousMessage.get(0);
+                lastLogIndex = message.getMessage();
+                //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                System.out.println("Last index is: " + lastLogIndex);
+                //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                for (int i = 1; i < previousMessage.size(); i++) {
+                    message = previousMessage.get(i);
+                    messagesNew.add(new Message.Builder(0).username(message.getUsername()).message(message.getMessage()).build());
+                }
+            }
+            messagesNew.addAll(mMessages);
+            //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+            System.out.println("Total number of Messages: " + messagesNew.size());
+            //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+            mMessages = messagesNew;
+            mAdapter = new MessageAdapter(this, mMessages);
+            mMessagesView.setAdapter(mAdapter);
+        }
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override

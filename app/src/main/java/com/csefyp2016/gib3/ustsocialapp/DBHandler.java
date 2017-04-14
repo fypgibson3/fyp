@@ -82,7 +82,10 @@ public class DBHandler extends SQLiteOpenHelper{
         if (cursor != null && cursor.getCount() != 0) {
             List<Message> messageList = new ArrayList<>();
             cursor.moveToFirst();
-            Message counter = new Message.Builder(0).username("start").message(cursor.getString(0)).build();
+            Message counter = new Message.Builder(0).username("start").message(String.valueOf(cursor.getInt(0))).build();
+            //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+            System.out.println("Update index up to: " + cursor.getInt(0));
+            //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
             messageList.add(counter);
             do {
                 Message message = new Message.Builder(0).username(cursor.getString(1)).message(cursor.getString(2)).build();
@@ -98,13 +101,16 @@ public class DBHandler extends SQLiteOpenHelper{
     public List<Message> getMessage(String start) {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT " + KEY_MESSAGE_ID + ", " + KEY_USER + ", " + KEY_MESSAGE + " FROM ( " +
-                "SELECT * FROM " + TABLE_NAME + " ORDER BY " + KEY_MESSAGE_ID + " DESC LIMIT 10 " +
-                ") WHERE " + KEY_MESSAGE_ID + " < " + start + " ORDER BY " + KEY_MESSAGE_ID + " ASC";
+                "SELECT * FROM " + TABLE_NAME + " WHERE " + KEY_MESSAGE_ID + " < " + start + " ORDER BY " + KEY_MESSAGE_ID + " DESC LIMIT 10 " +
+                ") ORDER BY " + KEY_MESSAGE_ID + " ASC";
         Cursor cursor = db.rawQuery(query, null);
-        if (cursor != null || cursor.getCount() != 0) {
+        if (cursor != null && cursor.getCount() != 0) {
             List<Message> messageList = new ArrayList<>();
             cursor.moveToFirst();
-            Message counter = new Message.Builder(0).username("start").message(cursor.getString(0)).build();
+            Message counter = new Message.Builder(0).username("start").message(String.valueOf(cursor.getInt(0))).build();
+            //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+            System.out.println("Update index up to: " + cursor.getInt(0));
+            //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
             messageList.add(counter);
             do {
                 Message message = new Message.Builder(0).username(cursor.getString(1)).message(cursor.getString(2)).build();
