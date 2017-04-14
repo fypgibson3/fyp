@@ -438,7 +438,7 @@ public class USTMap extends Fragment {
                 startActivity(new Intent(android.provider.Settings.ACTION_WIFI_SETTINGS));
             }
         });
-        alertDialogBuilder.setNegativeButton("BACK",new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setNegativeButton("Back",new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog,int id) {
                 ViewPager viewPager = USTSocialAppMain.mViewPager;
                 int returnFragment = viewPager.getCurrentItem() - 1;
