@@ -4,17 +4,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Canvas;
-import android.graphics.ColorFilter;
-import android.graphics.Paint;
-import android.graphics.PixelFormat;
-import android.graphics.Point;
-import android.graphics.Rect;
-import android.graphics.drawable.ClipDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
-import android.graphics.drawable.shapes.RectShape;
 import android.media.Image;
 import android.provider.ContactsContract;
 import android.support.annotation.BoolRes;
@@ -23,10 +12,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Display;
@@ -35,10 +24,7 @@ import android.widget.Button;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.content.Context;
 
@@ -60,7 +46,6 @@ import java.util.TimerTask;
 
 import static android.view.Gravity.CENTER;
 import static android.view.Gravity.CENTER_HORIZONTAL;
-import static android.view.Gravity.CENTER_VERTICAL;
 
 
 public class USTMap extends Fragment {
@@ -191,7 +176,7 @@ public class USTMap extends Fragment {
                             enableTimer = false;
                         }
                         ssid = "no";
-                        showWarning();
+                        getMapLocation();
                     }
                 }
             }, 0, 1000);
@@ -446,16 +431,18 @@ public class USTMap extends Fragment {
         }
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getView().getContext());
         alertDialogBuilder.setTitle("Service not available");
-        alertDialogBuilder.setMessage("Please connect to HKUST Wifi in order to continues using this service.");
+        alertDialogBuilder.setMessage("Please connect to HKUST Wifi in order to use this service.");
         alertDialogBuilder.setCancelable(false);
         alertDialogBuilder.setPositiveButton("Setting",new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog,int id) {
                 startActivity(new Intent(android.provider.Settings.ACTION_WIFI_SETTINGS));
             }
         });
-        alertDialogBuilder.setNegativeButton("Exit",new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setNegativeButton("BACK",new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog,int id) {
-                getActivity().finish();
+                ViewPager viewPager = USTSocialAppMain.mViewPager;
+                int returnFragment = viewPager.getCurrentItem() - 1;
+                viewPager.setCurrentItem(returnFragment);
             }
         });
         AlertDialog alertDialog = alertDialogBuilder.create();
