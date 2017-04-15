@@ -105,6 +105,8 @@ public class USTMap extends Fragment {
             public void onGlobalLayout() {
                 screenWidth = getView().findViewById(R.id.linearLayout_map).getWidth();
                 screenHeight = getView().findViewById(R.id.linearLayout_map).getHeight();
+                FrameLayout.LayoutParams bigMapSize = new FrameLayout.LayoutParams(screenWidth, screenHeight - instantChatroom.getHeight() - smallMap.getHeight() - 100);
+                bigMap.setLayoutParams(bigMapSize);
                 //System.out.println("width"+screenHeight);
             }
         });
@@ -122,8 +124,6 @@ public class USTMap extends Fragment {
 
         bigMapLayout = (FrameLayout) view.findViewById(R.id.frame_map);
         bigMap = (ImageView) view.findViewById(R.id.image_big_map);
-        FrameLayout.LayoutParams bigMapSize = new FrameLayout.LayoutParams(screenWidth, screenHeight - 950);
-        bigMap.setLayoutParams(bigMapSize);
         bigMapTitle = (TextView) view.findViewById(R.id.textView_big_map_title);
         smallMap = (ImageView) view.findViewById(R.id.image_map_location);
         smallUser = (ImageView) view.findViewById(R.id.image_small_user);
