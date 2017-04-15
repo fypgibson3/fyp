@@ -156,14 +156,24 @@ public class USTMap extends Fragment {
                 @Override
                 public void run() {System.out.println("timer");
                     ssid = wifiInfo.getBSSID();
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                    System.out.println("Bssid detected: " + ssid);
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
                     if(wifiMgr.isWifiEnabled()) {
                         if (!ssid.equals(pastssid)) {
                             pastssid = ssid;
                             getMapLocation();
-                        } else {
+                        }
+                        else {
+                            //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                            System.out.println("SSID changed");
+                            //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
                             if (correctSSID) {
                                 updateUserLocation();
                                 getLocationPeople();
+                            }
+                            else {
+                                getMapLocation();
                             }
                         }
                     }
