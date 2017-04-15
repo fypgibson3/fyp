@@ -1,6 +1,8 @@
 package com.csefyp2016.gib3.ustsocialapp;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Space;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
@@ -63,7 +66,12 @@ public class ViewProfile extends AppCompatActivity {
     private TextView personalDesView;
     private ImageView profilePictureShow;
 
+    private static final String friendListPreference = "FriendList";
+    private SharedPreferences sharedPreferences;
+
     private Button viewBlog;
+    private Button addFriend;
+    private Space separator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +82,23 @@ public class ViewProfile extends AppCompatActivity {
 
         Intent previousIntent = getIntent();
         friendId = previousIntent.getStringExtra("friendId");
+
+        sharedPreferences = getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
+        String friendIdList = sharedPreferences.getString("FDLIST_ID", null);
+        if (friendIdList != null && friendIdList.contains("," + friendId + ",")) {
+            addFriend = (Button) findViewById(R.id.b_viewProfile_addFriend);
+            addFriend.setVisibility(View.VISIBLE);
+            separator = (Space) findViewById(R.id.viewProfile_separator);
+            separator.setVisibility(View.VISIBLE);
+
+            addFriend.setOnClickListener(new Button.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    addFriend.setText("Pending");
+                    addFriend.setClickable(false);
+                }
+            });
+        }
 
         displayNameView = (TextView) findViewById(R.id.view_viewProfile_display_name);
         genderView = (TextView) findViewById(R.id.view_viewProfile_gender);

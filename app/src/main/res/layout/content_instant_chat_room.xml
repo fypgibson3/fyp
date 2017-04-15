@@ -14,7 +14,6 @@
     tools:context="com.csefyp2016.gib3.ustsocialapp.InstantChatRoom"
     tools:showIn="@layout/activity_instant_chat_room">
 
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/messages"
         android:layout_width="match_parent"

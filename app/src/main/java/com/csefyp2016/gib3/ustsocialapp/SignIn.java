@@ -38,10 +38,16 @@ public class SignIn extends AppCompatActivity {
     private String username;
     private String password;
     private Boolean remember = false;
+
+    private String fdIdList;
+    private String fdDisplayNameList;
+
     private static final String loginURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/loginCheck.php";
     private static final String profileURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getProfileInfo.php";
     private static final String profilePicURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getProfilePic.php";
     private static final String switchURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getSwitchInfo.php";
+    private static final String getFdIdListURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getFriendIdList.php";
+    private static final String getFdDisplayNameListURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getFriendDisplayNameList.php";
     private RequestQueue requestQueue;
     private StringRequest request;
     private ImageRequest imageRequest;
@@ -49,6 +55,7 @@ public class SignIn extends AppCompatActivity {
     private static final String loginPreference = "LoginPreference";
     private static final String profilePreference = "ProfilePreference";
     private static final String imagePreference = "ImagePreference";
+    private static final String friendListPreference = "FriendList";
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -358,6 +365,98 @@ public class SignIn extends AppCompatActivity {
         requestQueue.add(request);
     }
 
+    private void setFriendListIdPreference() {
+        request = new StringRequest(Request.Method.POST, getFdIdListURL, new Response.Listener<String>() {
+
+            @Override
+            // Response to request result
+            public void onResponse(String response) {
+                if (response.contains("Success")) {
+
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                    System.out.println(response);
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+
+                    String fdList = response.split(":")[1];
+                    fdIdList = fdList;
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                    System.out.println(fdList);
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+
+                    SharedPreferences sharedPreferences = getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor fdIdListEditor = sharedPreferences.edit();
+                    fdIdListEditor.putString("FDLIST_ID", fdList);
+                    fdIdListEditor.commit();
+
+                    setFriendListDisplayNamePreference();
+                } else {
+                    SharedPreferences sharedPreferences = getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("FDLIST_ID", null);
+                    editor.putString("FDLIST_DISPLAYNAME", null);
+                    editor.commit();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            // Post request parameters
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String, String> hashMap = new HashMap<String, String>();
+                hashMap.put("id", id);
+                return hashMap;
+            }
+        };
+        // Put the request to the queue
+        requestQueue.add(request);
+    }
+
+    private void setFriendListDisplayNamePreference() {
+        request = new StringRequest(Request.Method.POST, getFdDisplayNameListURL, new Response.Listener<String>() {
+
+            @Override
+            // Response to request result
+            public void onResponse(String response) {
+                if (response.contains("Success")) {
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                    System.out.println(response);
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+
+                    String fdList = response.split(":")[1];
+                    fdDisplayNameList = fdList;
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                    System.out.println(fdList);
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+
+                    SharedPreferences sharedPreferences = getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor fdNameListEditor = sharedPreferences.edit();
+                    fdNameListEditor.putString("FDLIST_DISPLAYNAME", fdList);
+                    fdNameListEditor.commit();
+
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            // Post request parameters
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String, String> hashMap = new HashMap<String, String>();
+                hashMap.put("list", fdIdList);
+                return hashMap;
+            }
+        };
+        // Put the request to the queue
+        requestQueue.add(request);
+    }
+
     //**************************************************************
     // Function: httpPostRequest
     // Description: To send HTTP post request to server
@@ -390,6 +489,7 @@ public class SignIn extends AppCompatActivity {
                     setPersonalDescriptionSharedPreference();
                     setProfilePicSharedPreference();
                     setSwitchSharedPreference();
+                    setFriendListIdPreference();
 
                     Intent intentOK = new Intent(getApplicationContext(), USTSocialAppMain.class);
                     //intentOK.putExtra("id", split[split.length -1]);
