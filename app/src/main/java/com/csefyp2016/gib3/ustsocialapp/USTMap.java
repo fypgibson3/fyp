@@ -19,12 +19,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Display;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.content.Context;
 
@@ -98,6 +100,15 @@ public class USTMap extends Fragment {
 
         requestQueue = Volley.newRequestQueue(view.getContext());
 
+        view.findViewById(R.id.linearLayout_map).getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                screenWidth = getView().findViewById(R.id.linearLayout_map).getWidth();
+                screenHeight = getView().findViewById(R.id.linearLayout_map).getHeight();
+                System.out.println("width"+screenHeight);
+            }
+        });
+        System.out.println("width" );
         DisplayMetrics displayMetrics = new DisplayMetrics();
         WindowManager wm = (WindowManager) view.getContext().getSystemService(Context.WINDOW_SERVICE);
         wm.getDefaultDisplay().getMetrics(displayMetrics);
@@ -117,7 +128,7 @@ public class USTMap extends Fragment {
 
         bigMapLayout = (FrameLayout) view.findViewById(R.id.frame_map);
         bigMap = (ImageView) view.findViewById(R.id.image_big_map);
-        FrameLayout.LayoutParams bigMapSize = new FrameLayout.LayoutParams(screenWidth, screenHeight - 920);
+        FrameLayout.LayoutParams bigMapSize = new FrameLayout.LayoutParams(screenWidth, screenHeight - 950);
         bigMap.setLayoutParams(bigMapSize);
         bigMapTitle = (TextView) view.findViewById(R.id.textView_big_map_title);
         smallMap = (ImageView) view.findViewById(R.id.image_map_location);
@@ -128,7 +139,7 @@ public class USTMap extends Fragment {
         wifiInfo = wifiMgr.getConnectionInfo();
 
         getSelfID();
-        //ssid = "84:B8:02:F7:10:";
+        //ssid = "84:B8:02:F7:10:D";
         //getMapLocation();
         return view;
     }
