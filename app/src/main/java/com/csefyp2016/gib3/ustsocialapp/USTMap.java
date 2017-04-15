@@ -105,15 +105,9 @@ public class USTMap extends Fragment {
             public void onGlobalLayout() {
                 screenWidth = getView().findViewById(R.id.linearLayout_map).getWidth();
                 screenHeight = getView().findViewById(R.id.linearLayout_map).getHeight();
-                System.out.println("width"+screenHeight);
+                //System.out.println("width"+screenHeight);
             }
         });
-        System.out.println("width" );
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        WindowManager wm = (WindowManager) view.getContext().getSystemService(Context.WINDOW_SERVICE);
-        wm.getDefaultDisplay().getMetrics(displayMetrics);
-        screenHeight = displayMetrics.heightPixels;
-        screenWidth = displayMetrics.widthPixels;
 
         location = (TextView) view.findViewById(R.id.textView_map_location);
         instantChatroom = (Button) view.findViewById(R.id.b_map_instant_chatroom);
