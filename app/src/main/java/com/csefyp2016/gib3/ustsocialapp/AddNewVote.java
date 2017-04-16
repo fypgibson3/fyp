@@ -1,17 +1,37 @@
 package com.csefyp2016.gib3.ustsocialapp;
 
+import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Button;
+import android.widget.Toast;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AddNewVote extends AppCompatActivity {
 
@@ -21,6 +41,12 @@ public class AddNewVote extends AppCompatActivity {
     private String[] voteOptions;
     private Integer voteNumOfOptions;
     private String voteWarning;
+    private int[] moreOptionId;
+
+    private static final String uploadStoryVoteURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/uploadStoryVote.php";
+
+    private RequestQueue requestQueue;
+    private StringRequest request;
 
     private ScrollView scrollView;
     private EditText title;
@@ -37,6 +63,10 @@ public class AddNewVote extends AppCompatActivity {
         setContentView(R.layout.activity_add_new_vote);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        requestQueue = Volley.newRequestQueue(this);
+
+        moreOptionId = new int[]{R.id.option3, R.id.option4, R.id.option5, R.id.option6, R.id.option7, R.id.option8, R.id.option9, R.id.option10};
 
         scrollView = (ScrollView) findViewById(R.id.scroll_addNewVote);
         title = (EditText) findViewById(R.id.i_addNewVote_title);
@@ -80,7 +110,18 @@ public class AddNewVote extends AppCompatActivity {
 
     private void submitButtonAction(){
         if(checkFillIn()) {
-
+            voteTitle = title.getText().toString();
+            voteHashtags = hashtags.getText().toString();
+            voteQuestion = question.getText().toString();
+            getOptionNum();
+            voteOptions = new String[voteNumOfOptions];
+            voteOptions[0] = options[0].getText().toString();
+            voteOptions[1] = options[1].getText().toString();
+            for(int i = 0; i < voteNumOfOptions - 3; i++){
+                EditText moreOption = (EditText) findViewById(moreOptionId[i]);
+                voteOptions[i+2] = moreOption.getText().toString();
+            }
+            uploadVote();
             this.finish();
         }
         else{
@@ -94,12 +135,10 @@ public class AddNewVote extends AppCompatActivity {
         getOptionNum();
         voteNumOfOptions += 1;
         numOfOptions.setText(String.valueOf(voteNumOfOptions));
-
-        TableLayout table = (TableLayout) findViewById(R.id.table_addNewVote);
         TableRow newRow = (TableRow) LayoutInflater.from(this).inflate(R.layout.add_vote_new_option_row, null);
         ((TextView) newRow.findViewById(R.id.view_addNewVote_newOption)).setText("Option " + voteNumOfOptions);
+        ((EditText) newRow.findViewById(R.id.i_addNewVote_new_option)).setId(moreOptionId[voteNumOfOptions-3]);
         table.addView(newRow);
-
         table.requestLayout();
     }
 
@@ -141,4 +180,50 @@ public class AddNewVote extends AppCompatActivity {
         voteNumOfOptions = Integer.parseInt(numOfOptions.getText().toString());
     }
 
+    private void uploadVote() {
+        request = new StringRequest(Request.Method.POST, uploadStoryVoteURL, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                if(response.contains("Success")){
+                    setToast("success");
+                }
+                else if(response.contains("Fail")){
+                    setToast("fail");
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String, String> hashMap = new HashMap<String, String>();
+                DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                Date date = new Date();
+                hashMap.put("date", dateFormat.format(date));
+                hashMap.put("title", voteTitle);
+                hashMap.put("hashtag", voteHashtags);
+                hashMap.put("question", voteQuestion);
+                String option = "";
+                for(int i = 0; i < voteNumOfOptions; i++){
+                    option = option + voteOptions[i] + "{[option]}";
+                }
+                hashMap.put("option", option);
+                return hashMap;
+            }
+        };
+        requestQueue.add(request);
+    }
+
+    private void setToast(String response){
+        if(response == "success"){
+            Toast.makeText(this, "Create story vote successful.", Toast.LENGTH_LONG).show();
+        }
+        else if(response == "fail"){
+            Toast.makeText(this, "Create story vote fail. Please try again.", Toast.LENGTH_LONG).show();
+        }
+    }
 }

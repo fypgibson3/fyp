@@ -122,7 +122,7 @@ public class AddNewPost extends AppCompatActivity {
         request = new StringRequest(Request.Method.POST, uploadStoryPostURL, new Response.Listener<String>() {
 
             @Override
-            public void onResponse(String response) {System.out.println(response);
+            public void onResponse(String response) {
                 if(response.contains("Success")){
                     setToast("success");
                 }
