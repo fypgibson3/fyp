@@ -8,6 +8,22 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AddNewPost extends AppCompatActivity {
 
@@ -15,6 +31,11 @@ public class AddNewPost extends AppCompatActivity {
     private String postHashtags;
     private String postContent;
     private String postWarning;
+
+    private static final String uploadStoryPostURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/uploadStoryPost.php";
+
+    private RequestQueue requestQueue;
+    private StringRequest request;
 
     private ScrollView scrollView;
     private EditText title;
@@ -28,6 +49,8 @@ public class AddNewPost extends AppCompatActivity {
         setContentView(R.layout.activity_add_new_post);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        requestQueue = Volley.newRequestQueue(this);
 
         scrollView = (ScrollView) findViewById(R.id.scroll_addNewPost);
         title = (EditText) findViewById(R.id.i_addNewPost_title);
@@ -61,7 +84,7 @@ public class AddNewPost extends AppCompatActivity {
             postTitle = title.getText().toString();
             postHashtags = hashtags.getText().toString();
             postContent = content.getText().toString();
-            //save to server
+            uploadPost();
             this.finish();
         }
         else{
@@ -92,6 +115,48 @@ public class AddNewPost extends AppCompatActivity {
         }
         else{
             return true;
+        }
+    }
+
+    private void uploadPost() {
+        request = new StringRequest(Request.Method.POST, uploadStoryPostURL, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {System.out.println(response);
+                if(response.contains("Success")){
+                    setToast("success");
+                }
+                else if(response.contains("Fail")){
+                    setToast("fail");
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String, String> hashMap = new HashMap<String, String>();
+                DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                Date date = new Date();
+                hashMap.put("date", dateFormat.format(date));
+                hashMap.put("title", postTitle);
+                hashMap.put("hashtag", postHashtags);
+                hashMap.put("content", postContent);
+                return hashMap;
+            }
+        };
+        requestQueue.add(request);
+    }
+
+    private void setToast(String response){
+        if(response == "success"){
+            Toast.makeText(this, "Create story post successful.", Toast.LENGTH_LONG).show();
+        }
+        else if(response == "fail"){
+            Toast.makeText(this, "Create story post fail. Please try again.", Toast.LENGTH_LONG).show();
         }
     }
 
