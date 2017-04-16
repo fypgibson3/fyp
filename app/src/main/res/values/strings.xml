@@ -509,5 +509,13 @@
     <string name="message_user_left">%s left</string>
     <string name="prompt_message">Message</string>
 
+    <item name="option3" type="id">i_addNewVote_option3</item>
+    <item name="option4" type="id">i_addNewVote_option4</item>
+    <item name="option5" type="id">i_addNewVote_option5</item>
+    <item name="option6" type="id">i_addNewVote_option6</item>
+    <item name="option7" type="id">i_addNewVote_option7</item>
+    <item name="option8" type="id">i_addNewVote_option8</item>
+    <item name="option9" type="id">i_addNewVote_option9</item>
+    <item name="option10" type="id">i_addNewVote_option10</item>
 
 </resources>
