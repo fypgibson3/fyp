@@ -209,7 +209,7 @@ public class AddNewVote extends AppCompatActivity {
                 hashMap.put("question", voteQuestion);
                 String option = "";
                 for(int i = 0; i < table.getChildCount(); i++){
-                    if(voteOptions[i] != null) {
+                    if(!voteOptions[i].isEmpty()) {
                         option = option + voteOptions[i] + "{[option]}";
                     }
                 }
