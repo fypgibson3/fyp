@@ -166,7 +166,7 @@ public class USTMap extends Fragment {
                 @Override
                 public void run() {System.out.println("timer");
                     ssid = wifiInfo.getBSSID();
-                    ssid = ssid.substring(0, 15);
+                    ssid = ssid.substring(0, 16);
                     //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
                     System.out.println("Bssid detected: " + ssid);
                     //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
@@ -346,6 +346,11 @@ public class USTMap extends Fragment {
         switch (mapName) {
             case "A2":
                 smallMap.setImageResource(R.drawable.a2);
+                smallMap.setScaleX(15);
+                smallMap.setScaleY(15);
+                break;
+            case "A4":
+                smallMap.setImageResource(R.drawable.a4);
                 smallMap.setScaleX(15);
                 smallMap.setScaleY(15);
                 break;
