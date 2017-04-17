@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -113,16 +114,17 @@ public class AddNewVote extends AppCompatActivity {
             voteTitle = title.getText().toString();
             voteHashtags = hashtags.getText().toString();
             voteQuestion = question.getText().toString();
-            getOptionNum();
+            voteOptions = new String[table.getChildCount()];
             for(int i = 0; i < table.getChildCount(); i++){
-
-            }
-            voteOptions = new String[voteNumOfOptions];
-            voteOptions[0] = options[0].getText().toString();
-            voteOptions[1] = options[1].getText().toString();
-            for(int i = 0; i < voteNumOfOptions - 3; i++){
-                EditText moreOption = (EditText) findViewById(moreOptionId[i]);
-                voteOptions[i+2] = moreOption.getText().toString();
+                View view = table.getChildAt(i);
+                if(view instanceof TableRow){
+                    TableRow row = (TableRow) view;
+                    view = row.getChildAt(1);
+                    if(view instanceof TextInputLayout) {
+                        TextInputLayout layout = (TextInputLayout) view;
+                        voteOptions[i] = layout.getEditText().getText().toString();
+                    }
+                }
             }
             uploadVote();
             this.finish();
@@ -135,12 +137,11 @@ public class AddNewVote extends AppCompatActivity {
     }
 
     private void addOptionButtonAction(){
-        getOptionNum();
+        voteNumOfOptions = table.getChildCount();
         voteNumOfOptions += 1;
         numOfOptions.setText(String.valueOf(voteNumOfOptions));
         TableRow newRow = (TableRow) LayoutInflater.from(this).inflate(R.layout.add_vote_new_option_row, null);
         ((TextView) newRow.findViewById(R.id.view_addNewVote_newOption)).setText("Option " + voteNumOfOptions);
-        ((EditText) newRow.findViewById(R.id.i_addNewVote_new_option)).setId(moreOptionId[voteNumOfOptions-3]);
         table.addView(newRow);
         table.requestLayout();
     }
@@ -148,11 +149,11 @@ public class AddNewVote extends AppCompatActivity {
     private boolean checkFillIn(){
         boolean moreThanOne = false;
         voteWarning = "Please fill in";
-        if(title.getText().toString() == ""){
+        if(title.getText().toString().isEmpty()){
             moreThanOne = true;
             voteWarning = voteWarning + " title";
         }
-        if(question.getText().toString() == ""){
+        if(question.getText().toString().isEmpty()){
             if(moreThanOne == true){
                 voteWarning = voteWarning + ", question";
             }
@@ -161,7 +162,7 @@ public class AddNewVote extends AppCompatActivity {
                 voteWarning = voteWarning + " question";
             }
         }
-        if(options[0].getText().toString() == "" || options[1].getText().toString() == ""){
+        if(options[0].getText().toString().isEmpty() || options[1].getText().toString().isEmpty()){
             if(moreThanOne == true){
                 voteWarning = voteWarning + ", options";
             }
@@ -177,10 +178,6 @@ public class AddNewVote extends AppCompatActivity {
         else{
             return true;
         }
-    }
-
-    private void getOptionNum(){
-        voteNumOfOptions = Integer.parseInt(numOfOptions.getText().toString());
     }
 
     private void uploadVote() {
