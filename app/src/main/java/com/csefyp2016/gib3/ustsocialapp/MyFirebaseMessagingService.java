@@ -31,16 +31,18 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             String room = remoteMessage.getData().get("room");
             String message = remoteMessage.getData().get("message");
 
-            // Check if message contains a notification payload.
-            if (remoteMessage.getNotification() != null) {
-                Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
 
-                EnterRoomEvent stickyEvent = EventBus.getDefault().getStickyEvent(EnterRoomEvent.class);
-                if (stickyEvent == null || !stickyEvent.getRoom().equals(room)) {
-                    // no chat room is entered, or entered room is not the target one
-                    sendNotification(userId, username, remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody());
-                }
+            EnterRoomEvent stickyEvent = EventBus.getDefault().getStickyEvent(EnterRoomEvent.class);
+            if (stickyEvent == null || !stickyEvent.getRoom().equals(room)) {
+                // no chat room is entered, or entered room is not the target one
+                sendNotification(userId, username, username, message);
             }
+        }
+
+        // Check if message contains a notification payload.
+        if (remoteMessage.getNotification() != null) {
+            Log.d(TAG, "Message Notification Title: " + remoteMessage.getNotification().getTitle());
+            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
         }
     }
 
