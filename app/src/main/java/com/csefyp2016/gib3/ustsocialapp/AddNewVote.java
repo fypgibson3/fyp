@@ -114,6 +114,9 @@ public class AddNewVote extends AppCompatActivity {
             voteHashtags = hashtags.getText().toString();
             voteQuestion = question.getText().toString();
             getOptionNum();
+            for(int i = 0; i < table.getChildCount(); i++){
+
+            }
             voteOptions = new String[voteNumOfOptions];
             voteOptions[0] = options[0].getText().toString();
             voteOptions[1] = options[1].getText().toString();
