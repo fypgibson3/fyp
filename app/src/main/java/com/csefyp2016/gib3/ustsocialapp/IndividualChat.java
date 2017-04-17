@@ -17,6 +17,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -42,6 +45,7 @@ public class IndividualChat extends AppCompatActivity {
     private String mUsername = "user name";
     private String mTheFriendId;
     private String mTheFriendName;
+    private String roomName;
 
     private SharedPreferences sharedPreferences;
 
@@ -59,11 +63,16 @@ public class IndividualChat extends AppCompatActivity {
         if (extras == null) {
             return;
         }
+        String token = FirebaseInstanceId.getInstance().getToken();
+
+
         mTheFriendId = extras.getString("the_friend_id");
         mTheFriendName = extras.getString("the_friend_name");
 
         sharedPreferences = getSharedPreferences(loginPreference, Context.MODE_PRIVATE);
         id = sharedPreferences.getString("ID", null);
+
+        roomName = getTheIndividualRoomName(id, mTheFriendId);
 
         sharedPreferences = getSharedPreferences(profilePreference, Context.MODE_PRIVATE);
         mUsername = sharedPreferences.getString("DISPLAYNAME", null);
@@ -155,6 +164,22 @@ public class IndividualChat extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        // indicate the chat room is entered
+        EventBus.getDefault().postSticky(new EnterRoomEvent(roomName));
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        // indicate the chat room is left
+        EnterRoomEvent stickyEvent = EventBus.getDefault().removeStickyEvent(EnterRoomEvent.class);
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
 
@@ -174,7 +199,7 @@ public class IndividualChat extends AppCompatActivity {
                 @Override
                 public void run() {
                     if (null != mUsername) {
-                        mSocket.emit("add user", getTheIndividualRoomName(id, mTheFriendId), mUsername);
+                        mSocket.emit("add user", roomName, id, mUsername);
                     }
 //                        Toast.makeText(this,
 //                                R.string.connect, Toast.LENGTH_LONG).show();
@@ -322,7 +347,6 @@ public class IndividualChat extends AppCompatActivity {
         Collections.sort(nameList);
         return nameList.get(0) + "00" + nameList.get(1);
     }
-
 
 
 }
