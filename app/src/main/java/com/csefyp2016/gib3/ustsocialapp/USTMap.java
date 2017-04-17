@@ -145,6 +145,7 @@ public class USTMap extends Fragment {
     public void onPause() {System.out.println("pause");
         super.onPause();
         currentView = false;
+        pastssid = "";
         if(enableTimer == true) {
             ssidTimer.cancel();
             if(haveLocation) {
@@ -204,6 +205,7 @@ public class USTMap extends Fragment {
         } else {
             System.out.println("end");
             currentView = false;
+            pastssid = "";
             if(enableTimer == true) {
                 ssidTimer.cancel();
                 if(haveLocation){
