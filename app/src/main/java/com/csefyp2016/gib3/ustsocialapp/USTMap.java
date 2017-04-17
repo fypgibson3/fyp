@@ -69,6 +69,7 @@ public class USTMap extends Fragment {
     private Integer screenHeight;
     private Boolean correctSSID = false;
     private Boolean haveLocation = false;
+    private Boolean currentView = false;
 
     private static final String getMapLocationURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getMapLocation.php";
     private static final String getLocationPeopleURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getLocationPeople.php";
@@ -103,11 +104,13 @@ public class USTMap extends Fragment {
         view.findViewById(R.id.linearLayout_map).getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                screenWidth = getView().findViewById(R.id.linearLayout_map).getWidth();
-                screenHeight = getView().findViewById(R.id.linearLayout_map).getHeight();
-                FrameLayout.LayoutParams bigMapSize = new FrameLayout.LayoutParams(screenWidth, screenHeight - instantChatroom.getHeight() - smallMap.getHeight() - 100);
-                bigMap.setLayoutParams(bigMapSize);
-                //System.out.println("width"+screenHeight);
+                if(currentView) {
+                    screenWidth = getView().findViewById(R.id.linearLayout_map).getWidth();
+                    screenHeight = getView().findViewById(R.id.linearLayout_map).getHeight();
+                    FrameLayout.LayoutParams bigMapSize = new FrameLayout.LayoutParams(screenWidth, screenHeight - instantChatroom.getHeight() - smallMap.getHeight() - 100);
+                    bigMap.setLayoutParams(bigMapSize);
+                    //System.out.println("width"+screenHeight);
+                }
             }
         });
 
@@ -141,6 +144,7 @@ public class USTMap extends Fragment {
     @Override
     public void onPause() {System.out.println("pause");
         super.onPause();
+        currentView = false;
         if(enableTimer == true) {
             ssidTimer.cancel();
             if(haveLocation) {
@@ -155,6 +159,7 @@ public class USTMap extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
             System.out.println("start");
+            currentView = true;
             enableTimer = true;
             ssidTimer = new Timer();
             ssidTimer.scheduleAtFixedRate(new TimerTask() {
@@ -197,6 +202,7 @@ public class USTMap extends Fragment {
             }, 0, 1000);
         } else {
             System.out.println("end");
+            currentView = false;
             if(enableTimer == true) {
                 ssidTimer.cancel();
                 if(haveLocation){
@@ -211,7 +217,7 @@ public class USTMap extends Fragment {
         request = new StringRequest(Request.Method.POST, getMapLocationURL, new Response.Listener<String>() {
 
             @Override
-            public void onResponse(String response) {System.out.println(response);
+            public void onResponse(String response) {
                 if(response.length() != 0) {
                     correctSSID = true;
                     String[] mapphp = response.split("~");
