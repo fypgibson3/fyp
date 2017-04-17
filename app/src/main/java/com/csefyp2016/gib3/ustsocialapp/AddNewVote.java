@@ -208,8 +208,10 @@ public class AddNewVote extends AppCompatActivity {
                 hashMap.put("hashtag", voteHashtags);
                 hashMap.put("question", voteQuestion);
                 String option = "";
-                for(int i = 0; i < voteNumOfOptions; i++){
-                    option = option + voteOptions[i] + "{[option]}";
+                for(int i = 0; i < table.getChildCount(); i++){
+                    if(voteOptions[i] != null) {
+                        option = option + voteOptions[i] + "{[option]}";
+                    }
                 }
                 hashMap.put("option", option);
                 return hashMap;
