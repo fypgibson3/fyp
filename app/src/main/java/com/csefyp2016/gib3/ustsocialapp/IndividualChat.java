@@ -17,6 +17,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -59,6 +61,9 @@ public class IndividualChat extends AppCompatActivity {
         if (extras == null) {
             return;
         }
+        String token = FirebaseInstanceId.getInstance().getToken();
+
+
         mTheFriendId = extras.getString("the_friend_id");
         mTheFriendName = extras.getString("the_friend_name");
 

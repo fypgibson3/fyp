@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "271432721439",
+    "firebase_url": "https://myfyp-d7cc7.firebaseio.com",
+    "project_id": "myfyp-d7cc7",
+    "storage_bucket": "myfyp-d7cc7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:271432721439:android:df55a55b628e300d",
+        "android_client_info": {
+          "package_name": "com.csefyp2016.gib3.ustsocialapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "271432721439-r9sg7ueun9in6clojss5avhn950anbtg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.csefyp2016.gib3.ustsocialapp",
+            "certificate_hash": "aa138ee4e617781dd494b7e6fe060853f3c8885d"
+          }
+        },
+        {
+          "client_id": "271432721439-icsgeqp31auj6ojittfkbracu91gt8hb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.csefyp2016.gib3.ustsocialapp",
+            "certificate_hash": "a83a4444635107d169b008afd4a7009129f8b33e"
+          }
+        },
+        {
+          "client_id": "271432721439-5gg9bjpl4imegjvm8ijgl4b42qojtl0l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCy0937AuPGox3uLrdstHBJVnGRlBHrFKY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "271432721439-5gg9bjpl4imegjvm8ijgl4b42qojtl0l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
