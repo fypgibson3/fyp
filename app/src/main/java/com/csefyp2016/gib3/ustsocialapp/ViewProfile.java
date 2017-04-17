@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Space;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -23,6 +25,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,9 +33,11 @@ public class ViewProfile extends AppCompatActivity {
     private static final String profileURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getProfileInfo.php";
     private static final String profilePicURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getProfilePic.php";
     private static final String switchURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getSwitchInfo.php";
+    private static final String friendShipURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/createFriendship.php";
     private RequestQueue requestQueue;
     private StringRequest request;
 
+    private String id;
     private String friendId;
 
     private Bitmap profilePicture;
@@ -66,6 +71,7 @@ public class ViewProfile extends AppCompatActivity {
     private TextView personalDesView;
     private ImageView profilePictureShow;
 
+    private static  final String loginPreference = "LoginPreference";
     private static final String friendListPreference = "FriendList";
     private SharedPreferences sharedPreferences;
 
@@ -80,12 +86,16 @@ public class ViewProfile extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        sharedPreferences = getSharedPreferences(loginPreference, Context.MODE_PRIVATE);
+        id = sharedPreferences.getString("ID", null);
+
         Intent previousIntent = getIntent();
         friendId = previousIntent.getStringExtra("friendId");
 
+
         sharedPreferences = getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
-        String friendIdList = sharedPreferences.getString("FDLIST_ID", null);
-        if (friendIdList != null && friendIdList.contains("," + friendId + ",")) {
+        String[] friendIdList = sharedPreferences.getString("FDLIST_ID", null).split(",");
+        if (friendIdList != null && !Arrays.asList(friendIdList).contains(friendId)) {
             addFriend = (Button) findViewById(R.id.b_viewProfile_addFriend);
             addFriend.setVisibility(View.VISIBLE);
             separator = (Space) findViewById(R.id.viewProfile_separator);
@@ -94,8 +104,7 @@ public class ViewProfile extends AppCompatActivity {
             addFriend.setOnClickListener(new Button.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    addFriend.setText("Pending");
-                    addFriend.setClickable(false);
+                    sendFriendshipRequest();
                 }
             });
         }
@@ -402,6 +411,42 @@ public class ViewProfile extends AppCompatActivity {
                 HashMap<String, String> hashMap = new HashMap<String, String>();
                 hashMap.put("id", friendId);
                 hashMap.put("content", "simple");
+                return hashMap;
+            }
+        };
+        // Put the request to the queue
+        requestQueue.add(request);
+    }
+
+    private void sendFriendshipRequest() {
+        request = new StringRequest(Request.Method.POST, friendShipURL, new Response.Listener<String>() {
+
+            @Override
+            // Response to request result
+            public void onResponse(String response) {
+                if (response.contains("Success")) {
+                    addFriend.setText("Pending");
+                    addFriend.setBackgroundColor(Color.GRAY);
+                    addFriend.setClickable(false);
+
+                    Toast.makeText(getApplicationContext(), "Request is sent. \nPlease wait for acceptance.", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Failed to send request. \nPlease try again later.", Toast.LENGTH_LONG).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            // Post request parameters
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String, String> hashMap = new HashMap<String, String>();
+                hashMap.put("id", id);
+                hashMap.put("friendId", friendId);
                 return hashMap;
             }
         };

@@ -2,14 +2,14 @@ package com.csefyp2016.gib3.ustsocialapp;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.media.Image;
+import android.content.Intent;import android.media.Image;
 import android.provider.ContactsContract;
 import android.support.annotation.BoolRes;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.content.SharedPreferences;
+
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -166,11 +166,11 @@ public class USTMap extends Fragment {
                 @Override
                 public void run() {System.out.println("timer");
                     ssid = wifiInfo.getBSSID();
-                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
-                    System.out.println("Bssid detected: " + ssid);
-                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
                     if(wifiMgr.isWifiEnabled()) {
                         ssid = ssid.substring(0, 16);
+                        //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                        System.out.println("Bssid detected: " + ssid);
+                        //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
                         if (!ssid.equals(pastssid)) {
                             pastssid = ssid;
                             getMapLocation();
