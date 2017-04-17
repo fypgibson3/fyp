@@ -166,6 +166,7 @@ public class USTMap extends Fragment {
                 @Override
                 public void run() {System.out.println("timer");
                     ssid = wifiInfo.getBSSID();
+                    ssid = ssid.substring(0, 15);
                     //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
                     System.out.println("Bssid detected: " + ssid);
                     //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
