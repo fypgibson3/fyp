@@ -107,6 +107,10 @@
             android:name=".EditProfile"
             android:label="@string/title_activity_edit_profile"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AddNewHashtag"
+            android:label="@string/title_activity_add_new_hashtag"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
