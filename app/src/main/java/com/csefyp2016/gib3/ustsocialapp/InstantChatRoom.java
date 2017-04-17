@@ -36,6 +36,7 @@ public class InstantChatRoom extends AppCompatActivity {
 
     private final static String TAG = "InstantChatRoom";
     private static final String profilePreference = "ProfilePreference";
+    private static final String loginPreference = "LoginPreference";
 
     private Socket mSocket;
     private List<Message> mMessages = new ArrayList<Message>();
@@ -44,6 +45,7 @@ public class InstantChatRoom extends AppCompatActivity {
     private EditText mInputMessageView;
     private String mUsername = "user name";
     private String mRegion = "region_a";
+    private String id;
 
     private SharedPreferences sharedPreferences;
 
@@ -58,6 +60,9 @@ public class InstantChatRoom extends AppCompatActivity {
             return;
         }
         mRegion = extras.getString("region");
+
+        sharedPreferences = getSharedPreferences(loginPreference, Context.MODE_PRIVATE);
+        id = sharedPreferences.getString("ID", null);
 
         sharedPreferences = getSharedPreferences(profilePreference, Context.MODE_PRIVATE);
         mUsername = sharedPreferences.getString("DISPLAYNAME", null);
@@ -123,7 +128,7 @@ public class InstantChatRoom extends AppCompatActivity {
                 @Override
                 public void run() {
                     if (null != mUsername)
-                        mSocket.emit("add user", mRegion, mUsername);
+                        mSocket.emit("add user", mRegion, id, mUsername);
 //                        Toast.makeText(this,
 //                                R.string.connect, Toast.LENGTH_LONG).show();
                 }

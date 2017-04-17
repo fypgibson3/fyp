@@ -13,6 +13,8 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import org.greenrobot.eventbus.EventBus;
+
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMsgService";
@@ -26,12 +28,18 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
             String userId = remoteMessage.getData().get("userId");
             String username = remoteMessage.getData().get("username");
+            String room = remoteMessage.getData().get("room");
             String message = remoteMessage.getData().get("message");
 
             // Check if message contains a notification payload.
             if (remoteMessage.getNotification() != null) {
                 Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-                sendNotification(userId, username, remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody());
+
+                EnterRoomEvent stickyEvent = EventBus.getDefault().getStickyEvent(EnterRoomEvent.class);
+                if (stickyEvent == null || !stickyEvent.getRoom().equals(room)) {
+                    // no chat room is entered, or entered room is not the target one
+                    sendNotification(userId, username, remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody());
+                }
             }
         }
     }
