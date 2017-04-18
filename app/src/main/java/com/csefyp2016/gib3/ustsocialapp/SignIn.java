@@ -24,6 +24,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -48,6 +49,7 @@ public class SignIn extends AppCompatActivity {
     private static final String switchURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getSwitchInfo.php";
     private static final String getFdIdListURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getFriendIdList.php";
     private static final String getFdDisplayNameListURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getFriendDisplayNameList.php";
+    private static final String tokenURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/refreshToken.php";
     private RequestQueue requestQueue;
     private StringRequest request;
     private ImageRequest imageRequest;
@@ -457,6 +459,43 @@ public class SignIn extends AppCompatActivity {
         requestQueue.add(request);
     }
 
+    private void refreshToken(final String token) {
+        request = new StringRequest(Request.Method.POST, tokenURL, new Response.Listener<String>() {
+
+            @Override
+            // Response to request result
+            public void onResponse(String response) {
+                //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                if (response.contains("Success")) {
+                    System.out.println("User device token is updated!");
+                }
+                else {
+                    System.out.println("Failed to update user device token!!");
+                }
+                //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            // Post request parameters
+            protected Map<String, String> getParams() throws AuthFailureError {
+                sharedPreferences = getSharedPreferences(loginPreference, Context.MODE_PRIVATE);
+                id = sharedPreferences.getString("ID", null);
+
+                HashMap<String, String> hashMap = new HashMap<String, String>();
+                hashMap.put("id", id);
+                hashMap.put("token", token);
+                return hashMap;
+            }
+        };
+        // Put the request to the queue
+        requestQueue.add(request);
+    }
+
     //**************************************************************
     // Function: httpPostRequest
     // Description: To send HTTP post request to server
@@ -475,6 +514,7 @@ public class SignIn extends AppCompatActivity {
                     id = split[split.length-1];
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("ID", split[split.length-1]);
+                    editor.putBoolean("LOGIN", true);
                     if (remember) {
                         editor.putBoolean("REMEMBER", remember);
                         editor.putString("USERNAME", username);
@@ -490,6 +530,9 @@ public class SignIn extends AppCompatActivity {
                     setProfilePicSharedPreference();
                     setSwitchSharedPreference();
                     setFriendListIdPreference();
+
+                    String token = FirebaseInstanceId.getInstance().getToken();
+                    refreshToken(token);
 
                     Intent intentOK = new Intent(getApplicationContext(), USTSocialAppMain.class);
                     //intentOK.putExtra("id", split[split.length -1]);
