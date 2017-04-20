@@ -20,7 +20,6 @@ import com.android.volley.toolbox.Volley;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +27,6 @@ import java.util.Map;
 public class AddNewPost extends AppCompatActivity {
 
     private String postTitle;
-    private String postHashtags;
     private String postContent;
     private String postWarning;
 
@@ -39,9 +37,10 @@ public class AddNewPost extends AppCompatActivity {
 
     private ScrollView scrollView;
     private EditText title;
-    private EditText hashtags;
     private EditText content;
     private TextView warning;
+    private Button submit;
+    private Button cancel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,20 +53,19 @@ public class AddNewPost extends AppCompatActivity {
 
         scrollView = (ScrollView) findViewById(R.id.scroll_addNewPost);
         title = (EditText) findViewById(R.id.i_addNewPost_title);
-        //hashtags = (EditText) findViewById(R.id.i_addNewPost_hashtags);
         content = (EditText) findViewById(R.id.i_addNewPost_content);
         warning = (TextView) findViewById(R.id.view_addNewPost_warning);
 
-        Button cancelButton = (Button) findViewById(R.id.b_addNewPost_cancel);
-        cancelButton.setOnClickListener(new Button.OnClickListener() {
+        cancel = (Button) findViewById(R.id.b_addNewPost_cancel);
+        cancel.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
                 cancelButtonAction();
             }
         });
 
-        Button submitButton = (Button) findViewById(R.id.b_addNewPost_submit);
-        submitButton.setOnClickListener(new Button.OnClickListener() {
+        submit = (Button) findViewById(R.id.b_addNewPost_submit);
+        submit.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
                 submitButtonAction();
@@ -82,7 +80,6 @@ public class AddNewPost extends AppCompatActivity {
     private void submitButtonAction(){
         if(checkFillIn()) {
             postTitle = title.getText().toString();
-            //postHashtags = hashtags.getText().toString();
             postContent = content.getText().toString();
             uploadPost();
             this.finish();
@@ -143,7 +140,6 @@ public class AddNewPost extends AppCompatActivity {
                 Date date = new Date();
                 hashMap.put("date", dateFormat.format(date));
                 hashMap.put("title", postTitle);
-                //hashMap.put("hashtag", postHashtags);
                 hashMap.put("content", postContent);
                 return hashMap;
             }

@@ -10,11 +10,13 @@
     tools:context="com.csefyp2016.gib3.ustsocialapp.USTSocialAppMain">
 
 
-    <RelativeLayout
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/story_swipe"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ScrollView
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/story_scroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentTop="true"
@@ -25,21 +27,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-
-
-
-                </TableRow>
 
             </TableLayout>
 
-        </ScrollView>
+        </android.support.v4.widget.NestedScrollView>
 
-    </RelativeLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 
     <android.support.design.widget.CoordinatorLayout
