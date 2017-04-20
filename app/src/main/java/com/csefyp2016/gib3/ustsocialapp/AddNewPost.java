@@ -28,7 +28,6 @@ import java.util.Map;
 public class AddNewPost extends AppCompatActivity {
 
     private String postTitle;
-    private String postHashtags;
     private String postContent;
     private String postWarning;
 
@@ -39,7 +38,6 @@ public class AddNewPost extends AppCompatActivity {
 
     private ScrollView scrollView;
     private EditText title;
-    private EditText hashtags;
     private EditText content;
     private TextView warning;
 
@@ -54,7 +52,6 @@ public class AddNewPost extends AppCompatActivity {
 
         scrollView = (ScrollView) findViewById(R.id.scroll_addNewPost);
         title = (EditText) findViewById(R.id.i_addNewPost_title);
-        hashtags = (EditText) findViewById(R.id.i_addNewPost_hashtags);
         content = (EditText) findViewById(R.id.i_addNewPost_content);
         warning = (TextView) findViewById(R.id.view_addNewPost_warning);
 
@@ -82,7 +79,6 @@ public class AddNewPost extends AppCompatActivity {
     private void submitButtonAction(){
         if(checkFillIn()) {
             postTitle = title.getText().toString();
-            postHashtags = hashtags.getText().toString();
             postContent = content.getText().toString();
             uploadPost();
             this.finish();
@@ -143,7 +139,6 @@ public class AddNewPost extends AppCompatActivity {
                 Date date = new Date();
                 hashMap.put("date", dateFormat.format(date));
                 hashMap.put("title", postTitle);
-                hashMap.put("hashtag", postHashtags);
                 hashMap.put("content", postContent);
                 return hashMap;
             }
