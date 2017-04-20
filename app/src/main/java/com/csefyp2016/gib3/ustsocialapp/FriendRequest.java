@@ -23,8 +23,6 @@ public class FriendRequest extends AppCompatActivity {
 
         //listView = (ListView) findViewById(android.R.id.list);
         //listView.setAdapter(adaptor);
-
-
     }
 
 }

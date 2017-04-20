@@ -51,7 +51,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 if (unreadMessageCount == -1) {
                     editor.putInt(room, 0);
                     editor.putString(room + "_message0", message);
-
                 }
                 else {
                     int newCount = unreadMessageCount + 1;

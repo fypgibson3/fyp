@@ -122,7 +122,6 @@ public class IndividualChat extends AppCompatActivity {
         if (unreadMessageCount != -1) {
             for (int i = 0; i <= unreadMessageCount; i++) {
                 String message = sharedPreferences.getString(roomName + "_message" + i, null);
-                System.out.println(message);
                 addMessage(mTheFriendName, message);
                 dbHandler.addMessage(mTheFriendName, message);
                 editor.remove(roomName + "_message" + i);

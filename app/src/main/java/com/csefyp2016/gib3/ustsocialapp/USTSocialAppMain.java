@@ -64,7 +64,6 @@ public class USTSocialAppMain extends AppCompatActivity {
         }
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -102,7 +101,6 @@ public class USTSocialAppMain extends AppCompatActivity {
             startActivity(new Intent(USTSocialAppMain.this, FriendRequest.class));
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
