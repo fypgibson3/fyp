@@ -14,7 +14,7 @@
     <dimen name="bigMap_title">22sp</dimen>
 
     <!-- UST Story -->
-    <dimen name="ustStory_title_size">28sp</dimen>
-    <dimen name="ustStory_dateTime_size">20sp</dimen>
-    <dimen name="ustStory_content_size">24sp</dimen>
+    <dimen name="ustStory_title_size">22sp</dimen>
+    <dimen name="ustStory_dateTime_size">14sp</dimen>
+    <dimen name="ustStory_content_size">18sp</dimen>
 </resources>

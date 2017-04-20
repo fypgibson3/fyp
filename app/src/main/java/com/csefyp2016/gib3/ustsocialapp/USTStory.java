@@ -2,15 +2,23 @@ package com.csefyp2016.gib3.ustsocialapp;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.support.annotation.IdRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.widget.NestedScrollView;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -32,9 +40,8 @@ import java.util.Map;
 public class USTStory extends Fragment {
 
     private Integer shownStory = 0;
-    private Integer[] storyId = new Integer[10];
+    private Integer[] storyId;
     private String[] content;
-    private Boolean firstTime = true;
 
     private static final String getStoryIdURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getStoryId.php";
     private static final String getStoryURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getStory.php";
@@ -43,6 +50,8 @@ public class USTStory extends Fragment {
     private StringRequest request;
 
     private FloatingActionButton addStory;
+    private SwipeRefreshLayout swipeLayout;
+    private NestedScrollView scrollView;
     private TableLayout table;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,6 +60,25 @@ public class USTStory extends Fragment {
 
         requestQueue = Volley.newRequestQueue(view.getContext());
 
+        swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.story_swipe);
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refresh();
+            }
+        });
+        scrollView = (NestedScrollView) view.findViewById(R.id.story_scroll);
+        scrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                View view = (View) scrollView.getChildAt(scrollView.getChildCount() - 1);
+                int diff = (view.getBottom() - (scrollView.getHeight() + scrollView.getScrollY()));
+                if (diff == 0) {
+                    System.out.println("show" + shownStory);
+                    requestStoryId();
+                }
+            }
+        });
         table = (TableLayout) view.findViewById(R.id.story_table);
         addStory = (FloatingActionButton) view.findViewById(R.id.fab_ustStory_add_story);
         addStory.setOnClickListener(new View.OnClickListener() {
@@ -82,16 +110,28 @@ public class USTStory extends Fragment {
         return view;
     }
 
+    private void refresh() {
+        table.removeAllViewsInLayout();
+        shownStory = 0;
+        requestStoryId();
+        swipeLayout.setRefreshing(false);
+    }
+
     private void requestStoryId(){
         request = new StringRequest(Request.Method.POST, getStoryIdURL, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {System.out.println(response);
                 String[] story = response.split("~");
+                storyId = new Integer[story.length];
                 for(int i = 0; i < story.length; i++){
-                    storyId[i] = Integer.parseInt(story[i]);System.out.println(storyId[i]);
+                    if(story[i] != "") {
+                        storyId[i] = Integer.parseInt(story[i]);
+                    }
                 }
-                requestStoryContent(storyId[0], 0);
+                if(story[0] != "") {
+                    requestStoryContent(storyId[0], 0);
+                }
             }
         }, new Response.ErrorListener() {
             @Override
@@ -103,20 +143,13 @@ public class USTStory extends Fragment {
             protected Map<String, String> getParams() throws AuthFailureError {
                 HashMap<String, String> hashMap = new HashMap<String, String>();
                 hashMap.put("shown", shownStory.toString());
-                if(firstTime){
-                    firstTime = false;
-                    hashMap.put("lastest", "0");
-                }
-                else{
-                    hashMap.put("lastest", storyId[storyId.length-1].toString());
-                }
                 return hashMap;
             }
         };
         requestQueue.add(request);
     }
 
-    private void requestStoryContent(final Integer storyid,final Integer i){System.out.println("request" + storyid);
+    private void requestStoryContent(final Integer storyid,final Integer i){
 
         request = new StringRequest(Request.Method.POST, getStoryURL, new Response.Listener<String>() {
 
@@ -150,16 +183,36 @@ public class USTStory extends Fragment {
         TextView title = (TextView) newRow.findViewById(R.id.story_title);
         TextView datetime = (TextView) newRow.findViewById(R.id.story_date);
         TextView wording = (TextView) newRow.findViewById(R.id.story_content);
+        RadioGroup radioGroup = (RadioGroup) newRow.findViewById(R.id.story_radiogroup);
         TextView currentId = (TextView) newRow.findViewById(R.id.story_currentId);
         Button attitude = (Button) newRow.findViewById(R.id.story_attitude);
         Button comment = (Button) newRow.findViewById(R.id.story_comment);
         title.setText(content[2]);
-        datetime.setText(content[1]);;
+        datetime.setText(content[1]);
+        wording.setText(content[4]);
         if(content[0].contains("post")){
-            wording.setText(content[4]);
+
         }
         else{
-            wording.setText(content[4]);
+            String[] option = content[5].split("`~>@!");
+            radioGroup.setVisibility(View.VISIBLE);
+                for(int i = 0; i < option.length - 1; i++){
+                RadioButton radioButton = (RadioButton) LayoutInflater.from(getView().getContext()).inflate(R.layout.story_radio, null);
+                radioButton.setText(option[i]);
+                radioGroup.addView(radioButton);
+                radioGroup.requestLayout();
+            }
+            radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup radioGroup, @IdRes int id) {
+                    RadioButton radio = (RadioButton) getView().findViewById(id);
+                    for(int i = 0; i < radioGroup.getChildCount(); i++){
+                        RadioButton radioButton = (RadioButton) radioGroup.getChildAt(i);
+                        radioButton.setEnabled(false);
+                        radioButton.setTextColor(Color.BLACK);
+                    }
+                }
+            });
         }
         currentId.setText(storyid.toString());
         attitude.setOnClickListener(new View.OnClickListener() {

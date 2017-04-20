@@ -35,6 +35,14 @@
             android:textSize="@dimen/ustStory_content_size"
             android:textColor="@android:color/background_dark"/>
 
+        <RadioGroup
+            android:id="@+id/story_radiogroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+        </RadioGroup>
+
         <Space
             android:layout_width="match_parent"
             android:layout_height="5dp" />
