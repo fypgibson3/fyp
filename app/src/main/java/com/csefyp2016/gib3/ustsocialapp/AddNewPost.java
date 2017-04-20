@@ -20,7 +20,6 @@ import com.android.volley.toolbox.Volley;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,6 +39,8 @@ public class AddNewPost extends AppCompatActivity {
     private EditText title;
     private EditText content;
     private TextView warning;
+    private Button submit;
+    private Button cancel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,16 +56,16 @@ public class AddNewPost extends AppCompatActivity {
         content = (EditText) findViewById(R.id.i_addNewPost_content);
         warning = (TextView) findViewById(R.id.view_addNewPost_warning);
 
-        Button cancelButton = (Button) findViewById(R.id.b_addNewPost_cancel);
-        cancelButton.setOnClickListener(new Button.OnClickListener() {
+        cancel = (Button) findViewById(R.id.b_addNewPost_cancel);
+        cancel.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
                 cancelButtonAction();
             }
         });
 
-        Button submitButton = (Button) findViewById(R.id.b_addNewPost_submit);
-        submitButton.setOnClickListener(new Button.OnClickListener() {
+        submit = (Button) findViewById(R.id.b_addNewPost_submit);
+        submit.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
                 submitButtonAction();

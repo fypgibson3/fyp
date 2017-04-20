@@ -1,17 +1,13 @@
 package com.csefyp2016.gib3.ustsocialapp;
 
-import android.content.Context;
-import android.graphics.Color;
+
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
@@ -41,7 +37,6 @@ public class AddNewVote extends AppCompatActivity {
     private String[] voteOptions;
     private Integer voteNumOfOptions;
     private String voteWarning;
-    private int[] moreOptionId;
 
     private static final String uploadStoryVoteURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/uploadStoryVote.php";
 
@@ -55,6 +50,9 @@ public class AddNewVote extends AppCompatActivity {
     private EditText[] options;
     private TextView warning;
     private TableLayout table;
+    private Button submit;
+    private Button cancel;
+    private FloatingActionButton addOption;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +62,6 @@ public class AddNewVote extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         requestQueue = Volley.newRequestQueue(this);
-
-        moreOptionId = new int[]{R.id.option3, R.id.option4, R.id.option5, R.id.option6, R.id.option7, R.id.option8, R.id.option9, R.id.option10};
 
         scrollView = (ScrollView) findViewById(R.id.scroll_addNewVote);
         title = (EditText) findViewById(R.id.i_addNewVote_title);
@@ -77,24 +73,24 @@ public class AddNewVote extends AppCompatActivity {
         options[1] = (EditText) findViewById(R.id.i_addNewVote_option2);
         table = (TableLayout) findViewById(R.id.table_addNewVote);
 
-        Button cancelButton = (Button) findViewById(R.id.b_addNewVote_cancel);
-        cancelButton.setOnClickListener(new Button.OnClickListener() {
+        cancel = (Button) findViewById(R.id.b_addNewVote_cancel);
+        cancel.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
                 cancelButtonAction();
             }
         });
 
-        Button submitButton = (Button) findViewById(R.id.b_addNewVote_submit);
-        submitButton.setOnClickListener(new Button.OnClickListener() {
+        submit = (Button) findViewById(R.id.b_addNewVote_submit);
+        submit.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
                 submitButtonAction();
             }
         });
 
-        FloatingActionButton addOptionButton = (FloatingActionButton) findViewById(R.id.fab_addNewVote_more_options);
-        addOptionButton.setOnClickListener(new Button.OnClickListener() {
+        addOption = (FloatingActionButton) findViewById(R.id.fab_addNewVote_more_options);
+        addOption.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
                 addOptionButtonAction();
