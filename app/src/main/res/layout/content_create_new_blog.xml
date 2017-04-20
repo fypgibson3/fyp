@@ -15,6 +15,7 @@
     tools:context="com.csefyp2016.gib3.ustsocialapp.CreateNewBlog">
 
     <ScrollView
+        android:id="@+id/scroll_addNewBlog"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
@@ -62,41 +63,12 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/i_addNewBlogt_title"
+                    android:id="@+id/i_addNewBlog_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_title"
                     android:inputType="text"
                     android:maxLines="1" />
-
-            </android.support.design.widget.TextInputLayout>
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="20dp" />
-
-            <TextView
-                android:id="@+id/view_addNewBlog_hashtags"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:textColor="@android:color/background_dark"
-                android:textSize="@dimen/textView_title_size"
-                android:textStyle="bold"
-                android:text="@string/text_hashtags"/>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <MultiAutoCompleteTextView
-                    android:id="@+id/i_addNewBlog_hashtags"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/hint_hashtags"
-                    android:inputType="text" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -121,7 +93,7 @@
                     android:id="@+id/i_addNewBlog_content"
                     android:layout_width="match_parent"
                     android:hint="@string/hint_content"
-                    android:inputType="text"
+                    android:inputType="textMultiLine"
                     android:layout_height="200dp" />
 
             </android.support.design.widget.TextInputLayout>
