@@ -128,7 +128,9 @@ public class ViewProfile extends AppCompatActivity {
         viewBlog.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(ViewProfile.this, ViewBlog.class));
+                Intent intent = new Intent(ViewProfile.this, ViewBlog.class);
+                intent.putExtra("userid", friendId);
+                startActivity(intent);
             }
         });
 

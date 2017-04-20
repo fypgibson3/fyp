@@ -62,11 +62,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <LinearLayout
+            <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:id="@+id/f_myBlog_list" />
+                android:id="@+id/f_myBlog_table" />
+
         </ScrollView>
 
     </LinearLayout>

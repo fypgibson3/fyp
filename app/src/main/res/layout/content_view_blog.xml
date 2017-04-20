@@ -17,10 +17,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:id="@+id/table_viewBlog_list" />
+            android:id="@+id/table_viewBlog" />
+
     </ScrollView>
 </RelativeLayout>
