@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
@@ -19,6 +20,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMsgService";
 
+    private static final String loginPreference = "LoginPreference";
+    private static final String messagePreference = "MessagePreference";
+    private SharedPreferences sharedPreferences;
+
+    private int unreadMessageCount;
+
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         Log.d(TAG, "From: " + remoteMessage.getFrom());
@@ -31,11 +38,26 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             String room = remoteMessage.getData().get("room");
             String message = remoteMessage.getData().get("message");
 
-
             EnterRoomEvent stickyEvent = EventBus.getDefault().getStickyEvent(EnterRoomEvent.class);
             if (stickyEvent == null || !stickyEvent.getRoom().equals(room)) {
                 // no chat room is entered, or entered room is not the target one
                 sendNotification(userId, username, username, message);
+
+                sharedPreferences = getSharedPreferences(messagePreference, Context.MODE_PRIVATE);
+                unreadMessageCount = sharedPreferences.getInt(room, -1);
+
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                if (unreadMessageCount == -1) {
+                    editor.putInt(room, 0);
+                    editor.putString(room + "_message0", message);
+                }
+                else {
+                    int newCount = unreadMessageCount + 1;
+                    editor.putInt(room, newCount);
+                    editor.putString(room + "_message" + newCount, message);
+                }
+                editor.commit();
             }
         }
 
@@ -53,7 +75,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         intent.putExtra("the_friend_name", fromName);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_ONE_SHOT);
+                /*PendingIntent.FLAG_UPDATE_CURRENT*/ PendingIntent.FLAG_ONE_SHOT);
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
@@ -67,7 +89,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        notificationManager.notify(Integer.valueOf(fromId) /* ID of notification */, notificationBuilder.build());
     }
 
 }

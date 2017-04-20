@@ -4,6 +4,12 @@
     tools:context="com.csefyp2016.gib3.ustsocialapp.USTSocialAppMain">
 
     <item
+        android:id="@+id/menu_ustSocialAppMain_friend_request"
+        android:icon="@drawable/ic_notifications_black_24dp"
+        android:title="Friend Request"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/menu_ustSocialAppMain_settings"
         android:orderInCategory="100"
         android:title="@string/menu_ustSocialAppp_settings"
@@ -12,4 +18,5 @@
         android:id="@+id/menu_ustSocialAppMain_logout"
         android:showAsAction="never"
         android:orderInCategory="200" />
+
 </menu>

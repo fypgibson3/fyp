@@ -25,6 +25,7 @@
     <string name="title_activity_confirm_reset_password">Confirm Reset Password</string>
     <string name="title_activity_edit_profile">Edit Profile</string>
     <string name="title_activity_add_new_hashtag">Add New Hashtag</string>
+    <string name="title_activity_friend_request">Friend Request</string>
 
     <!-- Button Text -->
     <string name="action_sign_in">Sign In</string>

@@ -5,7 +5,7 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.csefyp2016.gib3.ustsocialapp"
-        minSdkVersion 23
+        minSdkVersion 21
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
@@ -28,7 +28,7 @@ dependencies {
 
     compile project(path: ':volley')
     //compile 'com.google.android.gms:play-services-maps:10.2.0'
-    compile ('io.socket:socket.io-client:0.8.3') {
+    compile('io.socket:socket.io-client:0.8.3') {
         // excluding org.json which is provided by Android
         exclude group: 'org.json', module: 'json'
     }
