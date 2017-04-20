@@ -71,7 +71,7 @@ public class AddNewVote extends AppCompatActivity {
 
         scrollView = (ScrollView) findViewById(R.id.scroll_addNewVote);
         title = (EditText) findViewById(R.id.i_addNewVote_title);
-        hashtags = (EditText) findViewById(R.id.i_addNewVote_hashtags);
+        //hashtags = (EditText) findViewById(R.id.i_addNewVote_hashtags);
         question = (EditText) findViewById(R.id.i_addNewVote_question);
         numOfOptions = (TextView) findViewById(R.id.view_addNewVote_numOfVote);
         warning = (TextView) findViewById(R.id.view_addNewVote_warning);
@@ -112,7 +112,7 @@ public class AddNewVote extends AppCompatActivity {
     private void submitButtonAction(){
         if(checkFillIn()) {
             voteTitle = title.getText().toString();
-            voteHashtags = hashtags.getText().toString();
+            //voteHashtags = hashtags.getText().toString();
             voteQuestion = question.getText().toString();
             voteOptions = new String[table.getChildCount()];
             for(int i = 0; i < table.getChildCount(); i++){
@@ -205,7 +205,7 @@ public class AddNewVote extends AppCompatActivity {
                 Date date = new Date();
                 hashMap.put("date", dateFormat.format(date));
                 hashMap.put("title", voteTitle);
-                hashMap.put("hashtag", voteHashtags);
+                //hashMap.put("hashtag", voteHashtags);
                 hashMap.put("question", voteQuestion);
                 String option = "";
                 for(int i = 0; i < table.getChildCount(); i++){

@@ -1,14 +1,17 @@
 package com.csefyp2016.gib3.ustsocialapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.ArraySet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -25,7 +28,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -35,6 +40,7 @@ public class IndividualChat extends AppCompatActivity {
     private final static String TAG = "InstantChatRoom";
     private static final String profilePreference = "ProfilePreference";
     private static final String loginPreference = "LoginPreference";
+    private static final String messagePreference = "MessagePreference";
 
     private Socket mSocket;
     private List<Message> mMessages = new ArrayList<>();
@@ -108,6 +114,21 @@ public class IndividualChat extends AppCompatActivity {
                 message = previousMessage.get(i);
                 addMessage(message.getUsername(), message.getMessage());
             }
+        }
+
+        sharedPreferences = getSharedPreferences(messagePreference, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        int unreadMessageCount = sharedPreferences.getInt(roomName, -1);
+        if (unreadMessageCount != -1) {
+            for (int i = 0; i <= unreadMessageCount; i++) {
+                String message = sharedPreferences.getString(roomName + "_message" + i, null);
+                System.out.println(message);
+                addMessage(mTheFriendName, message);
+                dbHandler.addMessage(mTheFriendName, message);
+                editor.remove(roomName + "_message" + i);
+            }
+            editor.remove(roomName);
+            editor.commit();
         }
 
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe);
@@ -190,6 +211,14 @@ public class IndividualChat extends AppCompatActivity {
         mSocket.off("new message", onNewMessage);
         mSocket.off("user joined", onUserJoined);
         mSocket.off("user left", onUserLeft);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(IndividualChat.this, USTSocialAppMain.class);
+        intent.putExtra("chatroomFragment", 2);
+        startActivity(intent);
     }
 
     private Emitter.Listener onConnect = new Emitter.Listener() {

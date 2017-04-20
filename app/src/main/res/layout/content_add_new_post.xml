@@ -74,7 +74,7 @@
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="20dp" />
-
+<!--
             <TextView
                 android:id="@+id/view_addNewPost_hashtags"
                 android:layout_width="match_parent"
@@ -103,6 +103,7 @@
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="20dp" />
+            -->
 
             <TextView
                 android:id="@+id/view_addNewPost_content"

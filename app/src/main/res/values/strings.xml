@@ -518,5 +518,6 @@
     <item name="option8" type="id">i_addNewVote_option8</item>
     <item name="option9" type="id">i_addNewVote_option9</item>
     <item name="option10" type="id">i_addNewVote_option10</item>
+    <string name="title_activity_friend_request">FriendRequest</string>
 
 </resources>

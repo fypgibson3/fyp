@@ -44,6 +44,7 @@ public class USTSocialAppMain extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -54,6 +55,13 @@ public class USTSocialAppMain extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+
+        Bundle previousIntent = getIntent().getExtras();
+        if (previousIntent != null) {
+            previousIntent.getInt("chatroomFragment", 0);
+            ViewPager viewPager = USTSocialAppMain.mViewPager;
+            viewPager.setCurrentItem(2);
+        }
     }
 
 
@@ -90,13 +98,12 @@ public class USTSocialAppMain extends AppCompatActivity {
             this.finish();
             return true;
         }
+        else if (id == R.id.menu_ustSocialAppMain_friend_request) {
+            startActivity(new Intent(USTSocialAppMain.this, FriendRequest.class));
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private boolean getRemember() {
-        SharedPreferences sharedPreferences = getSharedPreferences(loginPreference, Context.MODE_PRIVATE);
-        return sharedPreferences.getBoolean("REMEMBER", false);
     }
 
     /**
