@@ -12,10 +12,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.ArraySet;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Space;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,9 +27,15 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -40,6 +49,7 @@ public class ViewProfile extends AppCompatActivity {
     private static final String profilePicURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getProfilePic.php";
     private static final String switchURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getSwitchInfo.php";
     private static final String friendShipURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/createFriendship.php";
+    private static final String getHashtagURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getHashtag.php";
     private RequestQueue requestQueue;
     private StringRequest request;
 
@@ -85,6 +95,11 @@ public class ViewProfile extends AppCompatActivity {
     private Button addFriend;
     private Space separator;
 
+    private final ArrayList<String> hashtag_id = new ArrayList<String>();
+    private final ArrayList<String> hashtag_content = new ArrayList<String>();
+    private TableLayout hashtagTableLayout;
+    private TableRow tr;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,7 +112,6 @@ public class ViewProfile extends AppCompatActivity {
 
         Intent previousIntent = getIntent();
         friendId = previousIntent.getStringExtra("friendId");
-
 
         sharedPreferences = getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
         String[] friendIdList = sharedPreferences.getString("FDLIST_ID", null).split(",");
@@ -115,6 +129,17 @@ public class ViewProfile extends AppCompatActivity {
             });
         }
 
+        String[] pendingList = sharedPreferences.getString("pendingList", null).split(",");
+        if (pendingList != null && Arrays.asList(pendingList).contains(friendId)) {
+            addFriend = (Button) findViewById(R.id.b_viewProfile_addFriend);
+            addFriend.setText("Pending");
+            addFriend.setBackgroundColor(Color.GRAY);
+            addFriend.setClickable(false);
+            addFriend.setVisibility(View.VISIBLE);
+            separator = (Space) findViewById(R.id.viewProfile_separator);
+            separator.setVisibility(View.VISIBLE);
+        }
+
         displayNameView = (TextView) findViewById(R.id.view_viewProfile_display_name);
         genderView = (TextView) findViewById(R.id.view_viewProfile_gender);
         dateOfBirthView = (TextView) findViewById(R.id.view_viewProfile_date_of_birth);
@@ -129,6 +154,7 @@ public class ViewProfile extends AppCompatActivity {
         requestQueue = Volley.newRequestQueue(this);
 
         getFriendInfo();
+        getHashtagHttpPost();
 
         viewBlog = (Button) findViewById(R.id.b_viewProfile_blog);
         viewBlog.setOnClickListener(new Button.OnClickListener() {
@@ -441,15 +467,14 @@ public class ViewProfile extends AppCompatActivity {
 
                     sharedPreferences = getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
-                    Set<String> pendingList = sharedPreferences.getStringSet("pendingList", null);
+                    String pendingList = sharedPreferences.getString("pendingList", null);
                     if (pendingList != null) {
-                        pendingList.add(friendId);
+                        pendingList = pendingList + "," + friendId;
                     }
                     else {
-                        pendingList = new HashSet<>();
-                        pendingList.add(friendId);
+                        pendingList = friendId;
                     }
-                    editor.putStringSet("pendingList", pendingList);
+                    editor.putString("pendingList", pendingList);
                 }
                 else {
                     Toast.makeText(getApplicationContext(), "Failed to send request. \nPlease try again later.", Toast.LENGTH_LONG).show();
@@ -495,5 +520,86 @@ public class ViewProfile extends AppCompatActivity {
 
         if (yearOfStudyShow == false)
             yearOfStudyView.setVisibility(View.GONE);
+    }
+
+    private void getHashtagHttpPost() {
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("id", id);
+
+        JsonObjectRequest getRequest = new JsonObjectRequest( getHashtagURL, new JSONObject(params),
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        // display response
+                        Log.d("getHashtagHttpPost",response.toString());
+
+                        //Toast toast = Toast.makeText(getContext(), response.toString(), Toast.LENGTH_SHORT);
+                        //toast.show();
+
+                        try {
+                            if(response.getBoolean("success")) {
+                                Log.d("getHashtagHttpPost","have hashtag");
+                                showHashtag(response.getJSONArray("readHashtags"));
+
+                            }
+                            else {
+                                Log.d("getHashtagHttpPost","no hashtag");
+                                Toast t = Toast.makeText(getApplicationContext(), "You have no hashtags!", Toast.LENGTH_SHORT);
+                                t.show();
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("Error.Response", error.getMessage());
+                    }
+                }
+        );
+
+        requestQueue.add(getRequest);
+    }
+
+    public void showHashtag(JSONArray readHashtags){
+        Log.d("php id", id);
+
+        hashtag_id.clear();
+        hashtag_content.clear();
+
+        if (readHashtags != null) {
+            for (int i=0;i<readHashtags.length();i++){
+                try {
+                    hashtag_id.add(readHashtags.getJSONObject(i).getString("hashtag_id"));
+                    hashtag_content.add(readHashtags.getJSONObject(i).getString("hashtag_content"));
+                    Log.d("hashtag_id",readHashtags.getJSONObject(i).getString("hashtag_id"));
+                    Log.d("hashtag_content",readHashtags.getJSONObject(i).getString("hashtag_content"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        hashtagTableLayout = (TableLayout) findViewById(R.id.table_viewProfile_hashtags);
+
+        int i = 0;
+        while (i < hashtag_content.size()) {
+            if (i % 3 == 0) {
+                tr = new TableRow(getApplicationContext());
+                hashtagTableLayout.addView(tr);
+            }
+
+            final Button btn = new Button(getApplicationContext());
+            btn.setText(hashtag_content.get(i));
+            btn.setId(i);
+
+            tr.addView(btn);
+            i++;
+        }
     }
 }

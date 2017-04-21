@@ -30,11 +30,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URL;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 public class SignIn extends AppCompatActivity {
     private String id;
@@ -44,6 +41,8 @@ public class SignIn extends AppCompatActivity {
 
     private String fdIdList;
     private String fdDisplayNameList;
+    private String friendRequestIdList;
+    private String friendRequestDisplayNameList;
 
     private static final String loginURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/loginCheck.php";
     private static final String profileURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getProfileInfo.php";
@@ -441,7 +440,6 @@ public class SignIn extends AppCompatActivity {
                     SharedPreferences.Editor fdNameListEditor = sharedPreferences.edit();
                     fdNameListEditor.putString("FDLIST_DISPLAYNAME", fdList);
                     fdNameListEditor.commit();
-
                 }
             }
         }, new Response.ErrorListener() {
@@ -511,24 +509,19 @@ public class SignIn extends AppCompatActivity {
                     System.out.println("Friend request received: " + friendRequestListString);
                     //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
 
-                    String[] friendRequest = friendRequestListString.split(",");
+                    friendRequestIdList = friendRequestListString;
 
                     sharedPreferences = getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
-                    Set<String> friendRequestList = new HashSet<String>();
-                    for (int i = 0; i < friendRequest.length; i++) {
-                        friendRequestList.add(friendRequest[i]);
-                    }
-                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
-                    System.out.println(friendRequestList.size());
-                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
-                    editor.putStringSet("friendRequestList", friendRequestList);
+                    editor.putString("friendRequestList_ID", friendRequestListString);
                     editor.commit();
+
+                    setFriendRequestListDisplayNamePreference();
                 }
                 else {
                     sharedPreferences = getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putStringSet("friendRequestList", null);
+                    editor.putStringSet("friendRequestList_ID", null);
                     editor.commit();
                 }
             }
@@ -554,6 +547,47 @@ public class SignIn extends AppCompatActivity {
         requestQueue.add(request);
     }
 
+    private void setFriendRequestListDisplayNamePreference() {
+        request = new StringRequest(Request.Method.POST, getFdDisplayNameListURL, new Response.Listener<String>() {
+
+            @Override
+            // Response to request result
+            public void onResponse(String response) {
+                if (response.contains("Success")) {
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                    System.out.println(response);
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+
+                    String friendRequestDisplayNameListString = response.split(":")[1];
+                    friendRequestDisplayNameList = friendRequestDisplayNameListString;
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                    System.out.println(friendRequestDisplayNameListString);
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+
+                    SharedPreferences sharedPreferences = getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor fdNameListEditor = sharedPreferences.edit();
+                    fdNameListEditor.putString("friendRequestList_DisplayName", friendRequestDisplayNameListString);
+                    fdNameListEditor.commit();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            // Post request parameters
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String, String> hashMap = new HashMap<String, String>();
+                hashMap.put("list", friendRequestIdList);
+                return hashMap;
+            }
+        };
+        // Put the request to the queue
+        requestQueue.add(request);
+    }
+
     private void setPendingListIdPreference() {
         request = new StringRequest(Request.Method.POST, pendingListURL, new Response.Listener<String>() {
 
@@ -566,18 +600,9 @@ public class SignIn extends AppCompatActivity {
                     System.out.println("My inivitation that are pending to be accepted: " + pendingListString);
                     //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
 
-                    String[] pending = pendingListString.split(",");
-
                     sharedPreferences = getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
-                    Set<String> pendingList = new HashSet<String>();
-                    for (int i = 0; i < pending.length; i++) {
-                        pendingList.add(pending[i]);
-                    }
-                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
-                    System.out.println(pendingList.size());
-                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
-                    editor.putStringSet("pendingList", pendingList);
+                    editor.putString("pendingList", pendingListString);
                     editor.commit();
                 }
                 else {

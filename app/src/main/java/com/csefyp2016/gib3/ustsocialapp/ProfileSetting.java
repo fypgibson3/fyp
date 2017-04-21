@@ -113,8 +113,8 @@ public class ProfileSetting extends Fragment {
 
     private final ArrayList<String> hashtag_id = new ArrayList<String>();
     private final ArrayList<String> hashtag_content = new ArrayList<String>();
-    TableLayout hashtagTableLayout;
-    TableRow tr;
+    private TableLayout hashtagTableLayout;
+    private TableRow tr;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -540,12 +540,7 @@ public class ProfileSetting extends Fragment {
         requestQueue.add(request);
     }
 
-
-
-
     //////////////////////////////////////////////////////////////////////////////////
-
-
 
     private void getHashtagHttpPost() {
         // prepare the Request
@@ -562,23 +557,18 @@ public class ProfileSetting extends Fragment {
                     @Override
                     public void onResponse(JSONObject response) {
                         // display response
-
-
                         Log.d("getHashtagHttpPost",response.toString());
-                        Toast toast = Toast.makeText(getContext(), response.toString(), Toast.LENGTH_SHORT);
-                        toast.show();
 
+                        //Toast toast = Toast.makeText(getContext(), response.toString(), Toast.LENGTH_SHORT);
+                        //toast.show();
 
-                        try
-                        {
-                            if(response.getBoolean("success"))
-                            {
+                        try {
+                            if(response.getBoolean("success")) {
                                 Log.d("getHashtagHttpPost","have hashtag");
                                 showHashtag(response.getJSONArray("readHashtags"));
 
                             }
-                            else
-                            {
+                            else {
                                 Log.d("getHashtagHttpPost","no hashtag");
                                 Toast t = Toast.makeText(getContext(), "You have no hashtags!", Toast.LENGTH_SHORT);
                                 t.show();
@@ -599,9 +589,6 @@ public class ProfileSetting extends Fragment {
         );
 
         requestQueue.add(getRequest);
-
-
-
     }
 
     private void delHashtagHttpPost(String remove_hashtag_id) {
@@ -619,21 +606,17 @@ public class ProfileSetting extends Fragment {
                     public void onResponse(JSONObject response) {
                         // display response
                         try {
-                            if(response.getBoolean("success"))
-                            {
+                            if(response.getBoolean("success")) {
                                 Toast toast = Toast.makeText(getContext(), "Hashtag has been removed!", Toast.LENGTH_SHORT);
                                 toast.show();
                             }
-                            else
-                            {
+                            else {
                                 Toast toast = Toast.makeText(getContext(), "Hashtag doees not exist!", Toast.LENGTH_SHORT);
                                 toast.show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
-
                     }
                 },
                 new Response.ErrorListener()
@@ -646,9 +629,6 @@ public class ProfileSetting extends Fragment {
         );
 
         requestQueue.add(delRequest);
-
-
-
     }
 
 
@@ -661,7 +641,6 @@ public class ProfileSetting extends Fragment {
         if (readHashtags != null) {
             for (int i=0;i<readHashtags.length();i++){
                 try {
-
                     hashtag_id.add(readHashtags.getJSONObject(i).getString("hashtag_id"));
                     hashtag_content.add(readHashtags.getJSONObject(i).getString("hashtag_content"));
                     Log.d("hashtag_id",readHashtags.getJSONObject(i).getString("hashtag_id"));
@@ -672,17 +651,15 @@ public class ProfileSetting extends Fragment {
             }
         }
 
-
         hashtagTableLayout = (TableLayout) getView().findViewById(R.id.table_hashtags);
-
 
         int i = 0;
         while (i < hashtag_content.size()) {
             if (i % 3 == 0) {
                 tr = new TableRow(getActivity());
                 hashtagTableLayout.addView(tr);
-
             }
+
             final Button btn = new Button(getActivity());
             btn.setText(hashtag_content.get(i));
             btn.setId(i);
@@ -732,7 +709,6 @@ public class ProfileSetting extends Fragment {
                                     remove_hashtag_id = hashtag_id.get(hashtag_content.indexOf(data_clicked));
                                     hashtag_id.remove(hashtag_content.indexOf(data_clicked));
                                     hashtag_content.remove(hashtag_content.indexOf(data_clicked));
-
                                 }
 
 /*
@@ -746,11 +722,9 @@ public class ProfileSetting extends Fragment {
                                 }
                                 */
                                 delHashtagHttpPost(remove_hashtag_id);
-
                             }
                             else {
                                 Log.d("delete tag","no");
-
                             }
                         }
                     });
