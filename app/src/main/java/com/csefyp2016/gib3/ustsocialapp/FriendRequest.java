@@ -47,6 +47,10 @@ public class FriendRequest extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        mAdapter = new RequestAdapter(this, mRequests);
+        mRequestsView = (RecyclerView) findViewById(R.id.request_list);
+        mRequestsView.setLayoutManager(new LinearLayoutManager(this));
+
         sharedPreferences = getSharedPreferences(loginPreference, Context.MODE_PRIVATE);
         id = sharedPreferences.getString("ID", null);
 
@@ -55,6 +59,8 @@ public class FriendRequest extends AppCompatActivity {
         friendRequestDisplayNameList = sharedPreferences.getString("friendRequestList_DisplayName", null);
 
         if (friendRequestIdList != null) {
+            System.out.println("Creating Request Layouts.......................");
+
             String[] idList = friendRequestIdList.split(",");
             String[] displayNameList = friendRequestDisplayNameList.split(",");
             for (int i = 0; i < idList.length; i++) {
@@ -62,15 +68,14 @@ public class FriendRequest extends AppCompatActivity {
             }
         }
 
-        mAdapter = new RequestAdapter(this, mRequests);
-        mRequestsView = (RecyclerView) findViewById(R.id.messages_chat);
-        mRequestsView.setLayoutManager(new LinearLayoutManager(this));
         mRequestsView.setAdapter(mAdapter);
     }
 
     private void addRequest(String id, String name) {
         mRequests.add(new Request.Builder()
                 .requestId(id).requestName(name).build());
-        mAdapter.notifyItemInserted(mRequests.size() - 1);
+        //mAdapter.notifyItemInserted(mRequests.size() - 1);
+
+        System.out.println("Request from " + name + " is set!");
     }
 }

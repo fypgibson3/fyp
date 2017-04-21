@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
@@ -18,7 +17,7 @@
         android:textColor="@android:color/background_dark"
         android:textSize="@dimen/option_text_size"
         android:textStyle="bold"
-        android:text="ADMIN has sent a friend request to you!"/>
+        android:text=""/>
 
     <LinearLayout
         android:orientation="vertical"

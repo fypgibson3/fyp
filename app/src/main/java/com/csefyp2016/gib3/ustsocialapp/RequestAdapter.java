@@ -30,7 +30,8 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestAdapter.ViewHold
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Request request = mRequests.get(position);
-        holder.setmRequestContent(request.getFriendId());
+        holder.setmRequestContent(request.getFriendName());
+        //holder.setmRequestContent();
     }
 
     @Override
