@@ -57,7 +57,6 @@ public class AddNewHashtag extends AppCompatActivity {
     ListView searchResults;
     Button save;
 
-
     private static final String getFullHashtagURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getFullHashtag.php";
     private static final String addHashtagURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/addHashtag.php";
     private static final String getReturnHashtagURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getHashtag.php";
@@ -184,10 +183,13 @@ public class AddNewHashtag extends AppCompatActivity {
                 // TODO Auto-generated method stub
                 ListView listView = (ListView) arg0;
                 Context context = getApplicationContext();
+
+                /*
                 Toast.makeText(context,
                         "ID：" + arg3 +
                                 "   selected hashtag："+ listView.getItemAtPosition(arg2).toString(),
                         Toast.LENGTH_LONG).show();
+                */
 
                 for(int i = 0; i < searchResults.getCount();i++) {
                     if(searchResults.isItemChecked(i)) {
@@ -324,8 +326,9 @@ public class AddNewHashtag extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         // display response
                         Log.d("getFullHashtagHttpPost",response.toString());
-                        Toast toast = Toast.makeText(search.getContext(), response.toString(), Toast.LENGTH_SHORT);
-                        toast.show();
+
+                        //Toast toast = Toast.makeText(search.getContext(), response.toString(), Toast.LENGTH_SHORT);
+                        //toast.show();
 
                         try {
                             if(response.getBoolean("success")) {
@@ -371,36 +374,23 @@ public class AddNewHashtag extends AppCompatActivity {
     }
 
     private void createDisplay() {
-
-
-        /*Toast toast = Toast.makeText(search.getContext(), "createDisplay", Toast.LENGTH_SHORT);
-        toast.show();*/
         if(taskfinish){
-
-            /*Toast t = Toast.makeText(search.getContext(), "taskfinish true", Toast.LENGTH_SHORT);
-            t.show();*/
-
             // Get the intent, verify the action and get the query
             Intent intent = getIntent();
-        /* Obtain String from Intent  */
+            /* Obtain String from Intent  */
             if(intent != null) {
-
                 Log.d("intent !=null","");
                 //get existing hashtag ids from last page
                 current_id = intent.getExtras().getStringArrayList("current_id");
                 current_content = intent.getExtras().getStringArrayList("current_content");
 
-
-
                 //if user had hashtag, search  full list with id for content, save content
                 if(!current_content.isEmpty()) {
-
                     for(int i = 0; i < full_id.size(); i++) {
                         //add non-exist hashtag to display list
                         String matchFound = "N";
 
                         for (int j=0; j < current_id.size();j++) {
-
                             if (current_id.get(j).equals(full_id.get(i))) {
                                 matchFound = "Y";
                             }
@@ -418,7 +408,6 @@ public class AddNewHashtag extends AppCompatActivity {
                         display_content.add(full_content.get(full_id.indexOf(display_id.get(i))));
                         Log.d("display_content",display_content.get(i));
                     }
-
                 }
                 else {
                     //no hashtag, display = full
@@ -455,9 +444,11 @@ public class AddNewHashtag extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         // display response
-                        Log.d("addHashtagHttpPost",response.toString());
-                        Toast toast = Toast.makeText(search.getContext(), response.toString(), Toast.LENGTH_SHORT);
-                        toast.show();
+                        Log.d("addHashtagHttpPost", response.toString());
+
+                        //Toast toast = Toast.makeText(search.getContext(), response.toString(), Toast.LENGTH_SHORT);
+                        //toast.show();
+
                         try {
                             if(response.getString("success").contains("false")) {
                                 Toast fail_toast = Toast.makeText(search.getContext(), "Sorry, you cannot add duplicate hashtags!", Toast.LENGTH_SHORT);
@@ -496,14 +487,6 @@ public class AddNewHashtag extends AppCompatActivity {
                 {
                     @Override
                     public void onResponse(JSONObject response) {
-                        // display response
-
-
-                        /*Log.d("getHashtagHttpPost",response.toString());
-                        Toast toast = Toast.makeText(getContext(), response.toString(), Toast.LENGTH_SHORT);
-                        toast.show();
-*/
-
                         try {
                             if(response.getBoolean("success")) {
                                 Log.d("getHashtagHttpPost","have hashtag");

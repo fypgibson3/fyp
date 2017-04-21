@@ -30,11 +30,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URL;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 public class SignIn extends AppCompatActivity {
     private String id;
@@ -443,7 +440,6 @@ public class SignIn extends AppCompatActivity {
                     SharedPreferences.Editor fdNameListEditor = sharedPreferences.edit();
                     fdNameListEditor.putString("FDLIST_DISPLAYNAME", fdList);
                     fdNameListEditor.commit();
-
                 }
             }
         }, new Response.ErrorListener() {
@@ -604,21 +600,9 @@ public class SignIn extends AppCompatActivity {
                     System.out.println("My inivitation that are pending to be accepted: " + pendingListString);
                     //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
 
-                    //String[] pending = pendingListString.split(",");
-
                     sharedPreferences = getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("pendingList", pendingListString);
-                    /*
-                    Set<String> pendingList = new HashSet<String>();
-                    for (int i = 0; i < pending.length; i++) {
-                        pendingList.add(pending[i]);
-                    }
-                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
-                    System.out.println(pendingList.size());
-                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
-                    editor.putStringSet("pendingList", pendingList);
-                    */
                     editor.commit();
                 }
                 else {
