@@ -7,8 +7,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.ArraySet;
 import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
@@ -26,8 +28,12 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 public class ViewProfile extends AppCompatActivity {
     private static final String profileURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getProfileInfo.php";
@@ -432,6 +438,18 @@ public class ViewProfile extends AppCompatActivity {
                     addFriend.setClickable(false);
 
                     Toast.makeText(getApplicationContext(), "Request is sent. \nPlease wait for acceptance.", Toast.LENGTH_LONG).show();
+
+                    sharedPreferences = getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    Set<String> pendingList = sharedPreferences.getStringSet("pendingList", null);
+                    if (pendingList != null) {
+                        pendingList.add(friendId);
+                    }
+                    else {
+                        pendingList = new HashSet<>();
+                        pendingList.add(friendId);
+                    }
+                    editor.putStringSet("pendingList", pendingList);
                 }
                 else {
                     Toast.makeText(getApplicationContext(), "Failed to send request. \nPlease try again later.", Toast.LENGTH_LONG).show();
