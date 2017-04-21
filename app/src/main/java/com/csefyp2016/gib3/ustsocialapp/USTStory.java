@@ -16,14 +16,17 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -44,6 +47,7 @@ public class USTStory extends Fragment {
     private String[] content;
     private String[] attitude;
     private String[] comment;
+    private Boolean currentView = false;
 
     private static final String getStoryIdURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getStoryId.php";
     private static final String getStoryURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getStory.php";
@@ -51,6 +55,7 @@ public class USTStory extends Fragment {
     private static final String getAttitudeURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getAttitude.php";
     private static final String getCommentURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getComment.php";
     private static final String uploadAttitudeURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/uploadAttitude.php";
+    private static final String uploadCommentURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/uploadComment.php";
 
 
     private RequestQueue requestQueue;
@@ -115,6 +120,22 @@ public class USTStory extends Fragment {
         //requestStoryContent(9);
         //requestStoryContent(25);
         return view;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            currentView = true;
+        } else {
+            currentView = false;
+        }
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        currentView = false;
     }
 
     private void refresh() {
@@ -226,7 +247,7 @@ public class USTStory extends Fragment {
             @Override
             public void onClick(View view) {
                 LinearLayout layout = (LinearLayout) view.getParent();
-                TextView textView = (TextView) layout.getChildAt(0);
+                TextView textView = (TextView) layout.getChildAt(1);
                 Integer attitudeId = Integer.parseInt(textView.getText().toString());
                 onAttitude(attitudeId);
             }
@@ -235,7 +256,7 @@ public class USTStory extends Fragment {
             @Override
             public void onClick(View view) {
                 LinearLayout layout = (LinearLayout) view.getParent();
-                TextView textView = (TextView) layout.getChildAt(0);
+                TextView textView = (TextView) layout.getChildAt(1);
                 Integer commentId = Integer.parseInt(textView.getText().toString());
                 onComment(commentId);
             }
@@ -308,10 +329,10 @@ public class USTStory extends Fragment {
             @Override
             public void onResponse(String response) {
                 if(response.contains("Success")){
-                    System.out.println("attitude success");
+                    setToast("attitude", "success");
                 }
                 else{
-                    System.out.println("attitude fail");
+                    setToast("attitude", "fail");
                 }
             }
         }, new Response.ErrorListener() {
@@ -337,7 +358,8 @@ public class USTStory extends Fragment {
 
             @Override
             public void onResponse(String response) {
-
+                comment = response.split("~`>]-");
+                showComment(comment, story);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -353,5 +375,108 @@ public class USTStory extends Fragment {
             }
         };
         requestQueue.add(request);
+    }
+
+    private void showComment(String[] comment,final Integer story){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getView().getContext());
+        String[] getComment = comment[1].split("`~@!");
+        LinearLayout layout = (LinearLayout) LayoutInflater.from(getView().getContext()).inflate(R.layout.show_comment, null);
+        builder.setView(layout);
+        ((TextView) layout.findViewById(R.id.comment_title)).setText(comment[0]);
+        ((TextView) layout.findViewById(R.id.comment_id)).setText(story.toString());
+        LinearLayout linear = (LinearLayout) layout.findViewById(R.id.comment_comment);
+        //refreshComment(linear, getComment);
+        linear.removeAllViewsInLayout();
+        for(int i = 0; i < getComment.length - 1; i++){
+            if(getComment[i] != ""){
+                LinearLayout showComment = (LinearLayout) LayoutInflater.from(getView().getContext()).inflate(R.layout.comment, null);
+                TextView commentText = (TextView) showComment.findViewById(R.id.comment_text);
+                commentText.setText(getComment[i]);
+                linear.addView(showComment);
+                linear.requestLayout();
+            }
+        }
+        Button addComment = (Button) layout.findViewById(R.id.comment_add);
+        addComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LinearLayout layout = (LinearLayout) view.getParent().getParent().getParent();
+                String storyid = ((TextView) layout.findViewById(R.id.comment_id)).getText().toString();
+                String newcomment = ((EditText) layout.findViewById(R.id.comment_new)).getText().toString();
+                LinearLayout commentLayout = (LinearLayout) layout.findViewById(R.id.comment_comment);
+                String comment = "";
+                for(int i = 0; i < commentLayout.getChildCount(); i++){
+                    LinearLayout commentlayout = (LinearLayout) commentLayout.getChildAt(i);
+                    TextView commentText = (TextView) commentlayout.getChildAt(0);
+                    comment = comment + commentText.getText().toString() + "`~@!";
+                }
+                comment = comment + newcomment + "`~@!";
+                uploadComment(storyid, comment, commentLayout);
+            }
+        });
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void refreshComment(LinearLayout linear, String[] getComment) {System.out.println("refresh" + getComment.length);
+        linear.removeAllViewsInLayout();
+        for(int i = 0; i < getComment.length; i++){
+            if(getComment[i] != ""){System.out.println(getComment[i]);
+                LinearLayout showComment = (LinearLayout) LayoutInflater.from(getView().getContext()).inflate(R.layout.comment, null);
+                TextView commentText = (TextView) showComment.findViewById(R.id.comment_text);
+                commentText.setText(getComment[i]);
+                linear.addView(showComment);
+                linear.requestLayout();
+           }
+        }
+    }
+
+    private void uploadComment(final String storyid, final String comment, final LinearLayout linear){
+        request = new StringRequest(Request.Method.POST, uploadCommentURL, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {System.out.println(response);
+                if(response.contains("Success")){
+                    String refreshcomment = response.split("~`>]-")[1];System.out.println(refreshcomment);
+                    String[] getComment = refreshcomment.split("`~@!");
+                    refreshComment(linear, getComment);
+                    EditText newComment = (EditText) ((LinearLayout)linear.getParent().getParent()).findViewById(R.id.comment_new);
+                    newComment.setText("");
+                    setToast("comment", "success");
+                }
+                else{
+                    setToast("comment", "fail");
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String, String> hashMap = new HashMap<String, String>();
+                hashMap.put("storyid", storyid);
+                hashMap.put("comment", comment);
+                return hashMap;
+            }
+        };
+        requestQueue.add(request);
+    }
+
+    private void setToast(String type, String response) {
+        if(response == "success"){
+            Toast.makeText(getView().getContext(), "Present story " + type + " successful.", Toast.LENGTH_LONG).show();
+        }
+        else if(response == "fail"){
+            Toast.makeText(getView().getContext(), "Present story " + type + " fail. Please try again.", Toast.LENGTH_LONG).show();
+        }
     }
 }
