@@ -16,11 +16,29 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class USTSocialAppMain extends AppCompatActivity {
     private static final String loginPreference = "LoginPreference";
     private static final String profilePreference = "ProfilePreference";
     private static final String imagePreference = "ImagePreference";
     private static final String friendListPreference = "FriendList";
+
+    private static final String pendingListURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/retrievePendingFdship.php";
+    private static final String getFdDisplayNameListURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getFriendDisplayNameList.php";
+    private RequestQueue requestQueue;
+    private StringRequest request;
+
+    private String friendRequestIdList;
+    private String friendRequestDisplayNameList;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -41,9 +59,10 @@ public class USTSocialAppMain extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ustsocial_app_main);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        requestQueue = Volley.newRequestQueue(this);
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -98,6 +117,7 @@ public class USTSocialAppMain extends AppCompatActivity {
             return true;
         }
         else if (id == R.id.menu_ustSocialAppMain_friend_request) {
+            setFriendRequestIdPreference();
             startActivity(new Intent(USTSocialAppMain.this, FriendRequest.class));
             return true;
         }
@@ -155,5 +175,96 @@ public class USTSocialAppMain extends AppCompatActivity {
                     return null;
             }
         }
+    }
+
+    private void setFriendRequestIdPreference() {
+        request = new StringRequest(com.android.volley.Request.Method.POST, pendingListURL, new Response.Listener<String>() {
+
+            @Override
+            // Response to request result
+            public void onResponse(String response) {
+                if (response.contains("Success")) {
+                    String friendRequestListString = response.split(":")[1];
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                    System.out.println("Friend request received: " + friendRequestListString);
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+
+                    friendRequestIdList = friendRequestListString;
+
+                    SharedPreferences sharedPreferences = getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("friendRequestList_ID", friendRequestListString);
+                    editor.commit();
+
+                    setFriendRequestListDisplayNamePreference();
+                }
+                else {
+                    SharedPreferences sharedPreferences = getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putStringSet("friendRequestList_ID", null);
+                    editor.commit();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            // Post request parameters
+            protected Map<String, String> getParams() throws AuthFailureError {
+                SharedPreferences sharedPreferences = getSharedPreferences(loginPreference, Context.MODE_PRIVATE);
+                String id = sharedPreferences.getString("ID", null);
+
+                HashMap<String, String> hashMap = new HashMap<String, String>();
+                hashMap.put("id", id);
+                hashMap.put("flag", "2");
+                return hashMap;
+            }
+        };
+        // Put the request to the queue
+        requestQueue.add(request);
+    }
+
+    private void setFriendRequestListDisplayNamePreference() {
+        request = new StringRequest(com.android.volley.Request.Method.POST, getFdDisplayNameListURL, new Response.Listener<String>() {
+
+            @Override
+            // Response to request result
+            public void onResponse(String response) {
+                if (response.contains("Success")) {
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                    System.out.println(response);
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+
+                    String friendRequestDisplayNameListString = response.split(":")[1];
+                    friendRequestDisplayNameList = friendRequestDisplayNameListString;
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                    System.out.println(friendRequestDisplayNameListString);
+                    //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+
+                    SharedPreferences sharedPreferences = getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor fdNameListEditor = sharedPreferences.edit();
+                    fdNameListEditor.putString("friendRequestList_DisplayName", friendRequestDisplayNameListString);
+                    fdNameListEditor.commit();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            // Post request parameters
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String, String> hashMap = new HashMap<String, String>();
+                hashMap.put("list", friendRequestIdList);
+                return hashMap;
+            }
+        };
+        // Put the request to the queue
+        requestQueue.add(request);
     }
 }

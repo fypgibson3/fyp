@@ -3,23 +3,16 @@ package com.csefyp2016.gib3.ustsocialapp;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.StringRequest;
+import android.view.Window;
+import android.view.WindowManager;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class FriendRequest extends AppCompatActivity {
 
@@ -30,11 +23,6 @@ public class FriendRequest extends AppCompatActivity {
     private static final String loginPreference = "LoginPreference";
     private static final String friendListPreference = "FriendList";
     private SharedPreferences sharedPreferences;
-
-    private static final String acceptURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/";
-    private static final String deleteURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/";
-    private RequestQueue requestQueue;
-    private StringRequest request;
 
     private List<Request> mRequests = new ArrayList<>();
     private RecyclerView.Adapter mAdapter;
@@ -47,7 +35,15 @@ public class FriendRequest extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
+        //  --------------------------------------------------------------- Testing features  --------------------------------------------------------------- //
+        Window window = getWindow();
+        // clear FLAG_TRANSLUCENT_STATUS flag:
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        // finally change the color
+        window.setStatusBarColor(ContextCompat.getColor(this,R.color.statusBarColor));
+        //  ---------------------------------------------------------------Testing features  --------------------------------------------------------------- //
 
         sharedPreferences = getSharedPreferences(loginPreference, Context.MODE_PRIVATE);
         id = sharedPreferences.getString("ID", null);
@@ -79,4 +75,5 @@ public class FriendRequest extends AppCompatActivity {
 
         System.out.println("Request from " + name + " is set!");
     }
+
 }

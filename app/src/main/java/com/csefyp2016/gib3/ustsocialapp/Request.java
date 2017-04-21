@@ -1,8 +1,6 @@
 package com.csefyp2016.gib3.ustsocialapp;
 
 
-import android.os.Build;
-
 public class Request {
     private String friendId;
     private String friendName;

@@ -12,4 +12,6 @@
     <color name="bigMap_title">#003366</color>
     <color name="bigMap_border">#000000</color>
 
+    <color name="statusBarColor">@android:color/holo_blue_light</color>
+
 </resources>
