@@ -13,8 +13,12 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TableLayout;
@@ -46,6 +50,7 @@ public class USTStory extends Fragment {
     private static final String getVoteURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getVote.php";
     private static final String getAttitudeURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getAttitude.php";
     private static final String getCommentURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getComment.php";
+    private static final String uploadAttitudeURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/uploadAttitude.php";
 
 
     private RequestQueue requestQueue;
@@ -246,7 +251,7 @@ public class USTStory extends Fragment {
             @Override
             public void onResponse(String response) {
                 attitude = response.split("~`>]-");
-                showAttitude(attitude);
+                showAttitude(attitude, story);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -264,18 +269,67 @@ public class USTStory extends Fragment {
         requestQueue.add(request);
     }
 
-    private void showAttitude(String[] attitude){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getView().getContext());
-        builder.setTitle(attitude[0]);
-        builder.setMessage(attitude[1]);
-        builder.setPositiveButton("Back", new DialogInterface.OnClickListener() {
+    private void showAttitude(String[] attitude,final Integer story){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getView().getContext());
+        String[] getAttitude = attitude[1].split("`~@!");
+        LinearLayout layout = (LinearLayout) LayoutInflater.from(getView().getContext()).inflate(R.layout.show_attitude, null);
+        builder.setView(layout);
+        ((TextView) layout.findViewById(R.id.attitude_title)).setText(attitude[0]);
+        ((TextView) layout.findViewById(R.id.attitude_positive)).setText(getAttitude[0]);
+        ((TextView) layout.findViewById(R.id.attitude_negative)).setText(getAttitude[1]);
+        ((TextView) layout.findViewById(R.id.attitude_id)).setText(story.toString());
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.dismiss();
+            public void onClick(DialogInterface dialogInterface, int i) {
+                AlertDialog alert = (AlertDialog) dialogInterface;
+                RadioButton positive = (RadioButton) alert.findViewById(R.id.attitude_positive_choice);
+                RadioButton negative = (RadioButton) alert.findViewById(R.id.attitude_negative_choice);
+                Integer positiveNum = Integer.parseInt(((TextView) alert.findViewById(R.id.attitude_positive)).getText().toString());
+                Integer negativeNum = Integer.parseInt(((TextView) alert.findViewById(R.id.attitude_negative)).getText().toString());
+                String story = ((TextView) alert.findViewById(R.id.attitude_id)).getText().toString();
+                if(positive.isChecked()){
+                    positiveNum++;
+                    uploadAttitude(story, positiveNum, negativeNum);
+                }
+                else if(negative.isChecked()){
+                    negativeNum++;
+                    uploadAttitude(story, positiveNum, negativeNum);
+                }
+
             }
         });
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    private void uploadAttitude(final String storyid, final Integer positive, final Integer negetive){
+        request = new StringRequest(Request.Method.POST, uploadAttitudeURL, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                if(response.contains("Success")){
+                    System.out.println("attitude success");
+                }
+                else{
+                    System.out.println("attitude fail");
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String, String> hashMap = new HashMap<String, String>();
+                hashMap.put("storyid", storyid);
+                hashMap.put("positive", positive.toString());
+                hashMap.put("negative", negetive.toString());
+                return hashMap;
+            }
+        };
+        requestQueue.add(request);
     }
 
     private void onComment(final Integer story){
