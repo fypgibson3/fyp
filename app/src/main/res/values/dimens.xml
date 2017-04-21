@@ -21,4 +21,8 @@
     <dimen name="blog_title_size">24sp</dimen>
     <dimen name="blog_dateTime_size">14sp</dimen>
     <dimen name="blog_content_size">18sp</dimen>
+
+    <dimen name="attitude_title_size">24sp</dimen>
+    <dimen name="attitude_content_size">20sp</dimen>
+    <dimen name="attitude_choice_size">20sp</dimen>
 </resources>
