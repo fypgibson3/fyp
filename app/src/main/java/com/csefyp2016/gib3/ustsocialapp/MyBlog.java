@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -44,6 +45,7 @@ public class MyBlog extends AppCompatActivity {
 
     private FloatingActionButton addBlog;
     private TableLayout table;
+    private SwipeRefreshLayout swipeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,9 +63,21 @@ public class MyBlog extends AppCompatActivity {
                 startActivity(new Intent(MyBlog.this, CreateNewBlog.class));
             }
         });
-
+        swipeLayout = (SwipeRefreshLayout) this.findViewById(R.id.blog_swipe);
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refresh();
+            }
+        });
         table = (TableLayout) findViewById(R.id.f_myBlog_table);
         requestBlogId();
+    }
+
+    private void refresh() {
+        table.removeAllViewsInLayout();
+        requestBlogId();
+        swipeLayout.setRefreshing(false);
     }
 
     private void requestBlogId(){

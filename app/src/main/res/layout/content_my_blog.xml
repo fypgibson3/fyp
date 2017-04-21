@@ -14,65 +14,69 @@
     tools:showIn="@layout/activity_my_blog"
     tools:context="com.csefyp2016.gib3.ustsocialapp.MyBlog">
 
-    <LinearLayout
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/blog_swipe"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <android.support.design.widget.FloatingActionButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                app:fabSize="normal"
-                app:srcCompat="@android:drawable/ic_input_add"
-                android:id="@+id/fab_myBlog_add_blog"
-                android:layout_weight="1"
-                app:backgroundTint="@android:color/holo_orange_dark"
-                android:tint="@android:color/white" />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.1" />
+                <android.support.design.widget.FloatingActionButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    app:fabSize="normal"
+                    app:srcCompat="@android:drawable/ic_input_add"
+                    android:id="@+id/fab_myBlog_add_blog"
+                    android:layout_weight="1"
+                    app:backgroundTint="@android:color/holo_orange_dark"
+                    android:tint="@android:color/white" />
 
-            <TextView
-                android:text="@string/text_add_post"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/view_myBlog_add_blog"
-                android:layout_weight="1"
-                android:textSize="@dimen/textView_title_size"
-                android:textColor="@android:color/background_dark"
-                android:layout_gravity="center_vertical" />
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.1" />
+
+                <TextView
+                    android:text="@string/text_add_post"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/view_myBlog_add_blog"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/textView_title_size"
+                    android:textColor="@android:color/background_dark"
+                    android:layout_gravity="center_vertical" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"/>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:id="@+id/f_myBlog_table" />
+
+            </ScrollView>
+
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"/>
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TableLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:id="@+id/f_myBlog_table" />
-
-        </ScrollView>
-
-    </LinearLayout>
-
-
-
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </RelativeLayout>
