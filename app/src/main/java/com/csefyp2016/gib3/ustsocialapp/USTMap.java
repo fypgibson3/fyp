@@ -57,6 +57,7 @@ public class USTMap extends Fragment {
     private Boolean correctSSID = false;
     private Boolean haveLocation = false;
     private Boolean currentView = false;
+    private Boolean goSetting = false;
 
     private static final String getMapLocationURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getMapLocation.php";
     private static final String getLocationPeopleURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getLocationPeople.php";
@@ -139,6 +140,55 @@ public class USTMap extends Fragment {
                 deleteUserLocation();
             }
             enableTimer = false;
+        }
+    }
+
+    @Override
+    public void onResume() {System.out.println("resume");
+        super.onResume();
+        if(goSetting) {
+            currentView = true;
+            enableTimer = true;
+            ssidTimer = new Timer();
+            ssidTimer.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    System.out.println("timer");
+                    wifiMgr = (WifiManager) getView().getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                    ssid = wifiInfo.getBSSID();
+                    if (wifiMgr.isWifiEnabled()) {
+                        ssid = ssid.substring(0, 16);
+                        //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                        System.out.println("Bssid detected: " + ssid);
+                        //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                        if (!ssid.equals(pastssid)) {
+                            pastssid = ssid;
+                            getMapLocation();
+                        } else {
+                            //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                            System.out.println("SSID changed");
+                            //  --------------------------------------------------------------- Debug , To be deleted  --------------------------------------------------------------- //
+                            if (correctSSID) {
+                                updateUserLocation();
+                                getLocationPeople();
+                            } else {
+                                getMapLocation();
+                            }
+                        }
+                    } else {
+                        System.out.println("no");
+                        if (enableTimer == true) {
+                            ssidTimer.cancel();
+                            if (haveLocation) {
+                                deleteUserLocation();
+                            }
+                            enableTimer = false;
+                        }
+                        ssid = "no";
+                        getMapLocation();
+                    }
+                }
+            }, 0, 1000);
         }
     }
 
@@ -451,6 +501,7 @@ public class USTMap extends Fragment {
         alertDialogBuilder.setCancelable(false);
         alertDialogBuilder.setPositiveButton("Setting",new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog,int id) {
+                goSetting = true;
                 startActivity(new Intent(android.provider.Settings.ACTION_WIFI_SETTINGS));
             }
         });

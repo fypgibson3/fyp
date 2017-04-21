@@ -13,15 +13,23 @@
     tools:context="com.csefyp2016.gib3.ustsocialapp.ViewBlog"
     tools:showIn="@layout/activity_view_blog">
 
-    <ScrollView
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/viewBlog_swipe"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TableLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/table_viewBlog" />
+            android:layout_height="match_parent">
 
-    </ScrollView>
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/table_viewBlog" />
+
+        </ScrollView>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
 </RelativeLayout>

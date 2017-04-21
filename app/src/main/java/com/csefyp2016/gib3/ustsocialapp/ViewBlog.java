@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -38,11 +39,8 @@ public class ViewBlog extends AppCompatActivity {
     private RequestQueue requestQueue;
     private StringRequest request;
 
-    private static final String loginPreference = "LoginPreference";
-    private SharedPreferences sharedPreferences;
-
-    private FloatingActionButton addBlog;
     private TableLayout table;
+    private SwipeRefreshLayout swipeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +58,20 @@ public class ViewBlog extends AppCompatActivity {
         requestQueue = Volley.newRequestQueue(this);
 
         table = (TableLayout) findViewById(R.id.table_viewBlog);
+        swipeLayout = (SwipeRefreshLayout) this.findViewById(R.id.viewBlog_swipe);
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refresh();
+            }
+        });
         requestBlogId();
+    }
+
+    private void refresh() {
+        table.removeAllViewsInLayout();
+        requestBlogId();
+        swipeLayout.setRefreshing(false);
     }
 
     private void requestBlogId(){
