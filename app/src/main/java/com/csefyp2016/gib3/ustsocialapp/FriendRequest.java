@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -23,7 +24,8 @@ import java.util.Set;
 public class FriendRequest extends AppCompatActivity {
 
     private String id;
-    private Set<String> friendRequestList;
+    private String friendRequestIdList;
+    private String friendRequestDisplayNameList;
 
     private static final String loginPreference = "LoginPreference";
     private static final String friendListPreference = "FriendList";
@@ -49,17 +51,26 @@ public class FriendRequest extends AppCompatActivity {
         id = sharedPreferences.getString("ID", null);
 
         sharedPreferences = getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
-        friendRequestList = sharedPreferences.getStringSet("friendRequestList", null);
+        friendRequestIdList = sharedPreferences.getString("friendRequestList_ID", null);
+        friendRequestDisplayNameList = sharedPreferences.getString("friendRequestList_DisplayName", null);
 
-        if (friendRequestList != null) {
-
+        if (friendRequestIdList != null) {
+            String[] idList = friendRequestIdList.split(",");
+            String[] displayNameList = friendRequestDisplayNameList.split(",");
+            for (int i = 0; i < idList.length; i++) {
+                addRequest(idList[i], displayNameList[i]);
+            }
         }
 
-
-        //ArrayAdapter<String> adaptor = new ArrayAdapter<>(this, R.layout.friend_request_layout, fdDisplayNameList);
-
-        //listView = (ListView) findViewById(android.R.id.list);
-        //listView.setAdapter(adaptor);
+        mAdapter = new RequestAdapter(this, mRequests);
+        mRequestsView = (RecyclerView) findViewById(R.id.messages_chat);
+        mRequestsView.setLayoutManager(new LinearLayoutManager(this));
+        mRequestsView.setAdapter(mAdapter);
     }
 
+    private void addRequest(String id, String name) {
+        mRequests.add(new Request.Builder()
+                .requestId(id).requestName(name).build());
+        mAdapter.notifyItemInserted(mRequests.size() - 1);
+    }
 }
