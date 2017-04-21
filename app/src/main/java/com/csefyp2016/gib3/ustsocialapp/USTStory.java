@@ -38,9 +38,15 @@ public class USTStory extends Fragment {
     private Integer shownStory = 0;
     private Integer[] storyId;
     private String[] content;
+    private String[] attitude;
+    private String[] comment;
 
     private static final String getStoryIdURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getStoryId.php";
     private static final String getStoryURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getStory.php";
+    private static final String getVoteURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getVote.php";
+    private static final String getAttitudeURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getAttitude.php";
+    private static final String getCommentURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getComment.php";
+
 
     private RequestQueue requestQueue;
     private StringRequest request;
@@ -185,12 +191,12 @@ public class USTStory extends Fragment {
         Button comment = (Button) newRow.findViewById(R.id.story_comment);
         title.setText(content[2]);
         datetime.setText(content[1]);
-        wording.setText(content[4]);
+        wording.setText(content[3]);
         if(content[0].contains("post")){
 
         }
         else{
-            String[] option = content[5].split("`~>@!");
+            String[] option = content[4].split("`~>@!");
             radioGroup.setVisibility(View.VISIBLE);
                 for(int i = 0; i < option.length - 1; i++){
                 RadioButton radioButton = (RadioButton) LayoutInflater.from(getView().getContext()).inflate(R.layout.story_radio, null);
@@ -234,11 +240,64 @@ public class USTStory extends Fragment {
         table.requestLayout();
     }
 
-    private void onAttitude(Integer story) {
+    private void onAttitude(final Integer story) {
+        request = new StringRequest(Request.Method.POST, getAttitudeURL, new Response.Listener<String>() {
 
+            @Override
+            public void onResponse(String response) {
+                attitude = response.split("~`>]-");
+                showAttitude(attitude);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String, String> hashMap = new HashMap<String, String>();
+                hashMap.put("storyid", story.toString());
+                return hashMap;
+            }
+        };
+        requestQueue.add(request);
     }
 
-    private void onComment(Integer story){
+    private void showAttitude(String[] attitude){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getView().getContext());
+        builder.setTitle(attitude[0]);
+        builder.setMessage(attitude[1]);
+        builder.setPositiveButton("Back", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
 
+    private void onComment(final Integer story){
+        request = new StringRequest(Request.Method.POST, getCommentURL, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String, String> hashMap = new HashMap<String, String>();
+                hashMap.put("storyid", story.toString());
+                return hashMap;
+            }
+        };
+        requestQueue.add(request);
     }
 }
