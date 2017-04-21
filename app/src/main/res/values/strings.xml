@@ -16,6 +16,7 @@
     <string name="title_activity_individual_chat_room">Individual Chatroom</string>
     <string name="title_activity_chat">Chat</string>
     <string name="title_activity_my_blog">My Blog</string>
+    <string name="title_activity_show_blog_content">Blog</string>
     <string name="title_activity_create_new_blog">Create New Blog</string>
     <string name="title_activity_view_profile">View Profile</string>
     <string name="title_activity_view_blog">View Blog</string>

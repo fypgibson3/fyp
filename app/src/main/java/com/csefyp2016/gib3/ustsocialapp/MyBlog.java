@@ -200,16 +200,10 @@ public class MyBlog extends AppCompatActivity {
     }
 
     private void showContent(String[] blog){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(blog[0]);
-        builder.setMessage(blog[2]);
-        builder.setPositiveButton("Back", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.dismiss();
-            }
-        });
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
+        Intent intent = new Intent(this, ShowBlogContent.class);
+        intent.putExtra("title", blog[0]);
+        intent.putExtra("date", blog[1]);
+        intent.putExtra("content", blog[2]);
+        startActivity(intent);
     }
 }

@@ -56,7 +56,7 @@ public class USTStory extends Fragment {
     private static final String getCommentURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/getComment.php";
     private static final String uploadAttitudeURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/uploadAttitude.php";
     private static final String uploadCommentURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/uploadComment.php";
-
+    private static final String uploadVoteURL = "http://ec2-52-221-30-8.ap-southeast-1.compute.amazonaws.com/uploadVote.php";
 
     private RequestQueue requestQueue;
     private StringRequest request;
@@ -238,7 +238,10 @@ public class USTStory extends Fragment {
                         RadioButton radioButton = (RadioButton) radioGroup.getChildAt(i);
                         radioButton.setEnabled(false);
                         radioButton.setTextColor(Color.BLACK);
+
                     }
+                    String storyid = ((TextView)((LinearLayout) radioGroup.getParent()).findViewById(R.id.story_currentId)).getText().toString();
+                    setVote(storyid, radio.getText().toString(), radioGroup);
                 }
             });
         }
@@ -264,6 +267,70 @@ public class USTStory extends Fragment {
         shownStory++;
         table.addView(newRow);
         table.requestLayout();
+    }
+
+    private void setVote(final String storyid,final String option, final RadioGroup radioGroup){
+        request = new StringRequest(Request.Method.POST, getVoteURL, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                String[] vote = response.split("`~@!");
+                String uploadVote = "";
+                for(int i = 0; i < radioGroup.getChildCount(); i++){
+                    RadioButton optionButton = (RadioButton) radioGroup.getChildAt(i);
+                    Integer newVote = Integer.parseInt(vote[i]);
+                    String currentOption = optionButton.getText().toString();
+                    if(currentOption == option){
+                        newVote++;
+                    }
+                    uploadVote = uploadVote + newVote.toString() + "`~@!";
+                    optionButton.setText(currentOption + " (" + newVote + ")");
+                }
+                uploadVote(storyid, uploadVote);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String, String> hashMap = new HashMap<String, String>();
+                hashMap.put("storyid", storyid);
+                return hashMap;
+            }
+        };
+        requestQueue.add(request);
+    }
+
+    private void uploadVote(final String storyid, final String vote){
+        request = new StringRequest(Request.Method.POST, uploadVoteURL, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {System.out.println(response);
+                if(response.contains("Success")){
+                    setToast("vote", "success");
+                }
+                else{
+                    setToast("vote", "fail");
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String, String> hashMap = new HashMap<String, String>();
+                hashMap.put("storyid", storyid);
+                hashMap.put("vote", vote);
+                return hashMap;
+            }
+        };
+        requestQueue.add(request);
     }
 
     private void onAttitude(final Integer story) {
@@ -385,7 +452,6 @@ public class USTStory extends Fragment {
         ((TextView) layout.findViewById(R.id.comment_title)).setText(comment[0]);
         ((TextView) layout.findViewById(R.id.comment_id)).setText(story.toString());
         LinearLayout linear = (LinearLayout) layout.findViewById(R.id.comment_comment);
-        //refreshComment(linear, getComment);
         linear.removeAllViewsInLayout();
         for(int i = 0; i < getComment.length - 1; i++){
             if(getComment[i] != ""){
@@ -424,10 +490,10 @@ public class USTStory extends Fragment {
         alertDialog.show();
     }
 
-    private void refreshComment(LinearLayout linear, String[] getComment) {System.out.println("refresh" + getComment.length);
+    private void refreshComment(LinearLayout linear, String[] getComment) {
         linear.removeAllViewsInLayout();
         for(int i = 0; i < getComment.length; i++){
-            if(getComment[i] != ""){System.out.println(getComment[i]);
+            if(getComment[i] != ""){
                 LinearLayout showComment = (LinearLayout) LayoutInflater.from(getView().getContext()).inflate(R.layout.comment, null);
                 TextView commentText = (TextView) showComment.findViewById(R.id.comment_text);
                 commentText.setText(getComment[i]);
@@ -441,9 +507,9 @@ public class USTStory extends Fragment {
         request = new StringRequest(Request.Method.POST, uploadCommentURL, new Response.Listener<String>() {
 
             @Override
-            public void onResponse(String response) {System.out.println(response);
+            public void onResponse(String response) {
                 if(response.contains("Success")){
-                    String refreshcomment = response.split("~`>]-")[1];System.out.println(refreshcomment);
+                    String refreshcomment = response.split("~`>]-")[1];
                     String[] getComment = refreshcomment.split("`~@!");
                     refreshComment(linear, getComment);
                     EditText newComment = (EditText) ((LinearLayout)linear.getParent().getParent()).findViewById(R.id.comment_new);

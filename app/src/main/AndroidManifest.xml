@@ -115,7 +115,10 @@
             android:name=".FriendRequest"
             android:label="@string/title_activity_friend_request"
             android:theme="@style/AppTheme.NoActionBar"></activity>
-
+        <activity
+            android:name=".ShowBlogContent"
+            android:label="Show Blog Content"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <service android:name=".MyFirebaseMessagingService">
             <intent-filter>
