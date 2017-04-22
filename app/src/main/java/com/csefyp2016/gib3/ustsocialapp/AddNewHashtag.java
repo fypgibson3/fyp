@@ -481,7 +481,7 @@ public class AddNewHashtag extends AppCompatActivity {
                 {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d("Error.Response", error.getMessage());
+                        //Log.d("Error.Response", error.getMessage());
                     }
                 }
         );
