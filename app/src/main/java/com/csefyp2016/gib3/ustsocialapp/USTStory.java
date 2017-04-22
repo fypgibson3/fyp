@@ -83,11 +83,13 @@ public class USTStory extends Fragment {
         scrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                View view = (View) scrollView.getChildAt(scrollView.getChildCount() - 1);
-                int diff = (view.getBottom() - (scrollView.getHeight() + scrollView.getScrollY()));
-                if (diff == 0) {
-                    System.out.println("show" + shownStory);
-                    requestStoryId();
+                if(currentView) {
+                    View view = (View) scrollView.getChildAt(scrollView.getChildCount() - 1);
+                    int diff = (view.getBottom() - (scrollView.getHeight() + scrollView.getScrollY()));
+                    if (diff == 0) {
+                        System.out.println("show" + shownStory);
+                        requestStoryId();
+                    }
                 }
             }
         });
@@ -126,8 +128,11 @@ public class USTStory extends Fragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
+            System.out.println("visible");
             currentView = true;
+            refresh();
         } else {
+            System.out.println("invisible");
             currentView = false;
         }
     }
