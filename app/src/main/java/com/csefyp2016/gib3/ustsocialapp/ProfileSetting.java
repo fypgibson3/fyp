@@ -566,7 +566,6 @@ public class ProfileSetting extends Fragment {
                             if(response.getBoolean("success")) {
                                 Log.d("getHashtagHttpPost","have hashtag");
                                 showHashtag(response.getJSONArray("readHashtags"));
-
                             }
                             else {
                                 Log.d("getHashtagHttpPost","no hashtag");
@@ -583,7 +582,7 @@ public class ProfileSetting extends Fragment {
                 {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d("Error.Response", error.getMessage());
+                        ///Log.d("Error.Response", error.getMessage());
                     }
                 }
         );
