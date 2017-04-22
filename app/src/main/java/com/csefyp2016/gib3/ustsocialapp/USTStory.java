@@ -130,7 +130,7 @@ public class USTStory extends Fragment {
         if (isVisibleToUser) {
             System.out.println("visible");
             currentView = true;
-            refresh();
+            //refresh();
         } else {
             System.out.println("invisible");
             currentView = false;
