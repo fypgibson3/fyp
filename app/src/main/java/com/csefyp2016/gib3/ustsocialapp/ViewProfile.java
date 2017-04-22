@@ -114,30 +114,36 @@ public class ViewProfile extends AppCompatActivity {
         friendId = previousIntent.getStringExtra("friendId");
 
         sharedPreferences = getSharedPreferences(friendListPreference, Context.MODE_PRIVATE);
-        String[] friendIdList = sharedPreferences.getString("FDLIST_ID", null).split(",");
-        if (friendIdList != null && !Arrays.asList(friendIdList).contains(friendId)) {
-            addFriend = (Button) findViewById(R.id.b_viewProfile_addFriend);
-            addFriend.setVisibility(View.VISIBLE);
-            separator = (Space) findViewById(R.id.viewProfile_separator);
-            separator.setVisibility(View.VISIBLE);
+        String fdIdString = sharedPreferences.getString("FDLIST_ID", null);
+        if (fdIdString != null) {
+            String[] friendIdList = fdIdString.split(",");
+            if (!Arrays.asList(friendIdList).contains(friendId)) {
+                addFriend = (Button) findViewById(R.id.b_viewProfile_addFriend);
+                addFriend.setVisibility(View.VISIBLE);
+                separator = (Space) findViewById(R.id.viewProfile_separator);
+                separator.setVisibility(View.VISIBLE);
 
-            addFriend.setOnClickListener(new Button.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    sendFriendshipRequest();
-                }
-            });
+                addFriend.setOnClickListener(new Button.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        sendFriendshipRequest();
+                    }
+                });
+            }
         }
 
-        String[] pendingList = sharedPreferences.getString("pendingList", null).split(",");
-        if (pendingList != null && Arrays.asList(pendingList).contains(friendId)) {
-            addFriend = (Button) findViewById(R.id.b_viewProfile_addFriend);
-            addFriend.setText("Pending");
-            addFriend.setBackgroundColor(Color.GRAY);
-            addFriend.setClickable(false);
-            addFriend.setVisibility(View.VISIBLE);
-            separator = (Space) findViewById(R.id.viewProfile_separator);
-            separator.setVisibility(View.VISIBLE);
+        String pendingString = sharedPreferences.getString("pendingList", null);
+        if (pendingString != null) {
+            String[] pendingList = pendingString.split(",");
+            if (Arrays.asList(pendingList).contains(friendId)) {
+                addFriend = (Button) findViewById(R.id.b_viewProfile_addFriend);
+                addFriend.setText("Pending");
+                addFriend.setBackgroundColor(Color.GRAY);
+                addFriend.setClickable(false);
+                addFriend.setVisibility(View.VISIBLE);
+                separator = (Space) findViewById(R.id.viewProfile_separator);
+                separator.setVisibility(View.VISIBLE);
+            }
         }
 
         displayNameView = (TextView) findViewById(R.id.view_viewProfile_display_name);
@@ -524,7 +530,7 @@ public class ViewProfile extends AppCompatActivity {
 
     private void getHashtagHttpPost() {
         HashMap<String, String> params = new HashMap<String, String>();
-        params.put("id", id);
+        params.put("id", friendId);
 
         JsonObjectRequest getRequest = new JsonObjectRequest( getHashtagURL, new JSONObject(params),
                 new Response.Listener<JSONObject>()
@@ -545,8 +551,10 @@ public class ViewProfile extends AppCompatActivity {
                             }
                             else {
                                 Log.d("getHashtagHttpPost","no hashtag");
-                                Toast t = Toast.makeText(getApplicationContext(), "You have no hashtags!", Toast.LENGTH_SHORT);
-                                t.show();
+                                TextView noHashtag = (TextView) findViewById(R.id.view_viewProfile_noHashtag);
+                                noHashtag.setVisibility(View.VISIBLE);
+                                //Toast t = Toast.makeText(getApplicationContext(), "You have no hashtags!", Toast.LENGTH_SHORT);
+                                //t.show();
                             }
 
                         } catch (JSONException e) {
@@ -558,7 +566,7 @@ public class ViewProfile extends AppCompatActivity {
                 {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d("Error.Response", error.getMessage());
+                        //Log.d("Error.Response", error.getMessage());
                     }
                 }
         );
@@ -567,7 +575,7 @@ public class ViewProfile extends AppCompatActivity {
     }
 
     public void showHashtag(JSONArray readHashtags){
-        Log.d("php id", id);
+        Log.d("php id", friendId);
 
         hashtag_id.clear();
         hashtag_content.clear();
@@ -577,8 +585,8 @@ public class ViewProfile extends AppCompatActivity {
                 try {
                     hashtag_id.add(readHashtags.getJSONObject(i).getString("hashtag_id"));
                     hashtag_content.add(readHashtags.getJSONObject(i).getString("hashtag_content"));
-                    Log.d("hashtag_id",readHashtags.getJSONObject(i).getString("hashtag_id"));
-                    Log.d("hashtag_content",readHashtags.getJSONObject(i).getString("hashtag_content"));
+                    //Log.d("hashtag_id",readHashtags.getJSONObject(i).getString("hashtag_id"));
+                    //Log.d("hashtag_content",readHashtags.getJSONObject(i).getString("hashtag_content"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

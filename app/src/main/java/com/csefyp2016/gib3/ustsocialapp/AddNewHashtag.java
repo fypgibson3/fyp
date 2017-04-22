@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 //import android.support.v7.widget.SearchView;
@@ -15,6 +16,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
@@ -97,6 +100,16 @@ public class AddNewHashtag extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //  --------------------------------------------------------------- Testing features  --------------------------------------------------------------- //
+        Window window = getWindow();
+        // clear FLAG_TRANSLUCENT_STATUS flag:
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        // finally change the color
+        window.setStatusBarColor(ContextCompat.getColor(this,R.color.statusBarColor));
+        //  ---------------------------------------------------------------Testing features  --------------------------------------------------------------- //
 
         //View view = inflater.inflate(R.layout.activity_add_new_hashtag, container, false);
 
@@ -365,7 +378,7 @@ public class AddNewHashtag extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d("Error.Response", error.getMessage());
+                        //Log.d("Error.Response", error.getMessage());
                     }
                 }
         );
